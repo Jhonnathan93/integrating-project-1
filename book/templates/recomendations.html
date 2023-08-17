@@ -50,6 +50,26 @@
     <main>
         <div class="container">
             <div class="row mt-5">
+                {% for book in books %}
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <div class="card mb-3 me-3" style="max-width: 430px;">
+                            <img class="card-img-top" class="img-fluid rounded-start" src="{{ book.cover.url }}" />
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card mb-3 me-3">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">{{ book.title }}</h5>
+                                <p class="card-text">{{ book.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            {% comment %} <div class="row mt-5">
                 <div class="card mb-3 me-3" style="max-width: 430px;">
                     <div class="row g-0">
                         <div class="col-md-4">
@@ -130,7 +150,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> {% endcomment %}
         </div>
         
     </main>

@@ -52,8 +52,8 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-3 bg-dark">
-                    <img src="img/user.png" class="mt-5 mb-2 circular-square mx-auto d-block img-fluid" alt="">
-                    <h4 class="text-center text-light">Nombre del usuario</h4>
+                    <img src="{{ reader.profile_pic.url }}" class="mt-5 mb-2 circular-square mx-auto d-block img-fluid" alt="">
+                    <h4 class="text-center text-light">{{ reader.name }}</h4>
                     <h5 class="text-light mt-3">Leer mas tarde:</h5>
                     <h6 class="text-light">libro a leer 1</h6>
                     <h6 class="text-light">libro a leer 2</h6>
@@ -69,61 +69,23 @@
                 <div class="col-9">
                     <div class="container">
                         <div class="row mt-5">
-                            <div class="card ms-5 mb-3 me-5" style="max-width: 450px;">
-                                <div class="row g-0">
-                                    <div class="col-md-4">
-                                        <img src="img/libro2.jpg" class="img-fluid rounded-start" alt="...">
+                            {% for book in books %}
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <div class="card mb-3 me-3" style="max-width: 430px;">
+                                        <img class="card-img-top" class="img-fluid rounded-start" src="{{ book.cover.url }}" />
                                     </div>
-                                    <div class="col-md-8">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card mb-3 me-3">
                                         <div class="card-body">
-                                            <h5 class="card-title">libro 1</h5>
-                                            <p class="card-text">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente cupiditate corrupti neque consequuntur temporibus explicabo excepturi.</p>
+                                            <h5 class="card-title fw-bold">{{ book.title }}</h5>
+                                            <p class="card-text">{{ book.description }}</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card mb-3" style="max-width: 450px;">
-                                <div class="row g-0">
-                                    <div class="col-md-4">
-                                        <img src="img/libro2.jpg" class="img-fluid rounded-start" alt="...">
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="card-body">
-                                            <h5 class="card-title">libro 2</h5>
-                                            <p class="card-text">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente cupiditate corrupti neque consequuntur temporibus explicabo excepturi.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="card ms-5 mb-3 me-5" style="max-width: 450px;">
-                                <div class="row g-0">
-                                    <div class="col-md-4">
-                                        <img src="img/libro2.jpg" class="img-fluid rounded-start" alt="...">
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="card-body">
-                                            <h5 class="card-title">libro 3</h5>
-                                            <p class="card-text">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente cupiditate corrupti neque consequuntur temporibus explicabo excepturi.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card mb-3" style="max-width: 450px;">
-                                <div class="row g-0">
-                                    <div class="col-md-4">
-                                        <img src="img/libro2.jpg" class="img-fluid rounded-start" alt="...">
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="card-body">
-                                            <h5 class="card-title">libro 4</h5>
-                                            <p class="card-text">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente cupiditate corrupti neque consequuntur temporibus explicabo excepturi.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
+                            {% endfor %}
                     </div>
                 </div>
             </div>
