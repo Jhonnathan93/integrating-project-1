@@ -1,8 +1,11 @@
-# integrating-project-1
-Project for the course "P1" (ST0251) - EAFIT University.
+<h1 align="center">Integrating Project 1</h1>
 
-Manuela Castaño Franco
+Project for the course Integrating Project 1 (ST0251) - EAFIT University.
 
-Santiago Neusa Ruiz
+- Manuela Castaño Franco
+- Santiago Neusa Ruiz
+- Jhonnathan Stiven Ocampo Díaz
 
-Jhonnathan Stiven Ocampo Díaz
+
+# Required Libraries 
+# Instructions to run the program
