@@ -19,13 +19,19 @@ from django.urls import path
 from book import views as BookViews
 from django.conf import settings
 from django.conf.urls.static import static
+import openai
+import os
+
+api_key = "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"
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", BookViews.home),
+    path("", BookViews.index),
     path("recomendations/", BookViews.recomendations),
     path("index/", BookViews.index),
     path("profile/", BookViews.profile),
+    path('response/', BookViews.response, name='response'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -49,87 +49,90 @@
 
     <main>
        <div class="container ">
-        <div class="row">
-            <div class="col-6 justify-content-center p-5 mt-5">
-                <p class="mt-5">Uno de mis libros favoritos es:</p>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+        <form method="POST" action = "{% url 'response' %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-6 justify-content-center p-5 mt-5">
+                    <p class="mt-5">Uno de mis libros favoritos es:</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="libro1" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                    </div>
+                    <p class="mt-5">Uno de mis libros favoritos es:</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="libro2" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                    </div>
+                    <p class="mt-5">Uno de mis libros favoritos es:</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="libro3" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                    </div>
                 </div>
-                <p class="mt-5">Uno de mis libros favoritos es:</p>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                <div class="col-6 justify-content-center p-5 mt-5">
+                    <h4 class="mt-5 mb-3">¿Qué temas te gustan?</h4>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="fantasia" id="tema1">
+                        <label class="form-check-label" for="tema1">
+                            Fantasía
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="romance" id="tema2">
+                        <label class="form-check-label" for="tema2">
+                            Romance
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="historia" id="tema3">
+                        <label class="form-check-label" for="tema3">
+                            Historia
+                        </label>
+                    </div>
+                    <h4 class="mt-2 mb-3">¿Qué tipo de libro quieres leer?</h4>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="biografia" id="tipo1">
+                        <label class="form-check-label" for="tipo1">
+                            Biografía
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="novela" id="tipo2">
+                        <label class="form-check-label" for="tipo2">
+                            Novela
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="cientifico" id="tipo3">
+                        <label class="form-check-label" for="tipo3">
+                            Científico
+                        </label>
+                    </div>
+                    <h4 class="mt-2 mb-3">¿Qué tan largo ha de ser el libro?</h4>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="longitud" id="corto" checked>
+                        <label class="form-check-label" for="corto">
+                            Menos de 100 páginas
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="longitud" id="medio">
+                        <label class="form-check-label" for="medio">
+                        Entre 100 y 500 páginas
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="longitud" id="largo">
+                        <label class="form-check-label" for="largo">
+                        Mas de 500 páginas
+                        </label>
+                    </div>
                 </div>
-                <p class="mt-5">Uno de mis libros favoritos es:</p>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-                </div>
-            </div>
-            <div class="col-6 justify-content-center p-5 mt-5">
-                <h4 class="mt-5 mb-3">¿Qué temas te gustan?</h4>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        Fantasía
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckChecked">
-                      Romance
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckChecked">
-                      Historia
-                    </label>
-                </div>
-                <h4 class="mt-2 mb-3">¿Qué tipo de libro quieres leer?</h4>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        Biografía
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckChecked">
-                      Novela
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckChecked">
-                      Científico
-                    </label>
-                </div>
-                <h4 class="mt-2 mb-3">¿Qué tan largo ha de ser el libro?</h4>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
-                    <label class="form-check-label" for="flexRadioDefault1">
-                      Menos de 100 páginas
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                    <label class="form-check-label" for="flexRadioDefault2">
-                      Entre 100 y 500 páginas
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                    <label class="form-check-label" for="flexRadioDefault2">
-                      Mas de 500 páginas
-                    </label>
-                  </div>
-            </div>
             
-        </div>
-        <div class="row">
-            <div class="d-grid gap-2 col-6 mx-auto">
-                <button class="btn btn-outline-primary" type="button" onclick="window.location.href='recomendations.html'">Enviar</button>
             </div>
-        </div>
+            <div class="row">
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button class="btn btn-outline-primary" type="submit">Enviar</button>
+                </div>
+            </div>
+        </form>
 
         
 
