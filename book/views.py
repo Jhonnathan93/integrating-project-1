@@ -7,7 +7,7 @@ from .models import Book
 from .models import Reader
 from .methods import *
 
-api_key = "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"
+api_key = "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"
 
 # Create your views here.
 def home(request):

@@ -28,32 +28,37 @@
         </nav>
     </header>
     <main>
-        <h1>Respuesta</h1>
+        <!--<h1>Respuesta</h1>
         <p>{{ respuesta }}</p>
-        <p>{{ libros }}</p>
+        {% for libro in libros %}
+            <p>{{ libro }}</p>
+        {% endfor %}
+        <p>{{ libros }}</p>-->
 
 
         <div class="container">
             <div class="row">
         
                 {% for libro in libros %}
-                    <div class="col-6">
-                        <div class="card mb-3" style="max-width: 540px;">
-                            <div class="row g-0">
-                                <div class="col-md-4">
-                                    <img src="{{ libro.imagen_enlace }}" class="img-fluid rounded-start" alt="Portada del libro">
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ libro.titulo }}</h5>
-                                        <p class="card-text">{{ libro.descripcion }}</p>
-                                        <p class="card-text"><small class="text-body-secondary">Autor(es): {{ libro.autores }}</small></p>
-                                        <p class="card-text"><small class="text-body-secondary">Enlace de compra: <a href="{{ libro.buy_link }}" target="_blank">Comprar</a></small></p>
+                    {% for elemento in libro %}
+                        <div class="col-6">
+                            <div class="card mb-3" style="max-width: 540px;">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                        <img src="{{ elemento.imagen_enlace }}" class="img-fluid rounded-start" alt="Portada del libro">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ elemento.titulo }}</h5>
+                                            <p class="card-text">{{ elemento.descripcion }}</p>
+                                            <p class="card-text"><small class="text-body-secondary">Autor(es): {{ elemento.autores }}</small></p>
+                                            <p class="card-text"><small class="text-body-secondary">Enlace de compra: <a href="{{ elemento.buy_link }}" target="_blank">Comprar</a></small></p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    {% endfor %}
                 {% endfor %}
                 
             </div>
