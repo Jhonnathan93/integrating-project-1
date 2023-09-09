@@ -5,8 +5,9 @@ import os
 import openai
 from .models import Book
 from .models import Reader
+from .methods import *
 
-api_key = "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"
+api_key = "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"
 
 # Create your views here.
 def home(request):
@@ -61,23 +62,36 @@ def response(request):
             longitud = 'largo'
 
         # Crea un prompt basado en las selecciones del usuario
-        prompt = f"Recomienda libros que son {', '.join(temas)} y del tipo {', '.join(tipos_libro)} con longitud {longitud}. También me gustaría libros similares a '{libro1}', '{libro2}' y '{libro3}'."
+        prompt = f"Actua como un recomendador de libros y recomiendame libros que sean de {', '.join(temas)} y del tipo {', '.join(tipos_libro)} con longitud {longitud}, ademas que sean similares a '{libro1}', '{libro2}' y '{libro3}'. dime unicamente los nombres de los libros y su autor, todo en una sola linea, el nombre del libro y el autor separados por un guion y entre libro y libro separado por punto y coma"
         
         # Llama a la API de ChatGPT para obtener recomendaciones
         try:
             response = openai.Completion.create(
                 engine="text-davinci-002",  # Puedes ajustar el motor según tus necesidades
                 prompt=prompt,
-                max_tokens=50, # Ajusta la cantidad de tokens según tu necesidad
+                max_tokens=65, # Ajusta la cantidad de tokens según tu necesidad
                 api_key=api_key
             )
             recomendaciones = response.choices[0].text.strip()
+
+            # Divide las recomendaciones por punto y coma para obtener los nombres de los libros
+            libros_recomendados = recomendaciones.split(';')
+            print(libros_recomendados)
+            # Inicializa una lista para almacenar la información detallada de los libros
+            info_libros = []
+
+            # Búsqueda de información detallada para cada libro recomendado
+            for libro_recomendado in libros_recomendados:
+                libro_info = buscar_libros(libro_recomendado.strip(), max_resultados=1)
+                if libro_info:
+                    info_libros.append(libro_info)
+
         except Exception as e:
             # Maneja cualquier error que pueda ocurrir al llamar a la API
             return JsonResponse({'error': str(e)})
         
         # Devuelve la recomendación al usuario
-        return render(request, 'response.html', {'respuesta': recomendaciones})
+        return render(request, 'response.html', {'respuesta': recomendaciones, 'libros': info_libros})
     
     else:
         # Si la solicitud no es POST, puedes manejarla de acuerdo a tus necesidades

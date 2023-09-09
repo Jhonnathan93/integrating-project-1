@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 import openai
 import os
 
-api_key = "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"
+api_key = "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"
 
 
 urlpatterns = [

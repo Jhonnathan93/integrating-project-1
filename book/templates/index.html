@@ -48,7 +48,7 @@
     </header>
 
     <main>
-       <div class="container ">
+       <div class="container">
         <form method="POST" action = "{% url 'response' %}">
             {% csrf_token %}
             <div class="row">
@@ -69,38 +69,38 @@
                 <div class="col-6 justify-content-center p-5 mt-5">
                     <h4 class="mt-5 mb-3">¿Qué temas te gustan?</h4>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="fantasia" id="tema1">
+                        <input class="form-check-input" type="checkbox" value="fantasia" id="tema1" name="tema1">
                         <label class="form-check-label" for="tema1">
                             Fantasía
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="romance" id="tema2">
+                        <input class="form-check-input" type="checkbox" value="romance" id="tema2" name="tema2">
                         <label class="form-check-label" for="tema2">
                             Romance
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="historia" id="tema3">
+                        <input class="form-check-input" type="checkbox" value="historia" id="tema3" name="tema3">
                         <label class="form-check-label" for="tema3">
                             Historia
                         </label>
                     </div>
                     <h4 class="mt-2 mb-3">¿Qué tipo de libro quieres leer?</h4>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="biografia" id="tipo1">
+                        <input class="form-check-input" type="checkbox" value="biografia" id="tipo1" name="tipo1">
                         <label class="form-check-label" for="tipo1">
                             Biografía
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="novela" id="tipo2">
+                        <input class="form-check-input" type="checkbox" value="novela" id="tipo2" name="tipo2">
                         <label class="form-check-label" for="tipo2">
                             Novela
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="cientifico" id="tipo3">
+                        <input class="form-check-input" type="checkbox" value="cientifico" id="tipo3" name="tipo3">
                         <label class="form-check-label" for="tipo3">
                             Científico
                         </label>
