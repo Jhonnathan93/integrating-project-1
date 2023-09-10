@@ -28,6 +28,7 @@ pip install openai
 pip install requests
  ```
 
+
 # Instructions to run the program
 
 Below are the steps to set up and run this project on your local device.
