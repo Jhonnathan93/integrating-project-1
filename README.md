@@ -29,3 +29,45 @@ pip install requests
  ```
 
 # Instructions to run the program
+
+Below are the steps to set up and run this project on your local device.
+
+### Previous requirements
+
+Make sure you have the components mentioned above installed in addition to:
+
+- [Python](https://www.python.org/downloads/): Programming language used in the project.
+
+### Installation instructions
+
+1. Clone this repository to your local machine:
+
+    ```bash
+    git clone https://github.com/Jhonnathan93/integrating-project-1.git
+    ```
+
+2. Navigate to the project directory:
+
+    ```bash
+    cd your-project
+    ```
+
+3. Perform database migrations:
+
+    ```bash
+    python manage.py migrate
+    ```
+
+4. Start the development server:
+
+    ```bash
+    python manage.py runserver
+    ```
+
+5. Open your web browser and visit [http://localhost:8000/](http://localhost:8000/) to see the application running.
+
+
+
+
+
+
