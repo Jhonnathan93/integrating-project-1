@@ -17,12 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from book import views as BookViews
+from readinglists import views as ReadingListViews
 from django.conf import settings
 from django.conf.urls.static import static
 import openai
 import os
 
-api_key = "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"
+api_key = ""
 
 
 urlpatterns = [
@@ -32,6 +33,12 @@ urlpatterns = [
     path("index/", BookViews.index),
     path("profile/", BookViews.profile),
     path('response/', BookViews.response, name='response'),
+    path('overview/', ReadingListViews.overview, name='overview'),
+    path('overview/<int:reading_list_id>/', ReadingListViews.detail, name='readinglist_detail'),
+    path('createlist/', ReadingListViews.createlist, name='createlist'),
+    path('deletelist/<int:reading_list_id>/', ReadingListViews.deletelist, name='deletelist'),
+    path('readinglist/<int:reading_list_id>/', ReadingListViews.detail, name='detail'),
 ]
+
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
