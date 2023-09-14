@@ -5,8 +5,9 @@
         <div class="text-center">
             <a href="{% url 'createlist' %}" class="btn btn-primary">Crear una Reading List</a>
         </div>
+        <br>
         {% for readinglist in readinglists %}
-        <div class="card mb-3">
+        <div class="card mb-3 mx-auto"> 
             <div class="row g-0">
                 <div class="col-md-4">
                     <img src="{{ readinglist.cover.url }}" class="img-fluid" alt="{{ readinglist.title }} Cover">
@@ -19,7 +20,7 @@
                         </small></p>
                 {% if user.is_authenticated and user == readinglist.user %}
                 <a class="btn btn-danger" href="{% url 'deletelist' readinglist.id %}">
-                    Delete
+                    Eliminar
                 </a>
                 {% endif %}
                     </div>
@@ -31,5 +32,4 @@
     </div>
 
 </body>
-</html>
 {% endblock content %}

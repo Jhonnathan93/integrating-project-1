@@ -19,6 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+
 RECAPTCHA_PUBLIC_KEY = '6Le28R0oAAAAABszekY_bObx-g4grKQMwhFNiVxV'
 RECAPTCHA_PRIVATE_KEY = '6Le28R0oAAAAANR7ZpXu5LIN4HWo-0bAWTEzz_Vj'
 
