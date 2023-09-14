@@ -6,13 +6,12 @@ import openai
 from .models import Book
 from .models import Reader
 from .methods import *
+from django.contrib.auth.decorators import login_required
 
-api_key = "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"
+
+api_key = "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"
 
 # Create your views here.
-def home(request):
-    return render(request, 'home.html')
-
 def index(request):
     return render(request, 'index.html')
 
@@ -21,10 +20,11 @@ def recomendations(request):
     books = Book.objects.all()
     return render(request, 'recomendations.html', {'books': books})
 
+@login_required  # Asegura que el usuario esté autenticado
 def profile(request):
-    books = Book.objects.all()
-    reader = Reader.objects.first()
-    return render(request, 'profile.html', {'books': books, 'reader': reader})
+    user = request.user  # Obtén el usuario actualmente autenticado
+    print(user)
+    return render(request, 'profile.html', {'user': user})
 
 def response(request):
     if request.method == 'POST':
