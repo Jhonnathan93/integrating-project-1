@@ -4,17 +4,18 @@ from captcha.fields import ReCaptchaField
 
 
 class UserCreateForm(UserCreationForm):
-    name = forms.CharField(max_length=45, required=True)
-    email = forms.EmailField(max_length=45, required=True)
+    name = forms.CharField(max_length=45, required=True, label='Nombre completo')
+    email = forms.EmailField(max_length=45, required=True, label='Correo electrónico')
     birthdate = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}),
         required=True,
+        label='Fecha de nacimiento'
     )
     captcha = ReCaptchaField(
         label='Captcha',
         required=True,
     )
-    profilePic = forms.ImageField(label='Foto de Perfil')
+    profilePic = forms.ImageField(label='Foto de Perfil', required=False)
 
 
     def __init__(self, *args, **kwargs):

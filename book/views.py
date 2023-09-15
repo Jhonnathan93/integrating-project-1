@@ -9,7 +9,7 @@ from .methods import *
 from django.contrib.auth.decorators import login_required
 
 
-api_key = "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"
+api_key = "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"
 
 # Create your views here.
 def index(request):
@@ -63,7 +63,7 @@ def response(request):
 
         # Crea un prompt basado en las selecciones del usuario
         prompt = f"Actua como un recomendador de libros y recomiendame libros que sean de {', '.join(temas)} y del tipo {', '.join(tipos_libro)} con longitud {longitud}, ademas que sean similares a '{libro1}', '{libro2}' y '{libro3}'. dime unicamente los nombres de los libros y su autor, todo en una sola linea, el nombre del libro y el autor separados por un guion y entre libro y libro separado por punto y coma"
-        
+        print(prompt)
         # Llama a la API de ChatGPT para obtener recomendaciones
         try:
             response = openai.Completion.create(

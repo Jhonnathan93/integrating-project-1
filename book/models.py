@@ -6,6 +6,7 @@ class Book(models.Model):
     title = models.CharField(max_length=100)
     description= models.CharField(max_length=250)
     cover= models.ImageField(upload_to = 'book/images/')
+    author = models.CharField(max_length=100, default= None)
     
     
 class Reader(models.Model):

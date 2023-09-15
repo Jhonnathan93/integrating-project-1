@@ -21,13 +21,13 @@
             </div>
         </div>
 
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and reading_list.user == user %}
         <a class="btn btn-danger" href="{% url 'deletelist' reading_list.id %}">
             Eliminar
         </a>
         {% endif %}
 
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and reading_list.user == user %}
         <h3 class="mt-4">Agregar Libros</h3>
         
         <form method="post" class="mt-3">

@@ -31,12 +31,12 @@ def signup_view(request):
                 except IntegrityError:
                     return render(request, 'signup.html',
                     {'form':UserCreateForm,
-                    'error':'Username already taken. Choose new username.'})
+                    'error':'El nombre de usuario ya está en uso.'})
             else:
                 return render(request, 'signup.html', {'form': form})
         else:
             return render(request, 'signup.html',
-            {'form':UserCreateForm, 'error':'Passwords do not match'})
+            {'form':UserCreateForm, 'error':'Contraseñas no coinciden'})
 
 
 def login_view(request):
@@ -45,7 +45,7 @@ def login_view(request):
     else:
         user = authenticate(request, username=request.POST['username'],password=request.POST['password'])
     if user is None:
-        return render(request,'login.html',{'form': AuthenticationForm(),'error': 'username and password do not match'})
+        return render(request,'login.html',{'form': AuthenticationForm(),'error': 'Usuario y contraseña no coinciden'})
     else:
         login(request,user)
     return redirect('home')
