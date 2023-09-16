@@ -28,6 +28,10 @@ pip install openai
 pip install requests
  ```
 
+**reCAPTCHA**: This project uses reCAPTCHA to verify if users aren't robots to prevent ghost users.
+ ```bash
+pip install django-recaptcha
+ ```
 
 # Instructions to run the program
 
