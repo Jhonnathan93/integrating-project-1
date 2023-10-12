@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<body>
+    <div class="container">
+        <h2>Crear Reading List</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="title" class="form-label">Título</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Descripción</label>
+                <textarea class="form-control" id="description" name="description" rows="4"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="cover" class="form-label">Portada</label>
+                <input type="file" class="form-control-file" id="cover" name="cover" accept="image/*" required>
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">Crear</button>
+        </form>
+    </div>
+</body>
+</html>
+{% endblock content %}

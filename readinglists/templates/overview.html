@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<body>
+    <div class="container">
+        <div class="text-center">
+            <a href="{% url 'createlist' %}" class="btn btn-primary">Crear una Reading List</a>
+        </div>
+        <br>
+        {% for readinglist in readinglists %}
+        <div class="card mb-3 mx-auto"> 
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="{{ readinglist.cover.url }}" class="img-fluid" alt="{{ readinglist.title }} Cover">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{% url 'detail' readinglist.id %}">{{ readinglist.title }}</a></h5>
+                        <p class="card-text"><small class="text-muted">
+                            {{ readinglist.date_created }}
+                        </small></p>
+                {% if user.is_authenticated and user == readinglist.user %}
+                <a class="btn btn-danger" href="{% url 'deletelist' readinglist.id %}">
+                    Eliminar
+                </a>
+                {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+</body>
+{% endblock content %}
