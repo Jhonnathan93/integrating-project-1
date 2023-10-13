@@ -106,7 +106,7 @@ def detail(request, reading_list_id):
 
 
 def fetch_book_info(book_title, book_author):
-    api_key = 'AIzaSyDpCO1r_SrkFy3h8MoBtdunkUX3NBb_xxg'
+    api_key = ''
     url = f'https://www.googleapis.com/books/v1/volumes?q=intitle:{book_title}+inauthor:{book_author}&key={api_key}'
     response = requests.get(url)
 

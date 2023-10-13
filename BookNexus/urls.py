@@ -24,7 +24,7 @@ from readinglists import views as ReadingListViews
 from django.conf import settings
 from django.conf.urls.static import static
 
-api_key = "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"
+api_key = ""
 
 urlpatterns = [
     path('admin/', admin.site.urls),
