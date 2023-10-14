@@ -2,7 +2,8 @@ import requests
 
 
 def buscar_libros(consulta, max_resultados=1):
-    url = f"https://www.googleapis.com/books/v1/volumes?q={consulta}&maxResults={max_resultados}"
+    url = f"https://www.googleapis.com/books/v1/volumes?q={consulta}&printType=books&maxResults={max_resultados}"
+
 
     try:
         response = requests.get(url)

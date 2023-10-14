@@ -43,7 +43,9 @@ urlpatterns = [
     path('createlist/', ReadingListViews.createlist, name='createlist'),
     path('deletelist/<int:reading_list_id>/', ReadingListViews.deletelist, name='deletelist'),
     path('readinglist/<int:reading_list_id>/', ReadingListViews.detail, name='detail'),
-
+    path('deletebook/<int:reading_list_id>/<int:book_id>/', ReadingListViews.deletebook, name='deletebook'),
+    path('editreadinglist/<int:reading_list_id>', ReadingListViews.updatereadinglist, name='updatereadinglist'),
+    
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
