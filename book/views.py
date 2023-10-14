@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 
 <<<<<<< HEAD
 
-api_key = "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"
+api_key = ""
 =======
 api_key = ""
 >>>>>>> 6c847195534e26fa8f955d7dd586b8298c80c7fa
