@@ -14,6 +14,7 @@ import requests
 from urllib.parse import quote
 
 
+api_key = "AIzaSyDpCO1r_SrkFy3h8MoBtdunkUX3NBb_xxg"
 
 def overview(request):
     readinglists = ReadingList.objects.filter(user=request.user).order_by('-date_created')
@@ -114,15 +115,14 @@ def detail(request, reading_list_id):
 
 
 def fetch_book_info(book_title, book_author):
-    api_key = "AIzaSyDpCO1r_SrkFy3h8MoBtdunkUX3NBb_xxg"
     encoded_title = quote(book_title)
     encoded_author = quote(book_author)
     
-    # Initialize the orderBy parameter as 'relevance'
+   
     order_by = 'relevance'
 
     while True:
-        # Construct the URL with the current orderBy parameter
+        
         url = f'https://www.googleapis.com/books/v1/volumes?q=intitle:{encoded_title}+inauthor:{encoded_author}&orderBy={order_by}&printType=books&key={api_key}'
 
         response = requests.get(url)
@@ -152,7 +152,7 @@ def fetch_book_info(book_title, book_author):
                             'synopsis': synopsis
                         })
 
-                    # Choose the most relevant book based on criteria (cover and description)
+                    
                     most_relevant_book = None
                     for result in results:
                         if result['cover_url'] and result['synopsis']:
@@ -163,7 +163,7 @@ def fetch_book_info(book_title, book_author):
                         
                         return most_relevant_book["title"], most_relevant_book["author"], most_relevant_book["cover_url"], most_relevant_book["synopsis"], most_relevant_book["rating"]
                     else:
-                        # No books with both cover and description found, change orderBy to 'newest'
+                        
                         order_by = 'newest'
                 else:
                     raise ValueError("No books found with the provided title and author.")
@@ -173,123 +173,6 @@ def fetch_book_info(book_title, book_author):
         except ValueError as e:
             print(f"Error: {e}")
             return None, None
-
-""" def fetch_book_info(book_title, book_author):
-    api_key = "AIzaSyDpCO1r_SrkFy3h8MoBtdunkUX3NBb_xxg"
-    encoded_title = quote(book_title)
-    encoded_author = quote(book_author)
-    url = f'https://www.googleapis.com/books/v1/volumes?q=intitle:{encoded_title}+inauthor:{encoded_author}&orderBy=relevance&printType=books&key={api_key}'
-
-    response = requests.get(url)
-    
-    print("Fetching book info...")
-    print(f"Response Status Code: {response.status_code}")
-
-    try:
-        if response.status_code == 200:
-            data = response.json()
-            items = data.get('items', [])
-
-            if items:
-                results = []
-                for item in items:
-                    volume_info = item.get('volumeInfo', {})
-                    official_title = volume_info.get('title', 'Title Not Found')
-                    official_author = ', '.join(volume_info.get('authors', ['Author Not Found']))
-                    cover_url = volume_info['imageLinks']['thumbnail'] if 'imageLinks' in volume_info and 'thumbnail' in volume_info['imageLinks'] else None
-                    average_rating = volume_info.get('averageRating', 0.0)
-                    synopsis = volume_info.get('description', '')
-                    results.append({
-                        'title': official_title,
-                        'author': official_author,
-                        'cover_url': cover_url,
-                        'rating': average_rating,
-                        'synopsis': synopsis
-                    })
-                    if(synopsis):
-                        print(synopsis)
-                    else: print("no hay sinopsis")
-                    if(official_title):
-                        print(official_title)
-                    if(official_author):
-                        print(official_author)
-                    if(cover_url):
-                        print(cover_url)
-                    if(average_rating):
-                        print(average_rating)
-
-                # Choose the most relevant book based on criteria (cover and description)
-                most_relevant_book = None
-                for result in results:
-                    if result['cover_url'] and result['synopsis']:
-                        print("hola")
-                        most_relevant_book = result
-                        break
-                
-                if most_relevant_book is not None:
-                    
-                    return most_relevant_book["title"], most_relevant_book["author"], most_relevant_book["cover_url"], most_relevant_book["synopsis"], most_relevant_book["rating"]
-                else:
-                    raise ValueError("No books with both cover and description found.")
-            else:
-                raise ValueError("No books found with the provided title and author.")
-        else:
-            raise ValueError("Failed to fetch book info from API")
-
-    except ValueError as e:
-        print(f"Error: {e}")
-        return None, None
- """
-
-""" def fetch_book_info(book_title, book_author):
-    api_key = "AIzaSyDpCO1r_SrkFy3h8MoBtdunkUX3NBb_xxg"
-    url = f'https://www.googleapis.com/books/v1/volumes?q=intitle:{book_title}+inauthor:{book_author}&orderBy=relevance&printType=books&key={api_key}'
-    
-
-    response = requests.get(url)
-
-    print("Fetching book info...")
-    print(f"Response Status Code: {response.status_code}")
-
-    try:
-        if response.status_code == 200:
-            data = response.json()
-            items = data.get('items', [])
-
-            if items:
-                volume_info = items[0].get('volumeInfo', {})
-                official_title = volume_info.get('title', 'Title Not Found')
-                official_author = ', '.join(volume_info.get('authors', ['Author Not Found']))
-                cover_url = volume_info['imageLinks']['thumbnail'] if 'imageLinks' in volume_info and 'thumbnail' in volume_info['imageLinks'] else None
-                average_rating = volume_info.get('averageRating', 0.0)
-                synopsis = volume_info.get('description', '')
-                
-                if(synopsis):
-                    print(synopsis)
-                else: print("no hay sinopsis")
-                if(official_title):
-                    print(official_title)
-                if(official_author):
-                    print(official_author)
-                if(cover_url):
-                    print(cover_url)
-                if(average_rating):
-                    print(average_rating)
-                
-                if cover_url and cover_url.startswith('http'):
-                    
-                    return official_title, official_author, cover_url, synopsis, average_rating
-                else:
-                    raise ValueError("No cover URL available for this book.")
-            else:
-                raise ValueError("No book found with the provided title and author.")
-        else:
-            raise ValueError("Failed to fetch book info from API")
-
-    except ValueError as e:
-        print(f"Error: {e}")
-        return None, None
- """
 
 @login_required
 def updatereadinglist(request, reading_list_id):
@@ -325,9 +208,9 @@ def deletelist(request, reading_list_id):
 
 @login_required
 def deletebook(request, book_id, reading_list_id):
-    book = get_object_or_404(Book, pk=book_id)  # Replace 'Book' with your actual model name
+    book = get_object_or_404(Book, pk=book_id) 
     reading_list = get_object_or_404(ReadingList, id=reading_list_id)
     
     book.delete()
     messages.success(request, "Libro eliminado exitosamente.")
-    return redirect('detail', reading_list.id)  # Redirect to the reading list detail page
+    return redirect('detail', reading_list.id)  

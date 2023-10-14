@@ -5,7 +5,7 @@ from django.db import models
 class Book(models.Model):
     title = models.CharField(max_length=100)
     description= models.CharField(max_length=250)
-    cover= models.ImageField(upload_to = 'book/images/')
+    cover = models.URLField()
     author = models.CharField(max_length=100, default= None)
     
     

@@ -7,6 +7,10 @@
     .text-justify {
         text-align: justify;
     }
+    .custom-image {
+        max-width: 100%;
+        max-height: 100%;
+    }
 </style>
 <body>
     <div class="container mt-4" >
@@ -22,7 +26,7 @@
 
             <div class="row g-0">
                 <div class="col-md-3">
-                    <img src="{{ reading_list.cover.url }}" class="img-fluid" alt="{{ reading_list.title }} Cover" style="width: 300px;">
+                    <img src="{{ reading_list.cover.url }}" class="img-fluid custom-image" alt="{{ reading_list.title }} Cover" >
                 </div>
                 <div class="col-md-9">
                     <div class="card-body">
@@ -89,7 +93,7 @@
                 <div class="col-md-4">
                     {% if book.cover %}
                         
-                    <img src="{{ book.cover.url }}" alt="{{ book.title }} Cover" class="img-fluid" style="max-width: 200px;">
+                    <img src="{{ book.cover }}" alt="{{ book.title }} Cover" class="img-fluid" style="width: 290px; height: 390px;">
 
                     {% endif %}
                 </div>
@@ -123,7 +127,7 @@
                                     
                                     <div class="modal-body ">
                                         {% if book.cover %}
-                                        <img class="card-img-top" class="img-fluid rounded-start" src="{{ book.cover.url }}" />
+                                        <img class="card-img-top text-center" class="img-fluid rounded-start" style="width: 200px; height: 300px;" src="{{ book.cover }}" />
                                         {% endif %}
                                         <h5 class="text-center">{{ book.title }}</h5>
                                         <h5 class="text-center">{{ book.author }}</h5>
