@@ -14,7 +14,9 @@ import requests
 from urllib.parse import quote
 
 
-api_key = "AIzaSyDpCO1r_SrkFy3h8MoBtdunkUX3NBb_xxg"
+
+api_key = ""
+
 
 def overview(request):
     readinglists = ReadingList.objects.filter(user=request.user).order_by('-date_created')
@@ -115,6 +117,10 @@ def detail(request, reading_list_id):
 
 
 def fetch_book_info(book_title, book_author):
+<<<<<<< HEAD
+=======
+  
+>>>>>>> ae41d165a3a63e45306bbe53eb7d6f09893c753d
     encoded_title = quote(book_title)
     encoded_author = quote(book_author)
     
