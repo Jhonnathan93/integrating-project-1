@@ -117,10 +117,7 @@ def detail(request, reading_list_id):
 
 
 def fetch_book_info(book_title, book_author):
-<<<<<<< HEAD
-=======
-  
->>>>>>> ae41d165a3a63e45306bbe53eb7d6f09893c753d
+
     encoded_title = quote(book_title)
     encoded_author = quote(book_author)
     
