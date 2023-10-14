@@ -24,6 +24,9 @@ from readinglists import views as ReadingListViews
 from django.conf import settings
 from django.conf.urls.static import static
 
+import openai
+import os
+
 api_key = ""
 
 urlpatterns = [
