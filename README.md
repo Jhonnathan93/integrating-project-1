@@ -28,6 +28,10 @@ pip install openai
 pip install requests
  ```
 
+**reCAPTCHA**: This project uses reCAPTCHA to verify if users aren't robots to prevent ghost users.
+ ```bash
+pip install django-recaptcha
+ ```
 
 # Instructions to run the program
 
@@ -44,7 +48,7 @@ Make sure you have the components mentioned above installed in addition to:
 1. Clone this repository to your local machine:
 
     ```bash
-    git clone https://github.com/Jhonnathan93/integrating-project-1.git
+    git clone --single-branch --branch sprint2 https://github.com/Jhonnathan93/integrating-project-1.git
     ```
 
 2. Navigate to the project directory:
