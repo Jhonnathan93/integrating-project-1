@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<body>
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+        <div class="text-center">
+            {% if user.readinglist_set.count <= 2 %}
+                <a href="{% url 'createlist' %}" class="btn btn-primary">Crear una Reading List</a>
+            {% endif %}
+        </div>
+        <br>
+        {% if error_message %}
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+        {% endif %}
+
+        
+        {% for readinglist in readinglists %}
+        <div class="card mb-3 mx-auto"> 
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="{{ readinglist.cover.url }}" class="img-fluid" alt="{{ readinglist.title }} Cover">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{% url 'detail' readinglist.id %}">{{ readinglist.title }}</a></h5>
+                        <p class="card-text"><small class="text-muted">
+                            Fecha de creación: {{ readinglist.date_created }}
+                        </small></p>
+                {% if user.is_authenticated and user == readinglist.user %}
+                <a class="btn btn-danger" href="{% url 'deletelist' readinglist.id %}">
+                    Eliminar
+                </a>
+                {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+</body>
+{% endblock content %}

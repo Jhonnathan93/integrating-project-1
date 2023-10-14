@@ -1,0 +1,9 @@
+.circular-square{
+    border-radius: 50%;
+}
+
+a:link, a:visited,  a:hover, a:active
+{
+    color: white;
+    text-decoration: none;
+}

@@ -6,13 +6,11 @@ import openai
 from .models import Book
 from .models import Reader
 from .methods import *
+from django.contrib.auth.decorators import login_required
 
 api_key = ""
 
 # Create your views here.
-def home(request):
-    return render(request, 'home.html')
-
 def index(request):
     return render(request, 'index.html')
 
@@ -21,10 +19,11 @@ def recomendations(request):
     books = Book.objects.all()
     return render(request, 'recomendations.html', {'books': books})
 
+@login_required  # Asegura que el usuario esté autenticado
 def profile(request):
-    books = Book.objects.all()
-    reader = Reader.objects.first()
-    return render(request, 'profile.html', {'books': books, 'reader': reader})
+    user = request.user  # Obtén el usuario actualmente autenticado
+    print(user)
+    return render(request, 'profile.html', {'user': user})
 
 def response(request):
     if request.method == 'POST':
@@ -54,16 +53,16 @@ def response(request):
         
         # Obtén la longitud seleccionada
         longitud = None
-        if 'longitud1' in request.POST:
-            longitud = 'corto'
-        elif 'longitud2' in request.POST:
-            longitud = 'medio'
-        elif 'longitud3' in request.POST:
-            longitud = 'largo'
+        if 'longitud' in request.POST:
+            longitud = request.POST.get('longitud')
+        # elif 'longitud2' in request.POST:
+            # longitud = 'medio'
+        # elif 'longitud3' in request.POST:
+            # longitud = 'largo'
 
         # Crea un prompt basado en las selecciones del usuario
-        prompt = f"Actua como un recomendador de libros y recomiendame libros que sean de {', '.join(temas)} y del tipo {', '.join(tipos_libro)} con longitud {longitud}, ademas que sean similares a '{libro1}', '{libro2}' y '{libro3}'. dime unicamente los nombres de los libros y su autor, todo en una sola linea, el nombre del libro y el autor separados por un guion y entre libro y libro separado por punto y coma"
-        
+        prompt = f"Actua como un recomendador de libros y recomiendame libros que sean de {', '.join(temas)} y del tipo {', '.join(tipos_libro)} con una longitud aproximada de {longitud} paginas, ademas que sean similares a '{libro1}', '{libro2}' y '{libro3}'. dime unicamente los nombres de los libros y su autor, todo en una sola linea, el nombre del libro y el autor separados por un guion y entre libro y libro separado por punto y coma"
+        print(prompt)
         # Llama a la API de ChatGPT para obtener recomendaciones
         try:
             response = openai.Completion.create(

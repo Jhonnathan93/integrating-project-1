@@ -15,23 +15,40 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+
 from book import views as BookViews
+from readinglists import views as ReadingListViews
+
+
 from django.conf import settings
 from django.conf.urls.static import static
+
 import openai
 import os
 
 api_key = ""
 
-
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", BookViews.index),
+    path('admin/', admin.site.urls),
+
+    path('', BookViews.index, name='home'),
+
+    path('accounts/', include('accounts.urls')),
+
     path("recomendations/", BookViews.recomendations),
     path("index/", BookViews.index),
-    path("profile/", BookViews.profile),
+    path("profile/", BookViews.profile, name='profile'),
     path('response/', BookViews.response, name='response'),
+
+    path('overview/', ReadingListViews.overview, name='overview'),
+    path('overview/<int:reading_list_id>/', ReadingListViews.detail, name='readinglist_detail'),
+    path('createlist/', ReadingListViews.createlist, name='createlist'),
+    path('deletelist/<int:reading_list_id>/', ReadingListViews.deletelist, name='deletelist'),
+    path('readinglist/<int:reading_list_id>/', ReadingListViews.detail, name='detail'),
+    path('deletebook/<int:reading_list_id>/<int:book_id>/', ReadingListViews.deletebook, name='deletebook'),
+    path('editreadinglist/<int:reading_list_id>', ReadingListViews.updatereadinglist, name='updatereadinglist'),
+    
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
