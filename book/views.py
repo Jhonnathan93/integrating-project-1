@@ -9,7 +9,7 @@ from .methods import *
 from django.contrib.auth.decorators import login_required
 
 
-api_key = ""
+api_key = "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"
 
 # Create your views here.
 def index(request):
@@ -54,15 +54,15 @@ def response(request):
         
         # Obtén la longitud seleccionada
         longitud = None
-        if 'longitud1' in request.POST:
-            longitud = 'corto'
-        elif 'longitud2' in request.POST:
-            longitud = 'medio'
-        elif 'longitud3' in request.POST:
-            longitud = 'largo'
+        if 'longitud' in request.POST:
+            longitud = request.POST.get('longitud')
+        # elif 'longitud2' in request.POST:
+            # longitud = 'medio'
+        # elif 'longitud3' in request.POST:
+            # longitud = 'largo'
 
         # Crea un prompt basado en las selecciones del usuario
-        prompt = f"Actua como un recomendador de libros y recomiendame libros que sean de {', '.join(temas)} y del tipo {', '.join(tipos_libro)} con longitud {longitud}, ademas que sean similares a '{libro1}', '{libro2}' y '{libro3}'. dime unicamente los nombres de los libros y su autor, todo en una sola linea, el nombre del libro y el autor separados por un guion y entre libro y libro separado por punto y coma"
+        prompt = f"Actua como un recomendador de libros y recomiendame libros que sean de {', '.join(temas)} y del tipo {', '.join(tipos_libro)} con una longitud aproximada de {longitud} paginas, ademas que sean similares a '{libro1}', '{libro2}' y '{libro3}'. dime unicamente los nombres de los libros y su autor, todo en una sola linea, el nombre del libro y el autor separados por un guion y entre libro y libro separado por punto y coma"
         print(prompt)
         # Llama a la API de ChatGPT para obtener recomendaciones
         try:
