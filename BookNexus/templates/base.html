@@ -76,14 +76,12 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav ms-auto">
                     
-                    {% comment %}
                     {% if user.is_authenticated %}
                     <a class="nav-link" href="{% url 'profile' %}">
                         Perfil
                     </a>
                     {% endif %}
-                    {% endcomment %}
-                
+                    
                     {% if user.is_authenticated %}
                     <a class="nav-link" href="{% url 'overview' %}">
                         Reading Lists

@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from captcha.fields import ReCaptchaField
-from .models import UserProfile
 
 class UserCreateForm(UserCreationForm):
 

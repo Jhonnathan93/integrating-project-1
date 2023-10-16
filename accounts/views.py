@@ -7,12 +7,12 @@ from django.shortcuts import redirect
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from .forms import UserCreateForm, loginForm
-from .models import UserProfile
+from .models import userInformation
 
 
 # Create your views here.
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'home.html', )
 
 
 def signup_view(request):
@@ -21,59 +21,28 @@ def signup_view(request):
 
         if request.POST['password1'] == request.POST['password2']:
 
-            user = User.objects.create_user(request.POST['username'], password = request.POST['password1'], email = request.POST['email'])
-            user.save()
-            print(user)
+            try:
+                user = User.objects.create_user(request.POST['username'], password = request.POST['password1'], email = request.POST['email'])
+                user.save()
 
-            profile = UserProfile(user = user, birthdate = request.POST['birthdate'], preferences = request.POST['preferences'], profile_picture = request.POST['profile_picture'])
-            profile.save()
-            print(profile)
+                profile = userInformation(user = user, birthdate = request.POST['birthdate'], preferences = request.POST['preferences'], profile_picture = request.POST['profile_picture'], points = 0)
+                profile.save()
 
-            return render(request, 'home.html') 
+                login(request, user)
+                return redirect('home')
+            
+            except IntegrityError:
+                return render(request, 'signup.html', {'form': UserCreateForm, 'error':'Username already taken. Choose new username.'})
 
-            login(request, user)
-            return redirect('home')
-
+        else: return render(request, 'signup.html', {'form': UserCreateForm, 'error':'Passwords do not match'})
+    
     return render(request, 'signup.html', {'form': UserCreateForm})
 
 
-# def signup_view(request):
-    
-#     if request.method == 'GET':
-#         return render(request, 'signup.html',
-#             {'form':UserCreateForm})
-#     else:
-#         if request.POST['password1'] == request.POST['password2']:
-        
-#             form = UserCreateForm(request.POST)
+def profile(request):
 
-#             if form.is_valid():
-#                 try:
-#                     user = User.objects.create_user(request.POST['username'], password=request.POST['password1'])
-#                     user.save()
-#                     login(request, user)
-#                     return redirect('home')
-#                 except IntegrityError:
-#                     return render(request, 'signup.html',
-#                     {'form':UserCreateForm,
-#                     'error':'El nombre de usuario ya está en uso.'})
-#             else:
-#                 return render(request, 'signup.html', {'form': form})
-#         else:
-#             return render(request, 'signup.html',
-#             {'form':UserCreateForm, 'error':'Contraseñas no coinciden'})
-
-
-# def login_view(request):
-#     if request.method == 'GET':
-#         return render(request, 'login.html',{'form':AuthenticationForm})
-#     else:
-#         user = authenticate(request, username=request.POST['username'],password=request.POST['password'])
-#     if user is None:
-#         return render(request,'login.html',{'form': AuthenticationForm(),'error': 'Usuario y contraseña no coinciden'})
-#     else:
-#         login(request,user)
-#     return redirect('home')
+    user_info = userInformation.objects.get(user=request.user)
+    return render(request, 'profile.html', {'userInfo':user_info})
 
 
 
