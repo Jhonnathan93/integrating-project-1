@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<body>
+    <div class="container">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                Actualizar Reading List
+                </h5>
+                {% if error %}
+                <div class="alert alert-danger mt-3" role="alert">
+                {{ error }}
+                </div>
+                {% endif %}
+                
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Título</label>
+                            {{ form.title }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Descripción</label>
+                            {{ form.description }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.cover.id_for_label }}" class="form-label">Portada</label>
+                            {{ form.cover }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            Aplicar cambios
+                        </button>
+                    </form>
+                
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    </body>
+</html>
+{% endblock content %}
+
+{% comment %} {% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="card-body">
+                <h5 class="card-title">
+                Actualizar Reading List
+                </h5>
+                {% if error %}
+                <div class="alert alert-danger mt-3" role="alert">
+                {{ error }}
+                </div>
+                {% endif %}
+                <p class="card-text">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="{{ form.title.id_for_label }}" class="form-label">Título</label>
+                                {{ form.title }}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.description.id_for_label }}" class="form-label">Descripción</label>
+                                {{ form.description }}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.cover.id_for_label }}" class="form-label">Portada</label>
+                                {{ form.cover }}
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                Aplicar cambios
+                            </button>
+                        </form>
+                        
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+       
+{% endblock content %}
+        {% endcomment %}

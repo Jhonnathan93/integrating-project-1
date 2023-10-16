@@ -6,3 +6,4 @@ class UserProfile(models.Model):
     birthdate = models.DateField()
     preferences = models.TextField(max_length = 300)
     profile_picture = models.ImageField(upload_to='accounts/profile_pics/')
+    points = models.IntegerField(blank=True, null=True)

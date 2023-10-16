@@ -8,8 +8,7 @@ from .models import Reader
 from .methods import *
 from django.contrib.auth.decorators import login_required
 
-
-api_key = ""
+api_key = "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"
 
 # Create your views here.
 def index(request):
@@ -29,6 +28,9 @@ def profile(request):
 def response(request):
     if request.method == 'POST':
         print("Valor de la clave API:", api_key)
+
+        detalles = request.POST.get('detalles')
+
         # Obtén los datos del formulario
         libro1 = request.POST.get('libro1')
         libro2 = request.POST.get('libro2')
@@ -42,6 +44,12 @@ def response(request):
             temas.append(request.POST['tema2'])
         if 'tema3' in request.POST:
             temas.append(request.POST['tema3'])
+        if 'tema4' in request.POST:
+            temas.append(request.POST['tema4'])
+        if 'tema5' in request.POST:
+            temas.append(request.POST['tema5'])
+        if 'tema6' in request.POST:
+            temas.append(request.POST['tema6'])
         
         # Obtén los tipos de libro seleccionados
         tipos_libro = []
@@ -51,18 +59,20 @@ def response(request):
             tipos_libro.append(request.POST['tipo2'])
         if 'tipo3' in request.POST:
             tipos_libro.append(request.POST['tipo3'])
+        if 'tipo4' in request.POST:
+            tipos_libro.append(request.POST['tipo4'])
         
         # Obtén la longitud seleccionada
         longitud = None
-        if 'longitud1' in request.POST:
-            longitud = 'corto'
-        elif 'longitud2' in request.POST:
-            longitud = 'medio'
-        elif 'longitud3' in request.POST:
-            longitud = 'largo'
+        if 'longitud' in request.POST:
+            longitud = request.POST.get('longitud')
+        # elif 'longitud2' in request.POST:
+            # longitud = 'medio'
+        # elif 'longitud3' in request.POST:
+            # longitud = 'largo'
 
         # Crea un prompt basado en las selecciones del usuario
-        prompt = f"Actua como un recomendador de libros y recomiendame libros que sean de {', '.join(temas)} y del tipo {', '.join(tipos_libro)} con longitud {longitud}, ademas que sean similares a '{libro1}', '{libro2}' y '{libro3}'. dime unicamente los nombres de los libros y su autor, todo en una sola linea, el nombre del libro y el autor separados por un guion y entre libro y libro separado por punto y coma"
+        prompt = f"Actua como un recomendador de libros y recomiendame libros que sean de {', '.join(temas)} y del tipo {', '.join(tipos_libro)} con una longitud aproximada de {longitud} paginas, ademas que sean similares a '{libro1}', '{libro2}' y '{libro3}', ademas el usuario que pidio estas recomendaciones dejo detalles adicionales para la busqueda: '{detalles}'. dime unicamente los nombres de los libros y su autor, todo en una sola linea, el nombre del libro y el autor separados por un guion y entre libro y libro separado por punto y coma"
         print(prompt)
         # Llama a la API de ChatGPT para obtener recomendaciones
         try:

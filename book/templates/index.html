@@ -17,15 +17,22 @@
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" name="libro1" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
                     </div>
-                    <p class="mt-5">Uno de mis libros favoritos es:</p>
+                    <p class="mt-3">Uno de mis libros favoritos es:</p>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" name="libro2" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
                     </div>
-                    <p class="mt-5">Uno de mis libros favoritos es:</p>
+                    <p class="mt-3">Uno de mis libros favoritos es:</p>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" name="libro3" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
                     </div>
+
+                    <div class="mb-3">
+                        <label for="detalles" class="form-label">¿Quieres poner mas detalles o comentarios para tu busqueda?
+                        </label>
+                        <textarea class="form-control" id="detalles" name="detalles" rows="4"></textarea>
+                    </div>
                 </div>
+
                 <div class="col-6 justify-content-center p-5 mt-5">
                     <h4 class="mt-5 mb-3">¿Qué temas te gustan?</h4>
                     <div class="form-check">
@@ -44,6 +51,24 @@
                         <input class="form-check-input" type="checkbox" value="historia" id="tema3" name="tema3">
                         <label class="form-check-label" for="tema3">
                             Historia
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="suspenso" id="tema4" name="tema4">
+                        <label class="form-check-label" for="tema4">
+                            Suspenso
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="autoayuda" id="tema5" name="tema5">
+                        <label class="form-check-label" for="tema5">
+                            Autoayuda
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="ciencia ficcion" id="tema6" name="tema6">
+                        <label class="form-check-label" for="tema6">
+                            Ciencia ficción
                         </label>
                     </div>
                     <h4 class="mt-2 mb-3">¿Qué tipo de libro quieres leer?</h4>
@@ -65,21 +90,27 @@
                             Científico
                         </label>
                     </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="poesia" id="tipo4" name="tipo4">
+                        <label class="form-check-label" for="tipo4">
+                            Poesia
+                        </label>
+                    </div>
                     <h4 class="mt-2 mb-3">¿Qué tan extenso ha de ser el libro?</h4>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="longitud" id="corto" checked>
+                        <input class="form-check-input" type="radio" name="longitud" id="corto" value="50 paginas" checked>
                         <label class="form-check-label" for="corto">
                             Menos de 100 páginas
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="longitud" id="medio">
+                        <input class="form-check-input" type="radio" name="longitud" id="medio" value="100-500 paginas">
                         <label class="form-check-label" for="medio">
                         Entre 100 y 500 páginas
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="longitud" id="largo">
+                        <input class="form-check-input" type="radio" name="longitud" id="largo" value="mas de 500 paginas">
                         <label class="form-check-label" for="largo">
                         Mas de 500 páginas
                         </label>
