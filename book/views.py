@@ -19,12 +19,6 @@ def recomendations(request):
     books = Book.objects.all()
     return render(request, 'recomendations.html', {'books': books})
 
-@login_required  # Asegura que el usuario esté autenticado
-def profile(request):
-    user = request.user  # Obtén el usuario actualmente autenticado
-    print(user)
-    return render(request, 'profile.html', {'user': user})
-
 def response(request):
     if request.method == 'POST':
         print("Valor de la clave API:", api_key)

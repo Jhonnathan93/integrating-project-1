@@ -35,10 +35,10 @@ urlpatterns = [
     path('', BookViews.index, name='home'),
 
     path('accounts/', include('accounts.urls')),
+    
 
     path("recomendations/", BookViews.recomendations),
     path("index/", BookViews.index),
-    path("profile/", BookViews.profile, name='profile'),
     path('response/', BookViews.response, name='response'),
 
     path('overview/', ReadingListViews.overview, name='overview'),

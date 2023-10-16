@@ -88,7 +88,7 @@ def detail(request, reading_list_id):
                     
                 else:
                     
-                    return render(request, 'detail.html', {'reading_list': reading_list, 'book_form': book_form, "books": books, 'error_message': error_message2})
+                    return render(request, 'detail.html', {'reading_list': reading_list, 'book_form': book_form, "books": books, 'error_message': error_message})
                     
             else:
                 

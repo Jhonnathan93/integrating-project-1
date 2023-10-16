@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-{{ user_info }}
+<h1>Perfil de {{ user.username }}</h1>
+<p>Fecha de nacimiento: {{ birthdate }}</p>
+<p>Preferencias: {{ preferences }}</p>
+<p>Puntos: {{ points }}</p>
 {% endblock content %}
