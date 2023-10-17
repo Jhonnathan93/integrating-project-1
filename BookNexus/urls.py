@@ -35,6 +35,7 @@ urlpatterns = [
     path('', BookViews.index, name='home'),
 
     path('accounts/', include('accounts.urls')),
+    path('reports/', include('reports.urls')),
     
 
     path("recomendations/", BookViews.recomendations),
@@ -48,7 +49,9 @@ urlpatterns = [
     path('readinglist/<int:reading_list_id>/', ReadingListViews.detail, name='detail'),
     path('deletebook/<int:reading_list_id>/<int:book_id>/', ReadingListViews.deletebook, name='deletebook'),
     path('editreadinglist/<int:reading_list_id>', ReadingListViews.updatereadinglist, name='updatereadinglist'),
+    
     path('send_email_to_readers/', Newsletter.send_email_to_readers, name='send_email_to_readers'),
+
     
 ]
 

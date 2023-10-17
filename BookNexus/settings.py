@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'readinglists',
     'captcha',
     'newsletter',
-
+    'reports',
 ]
 
 MIDDLEWARE = [
