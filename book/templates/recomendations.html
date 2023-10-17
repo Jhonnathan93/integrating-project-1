@@ -15,7 +15,11 @@
                         <div class="card mb-3 me-3">
                             <div class="card-body">
                                 <h5 class="card-title fw-bold">{{ book.title }}</h5>
-                                <p class="card-text">{{ book.description }}</p>
+                                <p class="card-text" id="book-description">{{ book.description|slice:":400" }}{% if book.description|length > 400 %}...</p>
+                            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#descriptionModal{{ book.id }}">
+                                Leer más
+                            </button>
+                            {% endif %}
                             </div>
                         </div>
                     </div>
