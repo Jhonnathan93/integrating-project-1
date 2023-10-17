@@ -14,7 +14,7 @@ from readinglists.models import ReadingList
 
 # Create your views here.
 def home(request):
-    return render(request, 'home.html', )
+    return render(request, 'home.html')
 
 
 def signup_view(request):
@@ -44,17 +44,14 @@ def signup_view(request):
 
 @login_required
 def profile(request):
-    # Obtiene la instancia de userInformation para el usuario actual.
     user_info = userInformation.objects.get(user=request.user)
     
-    # Accede a los atributos del objeto userInformation.
     birthdate = user_info.birthdate
     preferences = user_info.preferences
     profile_picture = user_info.profile_picture
     points = user_info.points
     readinglists = ReadingList.objects.filter(user=request.user).order_by('-date_created')
 
-    # Luego, puedes pasar estos datos a tu plantilla.
     return render(request, 'profile.html', {
         'birthdate': birthdate,
         'preferences': preferences,

@@ -1,16 +1,22 @@
 from django.db import models
-
-# Create your models here.
-
-class Book(models.Model):
-    title = models.CharField(max_length=100)
-    description= models.CharField(max_length=250)
-    cover = models.URLField()
-    author = models.CharField(max_length=100, default= None)
+from django.contrib.auth.models import User
     
+class Book(models.Model):
+    isbn = models.CharField(max_length=13, default="N/A")
+    title = models.CharField(max_length=100)
+    description = models.TextField(max_length=500)
+    year_publication = models.IntegerField(default=0)
+    topics = models.CharField(max_length=120, default="N/A")
+    rating = models.FloatField(default=0)
+    cover = models.URLField()
+    buy_link = models.URLField(default="https://books.google.com.co/books?uid=117901420878484918404&hl=es")
+    author = models.CharField(max_length=100, default= None)
+
+    def __str__(self):
+        return self.title
     
 class Reader(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True, default=0)
     name = models.CharField(max_length=40, default="")
     password = models.CharField(max_length=30, default="j7531594862")
     email = models.EmailField(max_length=50, default="example@example.com")
@@ -22,5 +28,8 @@ class Reader(models.Model):
     def __str__(self):
         return self.name
     
-
-
+class History(models.Model):
+    user = models.OneToOneField(User, on_delete = models.CASCADE)
+    books = models.CharField(max_length=160)
+    topics = models.CharField(max_length=66)
+    genres = models.CharField(max_length=38)

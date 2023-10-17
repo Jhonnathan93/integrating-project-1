@@ -77,9 +77,30 @@
                 <div class="navbar-nav ms-auto">
                     
                     {% if user.is_authenticated %}
-                    <a class="nav-link" href="{% url 'accounts:profile' %}">
-                        Perfil
-                    </a>
+                        {% if not user.is_staff %}
+                        <a class="nav-link" href="{% url 'accounts:profile' %}">
+                            Perfil
+                        </a>
+                        {% endif %}
+                        {% if user.is_staff %}
+                        <a class="nav-link" href="http://127.0.0.1:8000/admin/">
+                            Perfil
+                        </a>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff %}
+                            <a class="nav-link" href="{% url 'reports:report' %}">
+                                Reportes
+                            </a>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if user.is_authenticated %}
+                        <a class="nav-link" href="{% url 'top_books' %}">
+                            Top de libros
+                        </a>
                     {% endif %}
                     
                     {% if user.is_authenticated %}
@@ -102,8 +123,9 @@
         </div>
     </nav>
 
-    <div class="container content" style="margin-top: 100px; padding-bottom: 110px;">
+    <div class="container mt-4" style="padding-bottom: 110px;">
         {% block content %}
+
         {% endblock content %}
     </div>
 
@@ -112,7 +134,7 @@
             © 2023 Copyright -
             <a class="text-reset fw-bold text-decoration-none" target="_blank" href="https://www.instagram.com/manucf20/">Manuela Castaño</a> -
             <a class="text-reset fw-bold text-decoration-none" target="_blank" href="https://www.instagram.com/santiagoneusar/">Santiago Neusa</a> -
-            <a class="text-reset fw-bold text-decoration-none" target="_blank" href="https://www.instagram.com/jhothinnan/">Jhonnathan Ocampo</a>
+            <a class="text-reset fw-bold text-decoration-none" target="_blank" href="https://www.instagram.com/jhonnathan.ocampo/">Jhonnathan Ocampo</a>
         </div>
     </footer>
 
