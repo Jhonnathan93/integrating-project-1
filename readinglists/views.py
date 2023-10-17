@@ -15,7 +15,7 @@ from urllib.parse import quote
 
 
 
-api_key = "AIzaSyDpCO1r_SrkFy3h8MoBtdunkUX3NBb_xxg"
+api_key = ""
 
 
 def overview(request):
