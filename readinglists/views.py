@@ -15,7 +15,7 @@ from urllib.parse import quote
 
 
 
-api_key = ""
+api_key = "AIzaSyDpCO1r_SrkFy3h8MoBtdunkUX3NBb_xxg"
 
 
 def overview(request):
@@ -116,7 +116,7 @@ def detail(request, reading_list_id):
 
     except ValueError as e:
         print(f"ValueError: {e}")
-        error_message = "An error occurred. Please check your input and try again."
+        error_message = "Ocurrió un error. Verifica los datos de entrada e inténtalo de nuevo."
         return render(request, 'detail.html', {'reading_list': reading_list, 'book_form': book_form, "books": books, 'error_message': error_message})
 
 
@@ -131,7 +131,7 @@ def fetch_book_info(book_title, book_author):
 
     while True:
         
-        url = f'https://www.googleapis.com/books/v1/volumes?q=intitle:{encoded_title}+inauthor:{encoded_author}&orderBy={order_by}&printType=books&key={api_key}'
+        url = f'https://www.googleapis.com/books/v1/volumes?q=intitle:{encoded_title}+inauthor:{encoded_author}&orderBy={order_by}&printType=books&langRestrict=es&key={api_key}'
 
         response = requests.get(url)
         
@@ -180,10 +180,12 @@ def fetch_book_info(book_title, book_author):
                             break
                     
                     if most_relevant_book is not None:
+                        
                         return most_relevant_book["title"], most_relevant_book["author"], most_relevant_book["cover_url"], most_relevant_book["synopsis"], most_relevant_book["rating"], most_relevant_book["publishing_year"], most_relevant_book["categories"], most_relevant_book["isbn"], most_relevant_book["purchase_link"]
                     else:
                         
                         order_by = 'newest'
+                        
                 else:
                     raise ValueError("No books found with the provided title and author.")
             else:

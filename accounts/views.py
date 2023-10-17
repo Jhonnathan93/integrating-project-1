@@ -14,7 +14,7 @@ from readinglists.models import ReadingList
 
 # Create your views here.
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'home.html', )
 
 
 def signup_view(request):
