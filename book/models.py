@@ -1,6 +1,5 @@
 from django.db import models
-
-# Create your models here.
+from django.contrib.auth.models import User
     
 class Book(models.Model):
     isbn = models.CharField(max_length=13, default="N/A")
@@ -29,5 +28,8 @@ class Reader(models.Model):
     def __str__(self):
         return self.name
     
-
-
+class History(models.Model):
+    user = models.OneToOneField(User, on_delete = models.CASCADE)
+    books = models.CharField(max_length=160)
+    topics = models.CharField(max_length=66)
+    genres = models.CharField(max_length=38)
