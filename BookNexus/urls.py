@@ -20,6 +20,7 @@ from django.urls import path, include
 from book import views as BookViews
 from readinglists import views as ReadingListViews
 from newsletter import views as Newsletter
+from analytics import views as Analytics
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -49,6 +50,8 @@ urlpatterns = [
     path('deletebook/<int:reading_list_id>/<int:book_id>/', ReadingListViews.deletebook, name='deletebook'),
     path('editreadinglist/<int:reading_list_id>', ReadingListViews.updatereadinglist, name='updatereadinglist'),
     path('send_email_to_readers/', Newsletter.send_email_to_readers, name='send_email_to_readers'),
+    path('top_books/', Analytics.top_books, name='top_books')
+
     
 ]
 
