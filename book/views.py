@@ -7,8 +7,8 @@ import openai
 from django.contrib.auth.decorators import login_required
 
 from dotenv import load_dotenv
-_ = load_dotenv('openAI.env')
-api_key  = os.environ['openAI_api_key']
+_ = load_dotenv('keys.env')
+openai.api_key  = os.environ['openAI_api_key']
 
 # Create your views here.
 def index(request):
@@ -19,85 +19,56 @@ def recomendations(request):
     books = Book.objects.all()
     return render(request, 'recomendations.html', {'books': books})
 
+
 def response(request):
+
     if request.method == 'POST':
-        print("Valor de la clave API:", api_key)
 
         detalles = request.POST.get('detalles')
-
-        # Obtén los datos del formulario
         libro1 = request.POST.get('libro1')
         libro2 = request.POST.get('libro2')
         libro3 = request.POST.get('libro3')
-        
-        # Obtén los temas seleccionados
+
         temas = []
-        if 'tema1' in request.POST:
-            temas.append(request.POST['tema1'])
-        if 'tema2' in request.POST:
-            temas.append(request.POST['tema2'])
-        if 'tema3' in request.POST:
-            temas.append(request.POST['tema3'])
-        if 'tema4' in request.POST:
-            temas.append(request.POST['tema4'])
-        if 'tema5' in request.POST:
-            temas.append(request.POST['tema5'])
-        if 'tema6' in request.POST:
-            temas.append(request.POST['tema6'])
-        
-        # Obtén los tipos de libro seleccionados
-        tipos_libro = []
-        if 'tipo1' in request.POST:
-            tipos_libro.append(request.POST['tipo1'])
-        if 'tipo2' in request.POST:
-            tipos_libro.append(request.POST['tipo2'])
-        if 'tipo3' in request.POST:
-            tipos_libro.append(request.POST['tipo3'])
-        if 'tipo4' in request.POST:
-            tipos_libro.append(request.POST['tipo4'])
-        
-        # Obtén la longitud seleccionada
-        longitud = None
-        if 'longitud' in request.POST:
-            longitud = request.POST.get('longitud')
-        # elif 'longitud2' in request.POST:
-            # longitud = 'medio'
-        # elif 'longitud3' in request.POST:
-            # longitud = 'largo'
+        for tema in ['tema1', 'tema2', 'tema3', 'tema4', 'tema5', 'tema6']:
+            if tema in request.POST: temas.append(request.POST[tema])
 
-        # Crea un prompt basado en las selecciones del usuario
-        prompt = f"Actua como un recomendador de libros y recomiendame libros que sean de {', '.join(temas)} y del tipo {', '.join(tipos_libro)} con una longitud aproximada de {longitud} paginas, ademas que sean similares a '{libro1}', '{libro2}' y '{libro3}', ademas el usuario que pidio estas recomendaciones dejo detalles adicionales para la busqueda: '{detalles}'. dime unicamente los nombres de los libros y su autor, todo en una sola linea, el nombre del libro y el autor separados por un guion y entre libro y libro separado por punto y coma"
-        print(prompt)
-        # Llama a la API de ChatGPT para obtener recomendaciones
+        genero = []
+        for tipo in ['tipo1', 'tipo2', 'tipo3', 'tipo4']:
+            if tipo in request.POST: genero.append(request.POST[tipo])
+        
+        longitud = ''
+        if 'longitud' in request.POST: longitud = request.POST.get('longitud')
+
+        prompt = f"Actua como un recomendador de libros y recomiendame libros que sean de {', '.join(temas)} y del tipo {', '.join(genero)} con una longitud aproximada de {longitud} paginas, ademas que sean similares a '{libro1}', '{libro2}' y '{libro3}'. El usuario que pidio estas recomendaciones dejó detalles adicionales para la busqueda: '{detalles}'. dime únicamente los nombres de los libros y su autor, todo en una sola linea, el nombre del libro y el autor separados por un guion y entre libro y libro separado por punto y coma"
+        
         try:
-            response = openai.Completion.create(
-                engine="text-davinci-002",  # Puedes ajustar el motor según tus necesidades
-                prompt=prompt,
-                max_tokens=100, # Ajusta la cantidad de tokens según tu necesidad
-                api_key=api_key
+
+            system_role = 'Eres un bibliotecario, habilidoso dando recomendaciones según lo que te pidan los usuarios. A los usuarios les respondes ÚNICA Y EXCLUSIVAMENTE los nombres de los libros y su autor, todo en una sola linea. El nombre del libro y el autor separados por un guion y entre libro y libro separado por punto y coma. Por favor no respondas ni des mensaje adicional a lo que se te está pidiendo.'
+            user_role = f"Recomiéndame 10 libros o más sobre {', '.join(temas)} y cuyos géneros estén relacionados con {', '.join(genero)}. Me gustan los libros de {longitud} páginas y que están relacionados con {detalles}. Algunos libros que me gustan son '{libro1}', '{libro2}' y '{libro3}'."
+
+            completion = openai.ChatCompletion.create(
+                model = "gpt-3.5-turbo",
+                messages = [
+                    {"role": "system", "content": system_role},
+                    {"role": "user", "content": user_role}
+                ],
+                max_tokens = 900
             )
-            recomendaciones = response.choices[0].text.strip()
 
-            # Divide las recomendaciones por punto y coma para obtener los nombres de los libros
-            libros_recomendados = recomendaciones.split(';')
-            print(libros_recomendados)
-            # Inicializa una lista para almacenar la información detallada de los libros
+            libros_recomendados = completion.choices[0].message['content'].replace('"', '').split(';')
+            for i in libros_recomendados: print(i)
+
             info_libros = []
-
-            # Búsqueda de información detallada para cada libro recomendado
             for libro_recomendado in libros_recomendados:
-                libro_info = buscar_libros(libro_recomendado.strip(), max_resultados=1)
-                if libro_info:
-                    info_libros.append(libro_info)
+                libro_info = buscar_libros(libro_recomendado.strip())
+                if libro_info: info_libros.append(libro_info)
 
         except Exception as e:
             # Maneja cualquier error que pueda ocurrir al llamar a la API
             return JsonResponse({'error': str(e)})
         
         # Devuelve la recomendación al usuario
-        return render(request, 'response.html', {'respuesta': recomendaciones, 'libros': info_libros})
+        return render(request, 'response.html', {'respuesta': '', 'libros': info_libros})
     
-    else:
-        # Si la solicitud no es POST, puedes manejarla de acuerdo a tus necesidades
-        # Por ejemplo, mostrar el formulario vacío
-        return render(request, 'index.html')
+    else: return render(request, 'index.html')
