@@ -1,14 +1,14 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from .models import Book
-import os
-import openai
-from .models import Book
-from .models import Reader
+from django.http import JsonResponse
 from .methods import *
+import os
+from .models import Book
+import openai
 from django.contrib.auth.decorators import login_required
 
-api_key = "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"
+from dotenv import load_dotenv
+_ = load_dotenv('openAI.env')
+api_key  = os.environ['openAI_api_key']
 
 # Create your views here.
 def index(request):
@@ -73,7 +73,7 @@ def response(request):
             response = openai.Completion.create(
                 engine="text-davinci-002",  # Puedes ajustar el motor según tus necesidades
                 prompt=prompt,
-                max_tokens=65, # Ajusta la cantidad de tokens según tu necesidad
+                max_tokens=100, # Ajusta la cantidad de tokens según tu necesidad
                 api_key=api_key
             )
             recomendaciones = response.choices[0].text.strip()
