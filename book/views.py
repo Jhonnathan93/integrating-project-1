@@ -8,7 +8,7 @@ from .models import Reader
 from .methods import *
 from django.contrib.auth.decorators import login_required
 
-api_key = "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"
+api_key = ""
 
 # Create your views here.
 def index(request):

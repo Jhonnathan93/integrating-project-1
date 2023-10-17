@@ -8,6 +8,8 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from .forms import UserCreateForm, loginForm
 from .models import userInformation
+from readinglists.models import ReadingList
+
 
 
 # Create your views here.
@@ -16,7 +18,7 @@ def home(request):
 
 
 def signup_view(request):
-
+    
     if request.method == 'POST':
 
         if request.POST['password1'] == request.POST['password2']:
@@ -25,7 +27,9 @@ def signup_view(request):
                 user = User.objects.create_user(request.POST['username'], password = request.POST['password1'], email = request.POST['email'])
                 user.save()
 
-                profile = userInformation(user = user, birthdate = request.POST['birthdate'], preferences = request.POST['preferences'], profile_picture = request.POST['profile_picture'], points = 0)
+                profile_picture = request.FILES.get('profile_picture')
+                
+                profile = userInformation(user = user, birthdate = request.POST['birthdate'], preferences = request.POST['preferences'], profile_picture = profile_picture, points = 0)
                 profile.save()
 
                 login(request, user)
@@ -48,6 +52,7 @@ def profile(request):
     preferences = user_info.preferences
     profile_picture = user_info.profile_picture
     points = user_info.points
+    readinglists = ReadingList.objects.filter(user=request.user).order_by('-date_created')
 
     # Luego, puedes pasar estos datos a tu plantilla.
     return render(request, 'profile.html', {
@@ -55,9 +60,26 @@ def profile(request):
         'preferences': preferences,
         'profile_picture': profile_picture,
         'points': points,
+        'readinglists': readinglists,
     })
 
 
+def editprofile(request):
+    user_info = userInformation.objects.get(user=request.user)
+    
+    if request.method == 'GET':
+        
+        form= UserCreateForm(instance=user_info)
+        return render(request, 'editprofile.html', {'form': form})
+    else:
+        try:
+            form = UserCreateForm(request.POST, request.FILES, instance=user_info)
+            form.save()
+            
+            return redirect('profile', user_info)
+        except ValueError:
+            return render(request, 'editprofile.html',{'user_info': user_info,'form':form,'error':'Bad data in form'})
+        
 
 def login_view(request):
     if request.method == 'GET':
