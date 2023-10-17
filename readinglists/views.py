@@ -70,14 +70,19 @@ def detail(request, reading_list_id):
                     title_form = book_form.cleaned_data['title']
                     author_form = book_form.cleaned_data['author']
                     
-                    title, author,cover_url, synopsis, average_rating = fetch_book_info(title_form, author_form)
+                    title, author,cover_url, synopsis, average_rating, year, categories, isbn, link = fetch_book_info(title_form, author_form)
                     
                     if cover_url and synopsis:
                         
-                        new_book = Book.objects.create(title=title, author=author, cover=cover_url)
+                        new_book = Book.objects.create(title=title, author=author, cover=cover_url, isbn=isbn)
                         
                         reading_list.books.add(new_book)
                         new_book.description = synopsis
+                        dateparts = year.split('-')
+                        year = int(dateparts[0])
+                        new_book.year_publication = year
+                        new_book.topics = categories
+                        new_book.buy_link = link
                         new_book.save()
                         print("holaaa")
                         print(new_book.cover)
@@ -87,7 +92,7 @@ def detail(request, reading_list_id):
                         return render(request, 'detail.html', {'reading_list': reading_list, 'book_form': book_form, "books": books, 'error_message': error_message1})
                     
                 else:
-                    
+                    error_message = "Exediste la cantidad de libros permitida en una reading list"
                     return render(request, 'detail.html', {'reading_list': reading_list, 'book_form': book_form, "books": books, 'error_message': error_message})
                     
             else:
@@ -147,12 +152,24 @@ def fetch_book_info(book_title, book_author):
                         cover_url = volume_info['imageLinks']['thumbnail'] if 'imageLinks' in volume_info and 'thumbnail' in volume_info['imageLinks'] else None
                         average_rating = volume_info.get('averageRating', 0.0)
                         synopsis = volume_info.get('description', '')
+
+                        publishing_year = volume_info.get('publishedDate', 'Publication Year Not Found')
+                        categories = ', '.join(volume_info.get('categories', ['Category Not Found']))
+                        isbn = volume_info.get('industryIdentifiers', [{'type': 'ISBN_13', 'identifier': 'ISBN no disponible'}])[0]['identifier']
+                        # isbn = ', '.join(volume_info.get('industryIdentifiers', ['ISBN Not Found']))
+                        purchase_link = volume_info.get('infoLink', 'Purchase Link Not Found')
+
                         results.append({
                             'title': official_title,
                             'author': official_author,
                             'cover_url': cover_url,
                             'rating': average_rating,
-                            'synopsis': synopsis
+                            'synopsis': synopsis,
+
+                            'publishing_year': publishing_year,
+                            'categories': categories,
+                            'isbn': isbn,
+                            'purchase_link': purchase_link
                         })
 
                     
@@ -163,8 +180,7 @@ def fetch_book_info(book_title, book_author):
                             break
                     
                     if most_relevant_book is not None:
-                        
-                        return most_relevant_book["title"], most_relevant_book["author"], most_relevant_book["cover_url"], most_relevant_book["synopsis"], most_relevant_book["rating"]
+                        return most_relevant_book["title"], most_relevant_book["author"], most_relevant_book["cover_url"], most_relevant_book["synopsis"], most_relevant_book["rating"], most_relevant_book["publishing_year"], most_relevant_book["categories"], most_relevant_book["isbn"], most_relevant_book["purchase_link"]
                     else:
                         
                         order_by = 'newest'

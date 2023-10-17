@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'readinglists',
     'captcha',
     'newsletter',
+    'analytics',
     'reports',
 ]
 
