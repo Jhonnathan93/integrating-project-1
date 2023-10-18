@@ -37,7 +37,7 @@ def response(request):
         if 'longitud' in request.POST: longitud = request.POST.get('longitud')
         
         _ = load_dotenv('keys.env')
-        openai.api_key  = os.environ['openAI_api_key']
+        openai.api_key  = os.environ['openAI_api_key    ']
 
         try:
             completion = openai.ChatCompletion.create(
