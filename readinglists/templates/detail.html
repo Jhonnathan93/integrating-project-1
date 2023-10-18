@@ -38,13 +38,13 @@
                             Fecha de creación: {{ reading_list.date_created }}
                         </p>
                         {% if user.is_authenticated and reading_list.user == user %}
-                        <a class="btn btn-primary" href="{% url 'updatereadinglist' reading_list.id %}">
+                        <a class="btn btn-primary" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;" href="{% url 'updatereadinglist' reading_list.id %}">
                             Editar
                         </a>
-                        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#shareModal">
+                        <button class="btn btn-info" style="background-color: #274690; color: #fff; border: solid #274690;" data-bs-toggle="modal" data-bs-target="#shareModal">
                             Compartir
                         </button>
-                        <a class="btn btn-danger" href="{% url 'deletelist' reading_list.id %}">
+                        <a class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;" href="{% url 'deletelist' reading_list.id %}">
                             Eliminar
                         </a>
                         {% endif %}
@@ -71,7 +71,7 @@
                 <label for="{{ book_form.author.id_for_label }}">Autor:</label>
                 {{ book_form.author }}
             </div>
-            <button type="submit" class="btn btn-primary">Agregar</button>
+            <button type="submit" class="btn btn-primary" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;">Agregar</button>
         </form>
         {% endif %}
 
@@ -109,7 +109,7 @@
                             <br>
                             <br>
                             {% if user.is_authenticated and reading_list.user == user %}
-                            <a class="btn btn-danger" href="{% url 'deletebook' reading_list.id book.id %}">
+                            <a class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;" href="{% url 'deletebook' reading_list.id book.id %}">
                                 Eliminar
                             </a>
                             {% endif %}

@@ -2,7 +2,7 @@
 {% block content %}
 
 
-    <div class="container mt-5  ">
+    <div class="container mt-5">
         {% if messages %}
             {% for message in messages %}
             <div class="alert alert-success">
@@ -12,7 +12,7 @@
         {% endif %}
         <div class="text-center">
             {% if user.readinglist_set.count <= 2 %}
-                <a href="{% url 'createlist' %}" class="btn btn-primary">Crear una Reading List</a>
+                <a href="{% url 'createlist' %}" class="btn btn-primary" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;">Crear una Reading List</a>
             {% endif %}
         </div>
         <br>
@@ -36,7 +36,7 @@
                             Fecha de creación: {{ readinglist.date_created }}
                         </small></p>
                 {% if user.is_authenticated and user == readinglist.user %}
-                <a class="btn btn-danger" href="{% url 'deletelist' readinglist.id %}">
+                <a class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;" href="{% url 'deletelist' readinglist.id %}">
                     Eliminar
                 </a>
                 {% endif %}
