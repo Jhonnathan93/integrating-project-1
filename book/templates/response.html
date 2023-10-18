@@ -2,6 +2,11 @@
 {% block content %}
 <body>
     <main>
+        <br>
+        <br>
+        <h1>Estas son las recomendaciones para ti:</h1>
+        <br>
+        <br>
         <div class="container">
             <div class="row">
         
@@ -11,19 +16,73 @@
                             <div class="card mb-3" style="max-width: 540px;">
                                 <div class="row g-0">
                                     <div class="col-md-4">
-                                        <img src="{{ elemento.imagen_enlace }}" class="img-fluid rounded-start" alt="Portada del libro">
+                                        <img src="{{ elemento.imagen_enlace }}" class="img-fluid rounded-start" style="width: 200px; height: 300px;" alt="Portada del libro">
                                     </div>
                                     <div class="col-md-8">
                                         <div class="card-body">
                                             <h5 class="card-title">{{ elemento.titulo }}</h5>
-                                            <p class="card-text">{{ elemento.descripcion }}</p>
                                             <p class="card-text"><small class="text-body-secondary">Autor(es):
                                                 {% for autor in elemento.autores %}
                                                     {{ autor }}
                                                     {% if not forloop.last %}, {% endif %}
                                                 {% endfor %}
                                             </small></p>
+                                            
+                                            <p class="card-text" id="elemento-descripcion">{{ elemento.descripcion|slice:":400" }}{% if elemento.descripcion|length > 400 %}...</p>
+                                            {% comment %} <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#descriptionModal{{ libro.id }}">
+                                                Leer más
+                                            </button> {% endcomment %}
+                                            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#descriptionModal{{ forloop.parentloop.counter }}_{{ forloop.counter }}">
+                                                Leer más
+                                            </button>
+                                            
+                                            {% endif %}
+                                            <br>
+                                            <br>
                                             <button class="btn btn-primary" onclick="window.location.href='{{ elemento.buy_link }}'">Comprar</button>
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                  Más opciones
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                  <li><a class="dropdown-item" href="#">Action</a></li>
+                                                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                                                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                </ul>
+                                              </div>
+                                            
+                                            <div class="modal fade" id="descriptionModal{{ forloop.parentloop.counter }}_{{ forloop.counter }}" tabindex="-1" aria-labelledby="descriptionModalLabel{{ forloop.parentloop.counter }}_{{ forloop.counter }}" aria-hidden="true">
+
+                                                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title" id="descriptionModalLabel{{ libro.id }}">Descripción completa</h4>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        
+                                                        <div class="modal-body ">
+                                                            {% if elemento.imagen_enlace %}
+                                                            <img class="card-img-top mx-auto d-block img-fluid rounded-start" style="width: 200px; height: 300px;" src="{{ elemento.imagen_enlace }}" alt="">
+                                                            {% endif %}
+                                                            <br>
+                                                            <h5 class="text-center">{{ elemento.titulo }}</h5>
+                                                            
+                                                            <h5 class="text-center"><em>
+                                                                {% for autor in elemento.autores %}
+                                                                    {{ autor }}
+                                                                    {% if not forloop.last %}, {% endif %}
+                                                                {% endfor %}
+                                                            </em></h5>
+                                                            <p class="text-justify">{{ elemento.descripcion }}</p>
+                    
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
                                             <script>
                                                 function comprarLibro(link) {
                                                     // Imprime el enlace en la consola

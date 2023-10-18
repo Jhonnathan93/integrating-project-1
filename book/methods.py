@@ -10,7 +10,7 @@ def save_history(request, _books, _topics, _genres):
 
 def buscar_libros(consulta):
 
-    url = f"https://www.googleapis.com/books/v1/volumes?q={consulta}&printType=books&maxResults={1}"
+    url = f"https://www.googleapis.com/books/v1/volumes?q={consulta}&printType=books&langRestrict=es&maxResults={1}"
 
     try:
         response = requests.get(url)
