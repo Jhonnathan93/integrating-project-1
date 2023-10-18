@@ -31,8 +31,18 @@ def signup_view(request):
                 
                 profile = userInformation(user = user, birthdate = request.POST['birthdate'], preferences = request.POST['preferences'], profile_picture = profile_picture, points = 0)
                 profile.save()
+                
+                default_list = ReadingList(
+                title="Leer más tarde",
+                description="Tu lista predeterminada",
+                user=user,
+                is_default=True
+                )
+                default_list.save()
 
                 login(request, user)
+                
+                
                 return redirect('home')
             
             except IntegrityError:

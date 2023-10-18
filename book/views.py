@@ -37,13 +37,13 @@ def response(request):
         if 'longitud' in request.POST: longitud = request.POST.get('longitud')
         
         _ = load_dotenv('keys.env')
-        openai.api_key  = os.environ['openAI_api_key    ']
+        openai.api_key  = os.environ['openAI_api_key']
 
         try:
             completion = openai.ChatCompletion.create(
                 model = "gpt-3.5-turbo",
                 messages = [
-                    {"role": "system", "content":  'Eres un bibliotecario, habilidoso dando recomendaciones según lo que te pidan los usuarios. A los usuarios les respondes ÚNICA Y EXCLUSIVAMENTE los nombres de los libros en español y su autor, todo en una sola linea. El nombre del libro y el autor separados por un guion y entre libro y libro separado por punto y coma. Por favor no respondas ni des mensaje adicional a lo que se te está pidiendo.'},
+                    {"role": "system", "content":  'Eres un bibliotecario, habilidoso dando recomendaciones según lo que te pidan los usuarios, y los libros que te piden los usuarios no los vas a repetir en tus recomendaciones. A los usuarios les respondes ÚNICA Y EXCLUSIVAMENTE los nombres de los libros en español y su autor, todo en una sola linea. El nombre del libro y el autor separados por un guion y entre libro y libro separado por punto y coma. Por favor no respondas ni des mensaje adicional a lo que se te está pidiendo.'},
                     {"role": "user", "content": f"Recomiéndame 10 libros o más sobre {', '.join(temas)} y cuyos géneros estén relacionados con {', '.join(generos)}. Me gustan los libros de {longitud} páginas y que están relacionados con {detalles}. Algunos libros que me gustan son {', '.join(libros)}"}
                 ],
                 max_tokens = 900

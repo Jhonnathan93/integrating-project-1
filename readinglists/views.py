@@ -22,6 +22,8 @@ def overview(request):
     readinglists = ReadingList.objects.filter(user=request.user).order_by('-date_created')
     return render(request, 'overview.html', {"readinglists": readinglists})
 
+
+
 @login_required
 def createlist(request):
 
@@ -63,6 +65,8 @@ def detail(request, reading_list_id):
         if request.method == 'POST':
             book_form = AddBookForm(request.POST)
             if book_form.is_valid():
+                
+                
                 
                 if reading_list.books.count() <= 14:
                     
@@ -208,6 +212,9 @@ def updatereadinglist(request, reading_list_id):
     else:
         try:
             form = ReadingListForm(request.POST, request.FILES, instance=reading_list)
+            new_cover = request.FILES.get('cover')
+            if new_cover:
+                reading_list.cover = new_cover
             form.save()
             return redirect('detail', reading_list.id)
         except ValueError:
