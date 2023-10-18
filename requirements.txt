@@ -3,6 +3,5 @@ pip install openai
 pip install requests
 pip install django-recaptcha
 pip install bootstrap
-git clone https://github.com/Jhonnathan93/integrating-project-1.git
 python manage.py migrate
 python manage.py runserver
