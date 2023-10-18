@@ -1,4 +1,11 @@
 import requests
+from .models import History
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def save_history(request, _books, _topics, _genres):
+    user_history = History(user = request.user, books = _books, topics = _topics, genres = _genres)
+    user_history.save()
 
 
 def buscar_libros(consulta):

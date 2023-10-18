@@ -1,11 +1,9 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from .models import Book
 from .methods import *
-import os
-from .models import Book, History
-import openai
-from django.contrib.auth.decorators import login_required
 from dotenv import load_dotenv
+import os, openai
 
 
 def index(request):
@@ -22,9 +20,10 @@ def response(request):
     if request.method == 'POST':
 
         detalles = request.POST.get('detalles')
-        libro1 = request.POST.get('libro1')
-        libro2 = request.POST.get('libro2')
-        libro3 = request.POST.get('libro3')
+
+        libros = []
+        for libro in ['libro1', 'libro2', 'libro3']:
+            if libro in request.POST: libros.append(request.POST[libro])
 
         temas = []
         for tema in ['Fantasía', 'Romance', 'Historia', 'Suspenso', 'Autoayuda', 'Ciencia Ficción']:
@@ -33,20 +32,19 @@ def response(request):
         generos = []
         for tipo in ['Biografía', 'Novela', 'Científico', 'Poesía']:
             if tipo in request.POST: generos.append(request.POST[tipo])
-
-
         
         longitud = ''
         if 'longitud' in request.POST: longitud = request.POST.get('longitud')
         
+        _ = load_dotenv('keys.env')
+        openai.api_key  = os.environ['openAI_api_key']
+
         try:
-            _ = load_dotenv('keys.env')
-            openai.api_key  = os.environ['openAI_api_key']
             completion = openai.ChatCompletion.create(
                 model = "gpt-3.5-turbo",
                 messages = [
                     {"role": "system", "content":  'Eres un bibliotecario, habilidoso dando recomendaciones según lo que te pidan los usuarios. A los usuarios les respondes ÚNICA Y EXCLUSIVAMENTE los nombres de los libros y su autor, todo en una sola linea. El nombre del libro y el autor separados por un guion y entre libro y libro separado por punto y coma. Por favor no respondas ni des mensaje adicional a lo que se te está pidiendo.'},
-                    {"role": "user", "content": f"Recomiéndame 10 libros o más sobre {', '.join(temas)} y cuyos géneros estén relacionados con {', '.join(generos)}. Me gustan los libros de {longitud} páginas y que están relacionados con {detalles}. Algunos libros que me gustan son '{libro1}', '{libro2}' y '{libro3}'."}
+                    {"role": "user", "content": f"Recomiéndame 10 libros o más sobre {', '.join(temas)} y cuyos géneros estén relacionados con {', '.join(generos)}. Me gustan los libros de {longitud} páginas y que están relacionados con {detalles}. Algunos libros que me gustan son {', '.join(libros)}"}
                 ],
                 max_tokens = 900
             )
@@ -59,10 +57,10 @@ def response(request):
 
         except Exception as e: return JsonResponse({'error': str(e)})
 
-        user_history = History(user = request.user, books = f'{libro1}, {libro2}, {libro3}', topics = ', '.join(temas), genres = ', '.join(generos))
-        print(user_history)
-        user_history.save()
-
+        print("antes de save_history")
+        save_history(request, _books=', '.join(libros), _topics=', '.join(temas), _genres=', '.join(generos))
+        print("después de save_history")
+        
         return render(request, 'response.html', {'respuesta': '', 'libros': info_libros})
     
     else: return render(request, 'index.html')

@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+TIME_ZONE = 'America/Bogota'
     
 class Book(models.Model):
     isbn = models.CharField(max_length=13, default="N/A")
@@ -29,7 +31,9 @@ class Reader(models.Model):
         return self.name
     
 class History(models.Model):
-    user = models.OneToOneField(User, on_delete = models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     books = models.CharField(max_length=160)
     topics = models.CharField(max_length=66)
     genres = models.CharField(max_length=38)
+    date = models.DateTimeField(default=timezone.now)
+
