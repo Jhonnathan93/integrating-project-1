@@ -21,14 +21,14 @@
             </div>
             {% endfor %}
         {% endif %}
-        <h1>Detalles de la Reading List</h1>
+        <h2 class="text-center">Detalles de la Reading List</h2>
         <div class="card mb-3">
 
             <div class="row g-0">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <img src="{{ reading_list.cover.url }}" class="img-fluid custom-image" alt="{{ reading_list.title }} Cover" >
                 </div>
-                <div class="col-md-9">
+                <div class="col-md-8">
                     <div class="card-body">
                         <h5 class="card-title">{{ reading_list.title }}</h5>
                         <p class="card-text">{{ reading_list.description }}</p>
@@ -36,6 +36,8 @@
                             Creada por: {{ user.username }}
                             <br>
                             Fecha de creación: {{ reading_list.date_created }}
+                            <br>
+                            Libros en esta lista: {{reading_list.books.count}}
                         </p>
                         {% if user.is_authenticated and reading_list.user == user %}
                         <a class="btn btn-primary" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;" href="{% url 'updatereadinglist' reading_list.id %}">
@@ -103,7 +105,7 @@
                         <h3 class="card-title">{{ book.title }}</h3>
                         <p class="card-text">De {{ book.author }}</p>
                         <p class="card-text" id="book-description">{{ book.description|slice:":400" }}{% if book.description|length > 400 %}...</p>
-                            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#descriptionModal{{ book.id }}">
+                            <button type="button" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#descriptionModal{{ book.id }}">
                                 Leer más
                             </button>
                             {% endif %}

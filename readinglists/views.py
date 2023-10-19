@@ -12,33 +12,32 @@ from django.shortcuts import redirect
 from django.conf import settings
 import requests
 from urllib.parse import quote
+from dotenv import load_dotenv
+import os
+from django.http import JsonResponse
 
-
-
-api_key = ""
-
+_ = load_dotenv('keys.env')
+api_key  = os.environ['googlebooks_api_key']
 
 def overview(request):
     readinglists = ReadingList.objects.filter(user=request.user).order_by('-date_created')
     return render(request, 'overview.html', {"readinglists": readinglists})
 
-
-
 @login_required
 def createlist(request):
 
+    existing_reading_lists = ReadingList.objects.filter(user=request.user)
     if request.method == 'POST':
-        form = ReadingListForm(request.POST, request.FILES)
-        books = []
-        print(request.POST)
+        
+        if existing_reading_lists.count() >= 4:
+            error_message3 = "Excediste la cantidad permitida de reading lists"
+            return render(request, 'overview.html', {"readinglists": readinglists, 'error_message': error_message3})
+        else:
+            form = ReadingListForm(request.POST, request.FILES)
+            books = []
  
         if form.is_valid():
-            existing_reading_lists = ReadingList.objects.filter(user=request.user)
             readinglists = ReadingList.objects.filter(user=request.user).order_by('-date_created')
-
-            if existing_reading_lists.count() >= 3:
-                error_message3 = "Excediste la cantidad permitida de reading lists"
-                return render(request, 'overview.html', {"readinglists": readinglists, 'error_message': error_message3})
 
             reading_list = form.save(commit=False)
             reading_list.user = request.user
@@ -57,7 +56,7 @@ def createlist(request):
     return render(request, 'createlist.html', {'form': form})
 
 def detail(request, reading_list_id):
-    print("Inside detail view...")
+    
     try:
         reading_list = get_object_or_404(ReadingList, id=reading_list_id)
         books = reading_list.books.all()
@@ -66,11 +65,8 @@ def detail(request, reading_list_id):
             book_form = AddBookForm(request.POST)
             if book_form.is_valid():
                 
-                
-                
                 if reading_list.books.count() <= 14:
                     
-                
                     title_form = book_form.cleaned_data['title']
                     author_form = book_form.cleaned_data['author']
                     
@@ -100,20 +96,15 @@ def detail(request, reading_list_id):
                     return render(request, 'detail.html', {'reading_list': reading_list, 'book_form': book_form, "books": books, 'error_message': error_message})
                     
             else:
-                
                 return render(request, 'detail.html', {'reading_list': reading_list, 'book_form': book_form, "books": books})
         else:
-            
             book_form = AddBookForm()
 
         books = reading_list.books.all()
 
-        print(f"Reading List ID: {reading_list_id}")
-        print(f"Number of Books: {books.count()}")
-
         if books:
             first_book = books[0]
-            print("books[0]:")
+
             print(books[0].cover)
         
         return render(request, 'detail.html', {'reading_list': reading_list, 'book_form': book_form, "books": books})
@@ -129,8 +120,6 @@ def fetch_book_info(book_title, book_author):
 
     encoded_title = quote(book_title)
     encoded_author = quote(book_author)
-    
-   
     order_by = 'relevance'
 
     while True:
@@ -138,9 +127,7 @@ def fetch_book_info(book_title, book_author):
         url = f'https://www.googleapis.com/books/v1/volumes?q=intitle:{encoded_title}+inauthor:{encoded_author}&orderBy={order_by}&printType=books&langRestrict=es&key={api_key}'
 
         response = requests.get(url)
-        
-        print("Fetching book info...")
-        print(f"Response Status Code: {response.status_code}")
+
 
         try:
             if response.status_code == 200:
@@ -155,7 +142,7 @@ def fetch_book_info(book_title, book_author):
                         official_author = ', '.join(volume_info.get('authors', ['Author Not Found']))
                         cover_url = volume_info['imageLinks']['thumbnail'] if 'imageLinks' in volume_info and 'thumbnail' in volume_info['imageLinks'] else None
                         average_rating = volume_info.get('averageRating', 0.0)
-                        synopsis = volume_info.get('description', '')
+                        synopsis = volume_info.get('description', 'Sin descripción disponible')
 
                         publishing_year = volume_info.get('publishedDate', 'Publication Year Not Found')
                         categories = ', '.join(volume_info.get('categories', ['Category Not Found']))
@@ -187,7 +174,6 @@ def fetch_book_info(book_title, book_author):
                         
                         return most_relevant_book["title"], most_relevant_book["author"], most_relevant_book["cover_url"], most_relevant_book["synopsis"], most_relevant_book["rating"], most_relevant_book["publishing_year"], most_relevant_book["categories"], most_relevant_book["isbn"], most_relevant_book["purchase_link"]
                     else:
-                        
                         order_by = 'newest'
                         
                 else:
@@ -220,16 +206,10 @@ def updatereadinglist(request, reading_list_id):
         except ValueError:
             return render(request, 'updatereadinglist.html',{'reading_list': reading_list,'form':form,'error':'Bad data in form'})
         
-
-
-
 @login_required
 def deletelist(request, reading_list_id):
     reading_list = get_object_or_404(ReadingList, pk=reading_list_id)
-
     reading_list.delete()
-    
-    
     messages.success(request, "Reading list eliminada exitosamente.")
     return redirect('overview') 
 
@@ -238,7 +218,6 @@ def deletelist(request, reading_list_id):
 def deletebook(request, book_id, reading_list_id):
     book = get_object_or_404(Book, pk=book_id) 
     reading_list = get_object_or_404(ReadingList, id=reading_list_id)
-    
     book.delete()
     messages.success(request, "Libro eliminado exitosamente.")
     return redirect('detail', reading_list.id)  

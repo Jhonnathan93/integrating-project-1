@@ -1,7 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<br>
+<br>
+<style>
+    /* Style the specific link with the custom-link class */
+    .custom-link {
+        color: #39A0ED; /* Your link color */
+        text-decoration: none; /* Remove the underline */
+    }
 
+    /* Change link color on hover for user interaction */
+    .custom-link:hover {
+        color: #274690; /* A different color on hover */
+    }
+</style>
     <div class="container mt-5">
         {% if messages %}
             {% for message in messages %}
@@ -10,18 +23,14 @@
             </div>
             {% endfor %}
         {% endif %}
-        <div class="text-center">
-            {% if user.readinglist_set.count <= 2 %}
-                <a href="{% url 'createlist' %}" class="btn btn-primary" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;">Crear una Reading List</a>
-            {% endif %}
-        </div>
+        <h2 class="text-center">Tus Reading Lists </h2>
         <br>
         {% if error_message %}
         <div class="alert alert-danger">
             {{ error_message }}
         </div>
         {% endif %}
-
+        
         
         {% for readinglist in readinglists %}
         <div class="card mb-3 mx-auto"> 
@@ -32,22 +41,29 @@
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
-                        <h5 class="card-title"><a href="{% url 'detail' readinglist.id %}">{{ readinglist.title }}</a></h5>
+                        <h4 class="card-title"><a href="{% url 'detail' readinglist.id %}" class="custom-link">{{ readinglist.title }}</a></h4>
                         <p class="card-text"><small class="text-muted">
                             Fecha de creación: {{ readinglist.date_created }}
+                            <br>
+                            Libros en esta lista: {{readinglist.books.count}}
                         </small></p>
-                {% if user.is_authenticated and user == readinglist.user %}
-                <a class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;" href="{% url 'deletelist' readinglist.id %}">
+                        {% if user.is_authenticated and user == readinglist.user and readinglist.title != "Leer más tarde" %}
+                        <a class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;" href="{% url 'deletelist' readinglist.id %}">
                     Eliminar
                 </a>
                 {% endif %}
-                    </div>
-                </div>
             </div>
         </div>
-        {% endfor %}
-
     </div>
+</div>
+{% endfor %}
+<div class="text-center">
+    {% if user.readinglist_set.count <= 2 %}
+        <a href="{% url 'createlist' %}" class="btn btn-primary" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;">Crear una Reading List</a>
+    {% endif %}
+</div>
+
+</div>
 
 
 {% endblock content %}

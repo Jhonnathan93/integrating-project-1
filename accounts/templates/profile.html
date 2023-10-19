@@ -2,7 +2,22 @@
 {% block content %}
 
 <body>
-    <h1>Perfil</h1>
+    <style>
+        /* Style the specific link with the custom-link class */
+        .custom-link {
+            color: #39A0ED; /* Your link color */
+            text-decoration: none; /* Remove the underline */
+        }
+    
+        /* Change link color on hover for user interaction */
+        .custom-link:hover {
+            color: #274690; /* A different color on hover */
+        }
+    </style>
+    <br>
+    <br>
+    <br>
+    <h2 class="text-center">Tu Perfil</h2>
     <div class="row">
         <div class="col">
             <div class="container mt-3">
@@ -23,7 +38,7 @@
         </div>
     </div>
         <br>
-    <h2>Tus Reading Lists: </h2>
+    <h3>Tus Reading Lists: </h3>
     <div class="row">
         {% for readinglist in readinglists %}
         <div class="col-md-4">
@@ -33,9 +48,11 @@
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
-                        <h5 class="card-title"><a href="{% url 'detail' readinglist.id %}">{{ readinglist.title }}</a></h5>
+                        <h4 class="card-title"><a href="{% url 'detail' readinglist.id %}" class="custom-link">{{ readinglist.title }}</a></h4>
                         <p class="card-text"><small class="text-muted">
                             Fecha de creación: {{ readinglist.date_created }}
+                            <br>
+                            Libros en esta lista: {{readinglist.books.count}}
                         </small></p>
                         {% if user.is_authenticated and user == readinglist.user %}
                         <a class="btn btn-danger" href="{% url 'deletelist' readinglist.id %}">

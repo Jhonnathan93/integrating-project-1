@@ -62,5 +62,6 @@ def response(request):
         print("después de save_history")
         
         return render(request, 'response.html', {'respuesta': '', 'libros': info_libros})
-    
     else: return render(request, 'index.html')
+    
+    
