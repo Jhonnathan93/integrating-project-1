@@ -28,7 +28,7 @@
                                             
                                             <p class="card-text" id="elemento-descripcion">{{ elemento.descripcion|slice:":400" }}{% if elemento.descripcion|length > 400 %}...</p>
                                             
-                                            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#descriptionModal{{ forloop.parentloop.counter }}_{{ forloop.counter }}">
+                                            <button type="button" class="btn btn-info" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;" data-bs-toggle="modal" data-bs-target="#descriptionModal{{ forloop.parentloop.counter }}_{{ forloop.counter }}">
                                                 Leer más
                                             </button>
                                             
