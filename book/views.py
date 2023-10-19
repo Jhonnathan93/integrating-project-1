@@ -5,7 +5,6 @@ from .methods import *
 from dotenv import load_dotenv
 import os, openai
 
-
 def index(request):
     return render(request, 'index.html')
 
@@ -35,6 +34,8 @@ def response(request):
         
         longitud = ''
         if 'longitud' in request.POST: longitud = request.POST.get('longitud')
+
+        print('antes de asignar la api')
         
         _ = load_dotenv('keys.env')
         openai.api_key  = os.environ['openAI_api_key']
