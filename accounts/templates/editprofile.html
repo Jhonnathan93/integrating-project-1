@@ -17,19 +17,25 @@
                 
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <div class="mb-3">
-                            {% if form.preferences %}
-                            <label for="{{ form.preferences.id_for_label }}" class="form-label">Título</label>
-                            {{ form.preferences }}
-                            {% endif %}
-                        </div>
-                        <div class="mb-3">
-                            <label for="{{ form.birthdate.id_for_label }}" class="form-label">Título</label>
-                            {{ form.birthdate }}
-                        </div>
                        
+                    
+
+                    <div class="mb-3">
+                        <label for="{{ form.birthdate.id_for_label }}" class="form-label">Fecha de nacimiento</label>
+                        <br>
+                        {{ form.birthdate }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.preferences.id_for_label }}" class="form-label">Escribe lo que te interese en la lectura</label>
+                        <br>
                         
-                        
+                        {{ form.preferences }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.profile_picture.id_for_label }}" class="form-label">Foto de perfil</label>
+                        <br>
+                        {{ form.profile_picture }}
+                    </div>                  
                        
                         <button type="submit" class="btn btn-primary">
                             Aplicar cambios
