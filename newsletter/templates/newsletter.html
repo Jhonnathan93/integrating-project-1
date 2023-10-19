@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<br>
+<br>
+<div class="container mt-5">
+    <h1>Enviar Newsletter</h1>
+    <form method="post" action="{% url 'send_email_to_readers' %}">
+        {% csrf_token %}
+        <button class="btn btn-primary" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;" type="submit">Enviar Newsletter</button>
+    </form>
+</div>
+
+{% endblock content %}

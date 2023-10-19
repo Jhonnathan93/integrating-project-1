@@ -27,10 +27,8 @@
                                             </small></p>
                                             
                                             <p class="card-text" id="elemento-descripcion">{{ elemento.descripcion|slice:":400" }}{% if elemento.descripcion|length > 400 %}...</p>
-                                            {% comment %} <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#descriptionModal{{ libro.id }}">
-                                                Leer más
-                                            </button> {% endcomment %}
-                                            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#descriptionModal{{ forloop.parentloop.counter }}_{{ forloop.counter }}">
+                                            
+                                            <button type="button" class="btn btn-info" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;" data-bs-toggle="modal" data-bs-target="#descriptionModal{{ forloop.parentloop.counter }}_{{ forloop.counter }}">
                                                 Leer más
                                             </button>
                                             
@@ -38,16 +36,8 @@
                                             <br>
                                             <br>
                                             <button class="btn btn-primary" onclick="window.location.href='{{ elemento.buy_link }}'">Comprar</button>
-                                            <div class="dropdown">
-                                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                  Más opciones
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                  <li><a class="dropdown-item" href="#">Action</a></li>
-                                                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                                                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                                </ul>
-                                              </div>
+                                                                                
+                                                                                           
                                             
                                             <div class="modal fade" id="descriptionModal{{ forloop.parentloop.counter }}_{{ forloop.counter }}" tabindex="-1" aria-labelledby="descriptionModalLabel{{ forloop.parentloop.counter }}_{{ forloop.counter }}" aria-hidden="true">
 
@@ -81,31 +71,39 @@
                                                 </div>
                                             </div>
                                             
-                                            <script>
-                                                function comprarLibro(link) {
-                                                    // Imprime el enlace en la consola
-                                                    console.log('Enlace: ' + link);
-                                                    
-                                                    // Redirige al usuario al sitio web
-                                                    window.location.href = link;
-                                                }
-                                            </script>
+                                            
+                                            
+                                            
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     {% endfor %}
-                {% endfor %}
-                
+                    {% endfor %}
+                    
+                </div>
             </div>
-        </div>
-
-    </main>
-    <footer>
-
-    </footer>
+            
+        </main>
+        <footer>
+            
+        </footer>
+        
+    </body>
+    <script>
+        function comprarLibro(link) {
+            // Imprime el enlace en la consola
+            console.log('Enlace: ' + link);
+            
+            // Redirige al usuario al sitio web
+            window.location.href = link;
+        }
+    </script>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-</body>
+    
+    
 </html>
 {% endblock content %}

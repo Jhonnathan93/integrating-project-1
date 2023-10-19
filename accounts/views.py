@@ -6,13 +6,11 @@ from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import redirect
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
-from .forms import UserCreateForm, loginForm
+from .forms import  EditProfileForm, UserCreateForm, loginForm
 from .models import userInformation
 from readinglists.models import ReadingList
 
 
-
-# Create your views here.
 def home(request):
     return render(request, 'home.html', )
 
@@ -70,23 +68,23 @@ def profile(request):
         'readinglists': readinglists,
     })
 
-
 def editprofile(request):
     user_info = userInformation.objects.get(user=request.user)
-    
+
     if request.method == 'GET':
-        
-        form= UserCreateForm(instance=user_info)
+        user_data = {
+            'username': request.user.username,
+            'email': request.user.email,
+        }
+        form = EditProfileForm(instance=user_info, initial=user_data)
         return render(request, 'editprofile.html', {'form': form})
     else:
-        try:
-            form = UserCreateForm(request.POST, request.FILES, instance=user_info)
+        form = EditProfileForm(request.POST, request.FILES, instance=user_info)
+        if form.is_valid():
             form.save()
-            
-            return redirect('profile', user_info)
-        except ValueError:
-            return render(request, 'editprofile.html',{'user_info': user_info,'form':form,'error':'Bad data in form'})
-        
+            return redirect('../profile')
+        else:
+            return render(request, 'editprofile.html', {'user_info': user_info, 'form': form, 'error': 'Bad data in form'})
 
 def login_view(request):
     if request.method == 'GET':

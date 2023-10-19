@@ -17,4 +17,5 @@ class ReadingListForm(forms.ModelForm):
         'cover': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
     }
     
+    
 
