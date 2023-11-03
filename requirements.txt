@@ -1,7 +1,5 @@
-pip install Django
+pip install django
 pip install openai
-pip install requests
 pip install django-recaptcha
-pip install bootstrap
-python manage.py migrate
-python manage.py runserver
+pip install python-dotenv
+pip install matplotlib
