@@ -36,7 +36,7 @@
                         <p class="card-text"><small class="text-muted">
                             Fecha de creación: {{ readinglist.date_created }}
                         </small></p>
-                {% if user.is_authenticated and user == readinglist.user %}
+                {% if user.is_authenticated and user == readinglist.user and readinglist.title != "Leer más tarde" %}
                 <a class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;" href="{% url 'deletelist' readinglist.id %}">
                     Eliminar
                 </a>

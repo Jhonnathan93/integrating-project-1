@@ -50,6 +50,7 @@ urlpatterns = [
     path('readinglist/<int:reading_list_id>/', ReadingListViews.detail, name='detail'),
     path('deletebook/<int:reading_list_id>/<int:book_id>/', ReadingListViews.deletebook, name='deletebook'),
     path('editreadinglist/<int:reading_list_id>', ReadingListViews.updatereadinglist, name='updatereadinglist'),
+    path('add-to-list/', ReadingListViews.add_to_reading_list, name='add-to-list'),
     
     path('send_email_to_readers/', Newsletter.send_email_to_readers, name='send_email_to_readers'),
      path('top_books/', Analytics.top_books, name='top_books')

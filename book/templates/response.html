@@ -6,7 +6,7 @@
             <br>
             <h2> Estas son las recomendaciones para ti: </h2>
             <br>
-            <div class="row">
+            <div class="row" id="book-recommendations-container">
         
                 {% for libro in libros %}
                     {% for elemento in libro %}
@@ -27,9 +27,7 @@
                                             </small></p>
                                             
                                             <p class="card-text" id="elemento-descripcion">{{ elemento.descripcion|slice:":400" }}{% if elemento.descripcion|length > 400 %}...</p>
-                                            {% comment %} <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#descriptionModal{{ libro.id }}">
-                                                Leer más
-                                            </button> {% endcomment %}
+                                            
                                             <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#descriptionModal{{ forloop.parentloop.counter }}_{{ forloop.counter }}">
                                                 Leer más
                                             </button>
@@ -38,16 +36,27 @@
                                             <br>
                                             <br>
                                             <button class="btn btn-primary" onclick="window.location.href='{{ elemento.buy_link }}'">Comprar</button>
+                                            
+                                            <div class="book-details"
+                                                data-title="{{ elemento.titulo }}"
+                                                data-author="{{ elemento.autores|join:',' }}"
+                                                data-description="{{ elemento.descripcion }}"
+                                                data-buy-link="{{ elemento.buy_link }}"
+                                                data-cover="{{elemento.imagen_enlace}}"
+
+                                                
+                                            >
                                             <div class="dropdown">
-                                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                  Más opciones
+                                                <button class="btn btn-primary dropdown-toggle" type="button" style="background-color: #274690; color: #fff; border: solid #274690;" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Más opciones
                                                 </button>
                                                 <ul class="dropdown-menu">
-                                                  <li><a class="dropdown-item" href="#">Action</a></li>
-                                                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                                                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                    
+                                                    <li><a class="dropdown-item btn btn-add-to-list" href="#" onclick="addToReadLater(this)">Leer más tarde</a></li>
                                                 </ul>
-                                              </div>
+                                            </div>
+                                            </div>
+                                                                                 
                                             
                                             <div class="modal fade" id="descriptionModal{{ forloop.parentloop.counter }}_{{ forloop.counter }}" tabindex="-1" aria-labelledby="descriptionModalLabel{{ forloop.parentloop.counter }}_{{ forloop.counter }}" aria-hidden="true">
 
@@ -83,13 +92,112 @@
                                             
                                             <script>
                                                 function comprarLibro(link) {
-                                                    // Imprime el enlace en la consola
+                                                  
                                                     console.log('Enlace: ' + link);
                                                     
-                                                    // Redirige al usuario al sitio web
+                                                   
                                                     window.location.href = link;
                                                 }
                                             </script>
+
+
+                                            <script>
+                                                function getCookie(name) {
+                                                    var cookieValue = null;
+                                                    if (document.cookie && document.cookie !== '') {
+                                                        var cookies = document.cookie.split(';');
+                                                        for (var i = 0; i < cookies.length; i++) {
+                                                            var cookie = cookies[i].trim();
+                                                            
+                                                            if (cookie.substring(0, name.length + 1) === name + '=') {
+                                                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                    return cookieValue;
+                                                }
+                                                let isEventListenerAdded = isEventListenerAdded || false;
+                                                
+                                                function addToReadLater(button) {
+                                                    if (button.disabled) {
+                                                        return; 
+                                                    }
+                                                    console.log('Button clicked'); 
+                                                    const csrftoken = getCookie('csrftoken');
+                                            
+                                                    const bookDetails = button.closest('.book-details');
+                                                    console.log('bookDetails:', bookDetails);
+                                                    if (bookDetails) {
+                                                        const title = bookDetails.getAttribute('data-title');
+                                                        const author = bookDetails.getAttribute('data-author');
+                                                        const description = bookDetails.getAttribute('data-description');
+                                                        const buyLink = bookDetails.getAttribute('data-buy-link');
+                                                        const cover = bookDetails.getAttribute('data-cover');
+                                            
+                                                       
+                                                        console.log('Title: ' + title);
+                                                        console.log('Author: ' + author);
+                                                        console.log('Description: ' + description);
+                                                        console.log('Buy Link: ' + buyLink);
+                                                        console.log('Cover: ' + cover);
+                                            
+                                                        if (title && author && description && buyLink) {
+                                                            button.disabled = true;
+                                                            
+                                                            fetch('/add-to-list/', {
+                                                                method: 'POST',
+                                                                headers: {
+                                                                    'Content-Type': 'application/json',
+                                                                    'X-CSRFToken': csrftoken,
+                                                                },
+                                                                body: JSON.stringify({
+                                                                    title,
+                                                                    author,
+                                                                    description,
+                                                                    buyLink,
+                                                                    cover,
+                                                                    list: 'Leer más tarde',
+                                                                }),
+                                                            })
+                                                            .then((response) => {
+                                                                if (response.ok) {
+                                                                    alert('Book added to "Leer más tarde" list');
+                                                                    button.disabled = false; 
+                                                                } else {
+                                                                    alert('Failed to add the book to the list');
+                                                                }
+                                                            })
+                                                            .catch((error) => {
+                                                                console.error('Error:', error);
+                                                            })
+                                                            .finally(() => {
+                                                                button.removeEventListener('click', addToReadLater); 
+                                                            });
+                                                        } else {
+                                                            alert('Book data is incomplete or missing');
+                                                        }
+                                                    } else {
+                                                        alert('Book details not found');
+                                                    }
+                                                }
+                                                
+
+                                                if (!isEventListenerAdded) {
+                                                    document.getElementById('book-recommendations-container').addEventListener('click', function (event) {
+                                                        if (event.target.classList.contains('btn-add-to-list')) {
+                                                            addToReadLater(event.target); 
+                                                        }
+                                                    });
+
+                                                    isEventListenerAdded = true;
+                                                }
+
+                                                
+                                            </script>
+                                            
+                                            
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -105,7 +213,8 @@
     <footer>
 
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
 {% endblock content %}

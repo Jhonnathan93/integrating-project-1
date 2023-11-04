@@ -7,6 +7,7 @@ import os, openai, time
 from concurrent.futures import ThreadPoolExecutor
 
 
+
 def index(request):
     return render(request, 'index.html')
 

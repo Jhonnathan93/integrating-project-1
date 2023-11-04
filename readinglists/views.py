@@ -12,12 +12,53 @@ from django.shortcuts import redirect
 from django.conf import settings
 import requests
 from urllib.parse import quote
+import json
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from dotenv import load_dotenv
+import os
 
 def overview(request):
     readinglists = ReadingList.objects.filter(user=request.user).order_by('-date_created')
     return render(request, 'overview.html', {"readinglists": readinglists})
 
 
+@login_required
+@require_POST
+def add_to_reading_list(request):
+    
+    data = json.loads(request.body) 
+
+    title = data.get('title')
+    author = data.get('author')
+    description = data.get('description')
+    buy_link = data.get('buyLink')
+    cover= data.get('cover')
+
+
+    try:
+        
+        reading_list = ReadingList.objects.get(user=request.user,title="Leer más tarde")
+        
+    except json.JSONDecodeError:
+
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+ 
+    
+    new_book = Book.objects.create(
+        title=title,
+        author=author,
+        description=description,
+        buy_link=buy_link,
+        cover= cover
+    )
+    if not reading_list.books.filter(id=new_book.id).exists():
+        reading_list.books.add(new_book)
+    else:
+        return JsonResponse({'message': 'Book is already in Leer más tarde'})
+    
+
+    return JsonResponse({'message': f'Book added to Leer más tarde'})
 
 @login_required
 def createlist(request):
@@ -52,7 +93,7 @@ def createlist(request):
     return render(request, 'createlist.html', {'form': form})
 
 def detail(request, reading_list_id):
-    print("Inside detail view...")
+    
     try:
         reading_list = get_object_or_404(ReadingList, id=reading_list_id)
         books = reading_list.books.all()
@@ -83,8 +124,7 @@ def detail(request, reading_list_id):
                         new_book.topics = categories
                         new_book.buy_link = link
                         new_book.save()
-                        print("holaaa")
-                        print(new_book.cover)
+                        
                         messages.success(request, "Libro agregado exitosamente.")
                     else: 
                         error_message1 = "Título o autor inválidos. Verifique la información e inténtelo de nuevo."
@@ -108,8 +148,7 @@ def detail(request, reading_list_id):
 
         if books:
             first_book = books[0]
-            print("books[0]:")
-            print(books[0].cover)
+            
         
         return render(request, 'detail.html', {'reading_list': reading_list, 'book_form': book_form, "books": books})
 
@@ -127,6 +166,8 @@ def fetch_book_info(book_title, book_author):
     
    
     order_by = 'relevance'
+    _ = load_dotenv('keys.env')
+    api_key  = os.environ['googlebooks_api_key']
 
     while True:
         

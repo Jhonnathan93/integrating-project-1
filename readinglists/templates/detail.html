@@ -44,9 +44,11 @@
                         <button class="btn btn-info" style="background-color: #274690; color: #fff; border: solid #274690;" data-bs-toggle="modal" data-bs-target="#shareModal">
                             Compartir
                         </button>
+                        {% if reading_list.title != "Leer más tarde"%}
                         <a class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;" href="{% url 'deletelist' reading_list.id %}">
                             Eliminar
                         </a>
+                        {% endif %}
                         {% endif %}
 
                         
