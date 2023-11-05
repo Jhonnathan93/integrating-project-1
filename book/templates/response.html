@@ -1,5 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
+<head>
+
+    <style>
+        
+        .custom-toast {
+            position: fixed;
+            top: 10%; /* Position at the top of the page */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
+            width: auto;
+        }
+        
+    </style>
+    
+</head>
 <body>
     <main>
         <div class="container mt-5">
@@ -91,148 +106,33 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
-                                            <script>
-                                                function comprarLibro(link) {
-                                                  
-                                                    console.log('Enlace: ' + link);
+
+                                            <div class="toast custom-toast" id="successToast" role="alert" aria-live="assertive" aria-atomic="true">
+                                                <div class="toast-header">
+                                                  <strong class="mr-auto">Éxito</strong>
+                                                  <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close">
                                                     
-                                                   
-                                                    window.location.href = link;
-                                                }
-                                            </script>
-
-
-                                            <script>
-                                                function getCookie(name) {
-                                                    var cookieValue = null;
-                                                    if (document.cookie && document.cookie !== '') {
-                                                        var cookies = document.cookie.split(';');
-                                                        for (var i = 0; i < cookies.length; i++) {
-                                                            var cookie = cookies[i].trim();
-                                                            
-                                                            if (cookie.substring(0, name.length + 1) === name + '=') {
-                                                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                    return cookieValue;
-                                                }
-                                                let isEventListenerAdded = isEventListenerAdded || false;
-                                                
-                                                function addToReadLater(button) {
-                                                    if (button.disabled) {
-                                                        return; 
-                                                    }
-                                                    console.log('Button clicked'); 
-                                                    const csrftoken = getCookie('csrftoken');
+                                                  </button>
+                                                </div>
+                                                <div class="toast-body">
+                                                  hola
+                                                </div>
+                                              </div>
+                                              
+                                              <div class="toast custom-toast" id="errorToast" role="alert" aria-live="assertive" aria-atomic="true">
+                                                <div class="toast-header">
+                                                  <strong class="mr-auto">Error</strong>
+                                                  <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close">
+                                                    
+                                                  </button>
+                                                </div>
+                                                <div class="toast-body">
+                                                  chao
+                                                </div>
+                                              </div>
+                                              
                                             
-                                                    const bookDetails = button.closest('.book-details');
-                                                    console.log('bookDetails:', bookDetails);
-                                                    if (bookDetails) {
-                                                        const title = bookDetails.getAttribute('data-title');
-                                                        const author = bookDetails.getAttribute('data-author');
-                                                        const description = bookDetails.getAttribute('data-description');
-                                                        const buyLink = bookDetails.getAttribute('data-buy-link');
-                                                        const cover = bookDetails.getAttribute('data-cover');
                                             
-                                                       
-                                                        console.log('Title: ' + title);
-                                                        console.log('Author: ' + author);
-                                                        console.log('Description: ' + description);
-                                                        console.log('Buy Link: ' + buyLink);
-                                                        console.log('Cover: ' + cover);
-                                            
-                                                        if (title && author && description && buyLink) {
-                                                            button.disabled = true;
-                                                            
-                                                            fetch('/add-to-list/', {
-                                                                method: 'POST',
-                                                                headers: {
-                                                                    'Content-Type': 'application/json',
-                                                                    'X-CSRFToken': csrftoken,
-                                                                },
-                                                                body: JSON.stringify({
-                                                                    title,
-                                                                    author,
-                                                                    description,
-                                                                    buyLink,
-                                                                    cover,
-                                                                    list: 'Leer más tarde',
-                                                                }),
-                                                            })
-                                                            .then((response) => {
-                                                                if (response.ok) {
-                                                                    alert('Book added to "Leer más tarde"');
-                                                                    button.disabled = false; 
-                                                                } else {
-                                                                    alert('Failed to add the book to the list');
-                                                                }
-                                                            })
-                                                            .catch((error) => {
-                                                                console.error('Error:', error);
-                                                            })
-                                                            .finally(() => {
-                                                                button.removeEventListener('click', addToReadLater); 
-                                                            });
-                                                        } else {
-                                                            alert('Book data is incomplete or missing');
-                                                        }
-                                                    } else {
-                                                        alert('Book details not found');
-                                                    }
-                                                }
-                                                
-
-                                                if (!isEventListenerAdded) {
-                                                    document.getElementById('book-recommendations-container').addEventListener('click', function (event) {
-                                                        if (event.target.classList.contains('btn-add-to-list')) {
-                                                            addToReadLater(event.target); 
-                                                        }
-                                                    });
-
-                                                    isEventListenerAdded = true;
-                                                }
-
-                                                function markAsNotRecommended(button) {
-                                                    if (button.classList.contains('disabled')) {
-                                                        // If the button has the "disabled" class, don't proceed
-                                                        return;
-                                                    }
-                                                
-                                                    const csrftoken = getCookie('csrftoken');
-                                                    const bookDetails = button.closest('.book-details');
-                                                    const title = bookDetails.getAttribute('data-title');
-                                                    const author = bookDetails.getAttribute('data-author');
-                                                
-                                                    fetch('/mark-as-not-recommended/', {
-                                                        method: 'POST',
-                                                        headers: {
-                                                            'Content-Type': 'application/json',
-                                                            'X-CSRFToken': csrftoken,
-                                                        },
-                                                        body: JSON.stringify({
-                                                            title,
-                                                            author,
-                                                        }),
-                                                    })
-                                                    .then((response) => {
-                                                        if (response.ok) {
-                                                            alert('No te recomendaremos más este libro');
-                                                            // Add the "disabled" class to the button to prevent further clicks
-                                                            button.classList.add('disabled');
-                                                        } else {
-                                                            alert('Error al marcar como no recomendar.');
-                                                        }
-                                                    })
-                                                    .catch((error) => {
-                                                        console.error('Error:', error);
-                                                    });
-                                                }     
-
-                                                
-                                            </script>
                                             
                                             
                                             
@@ -253,6 +153,170 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script>
+    
+        function comprarLibro(link) {
+          
+            console.log('Enlace: ' + link);
+            
+           
+            window.location.href = link;
+        }
+    </script>
+
+
+    <script>
+        
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    
+                    if (cookie.substring(0, name.length + 1) === name + '=') {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        let isEventListenerAdded = isEventListenerAdded || false;
+        
+        function showSuccessToast(message) {
+            const successToast = document.getElementById('successToast');
+            const toastBody = successToast.querySelector('.toast-body');
+            toastBody.innerText = message;
+          
+            const toast = new bootstrap.Toast(successToast);
+            toast.show();
+          }
+          
+          function showErrorToast(message) {
+            const errorToast = document.getElementById('errorToast');
+            const toastBody = errorToast.querySelector('.toast-body');
+            toastBody.innerText = message;
+          
+            const toast = new bootstrap.Toast(errorToast);
+            toast.show();
+          }
+
+        function addToReadLater(button) {
+            if (button.disabled) {
+                return; 
+            }
+            console.log('Button clicked'); 
+            const csrftoken = getCookie('csrftoken');
+    
+            const bookDetails = button.closest('.book-details');
+            console.log('bookDetails:', bookDetails);
+            if (bookDetails) {
+                const title = bookDetails.getAttribute('data-title');
+                const author = bookDetails.getAttribute('data-author');
+                const description = bookDetails.getAttribute('data-description');
+                const buyLink = bookDetails.getAttribute('data-buy-link');
+                const cover = bookDetails.getAttribute('data-cover');
+    
+               
+                console.log('Title: ' + title);
+                console.log('Author: ' + author);
+                console.log('Description: ' + description);
+                console.log('Buy Link: ' + buyLink);
+                console.log('Cover: ' + cover);
+    
+                if (title && author && description && buyLink) {
+                    button.disabled = true;
+                    
+                    fetch('/add-to-list/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken,
+                        },
+                        body: JSON.stringify({
+                            title,
+                            author,
+                            description,
+                            buyLink,
+                            cover,
+                            list: 'Leer más tarde',
+                        }),
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.message) {
+                            showSuccessToast(data.message);
+                            button.disabled = false;
+                        } else if (data.error) {
+                            showErrorToast(data.error);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    })
+                    .finally(() => {
+                        button.removeEventListener('click', addToReadLater);
+                    });
+            } else {
+                showErrorToast('Book data is incomplete or missing');
+            }
+        } else {
+            showErrorToast('Book details not found');
+        }
+        }
+        
+
+        if (!isEventListenerAdded) {
+            document.getElementById('book-recommendations-container').addEventListener('click', function (event) {
+                if (event.target.classList.contains('btn-add-to-list')) {
+                    addToReadLater(event.target); 
+                }
+            });
+
+            isEventListenerAdded = true;
+        }
+
+        function markAsNotRecommended(button) {
+            if (button.classList.contains('disabled')) {
+                
+                return;
+            }
+        
+            const csrftoken = getCookie('csrftoken');
+            const bookDetails = button.closest('.book-details');
+            const title = bookDetails.getAttribute('data-title');
+            const author = bookDetails.getAttribute('data-author');
+        
+            fetch('/mark-as-not-recommended/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify({
+                    title,
+                    author,
+                }),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.message) {
+                    showSuccessToast(data.message);
+                   
+                    button.classList.add('disabled');
+                } else if (data.error) {
+                    showErrorToast(data.error);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+        
+    </script>
 </body>
+
 </html>
 {% endblock content %}
