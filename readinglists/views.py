@@ -55,10 +55,10 @@ def add_to_reading_list(request):
     if not reading_list.books.filter(id=new_book.id).exists():
         reading_list.books.add(new_book)
     else:
-        return JsonResponse({'message': 'Book is already in Leer más tarde'})
+        return JsonResponse({'message': 'El libro ya está en Leer más tarde'})
     
 
-    return JsonResponse({'message': f'Book added to Leer más tarde'})
+    return JsonResponse({'message': f'Libro agregado a Leer más tarde'})
 
 @login_required
 def createlist(request):

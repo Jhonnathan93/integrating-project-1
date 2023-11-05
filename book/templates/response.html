@@ -53,6 +53,8 @@
                                                 <ul class="dropdown-menu">
                                                     
                                                     <li><a class="dropdown-item btn btn-add-to-list" href="#" onclick="addToReadLater(this)">Leer más tarde</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item btn btn-mark-as-not-recommended" href="#" onclick="markAsNotRecommended(this)">No recomendar</a></li>
                                                 </ul>
                                             </div>
                                             </div>
@@ -162,7 +164,7 @@
                                                             })
                                                             .then((response) => {
                                                                 if (response.ok) {
-                                                                    alert('Book added to "Leer más tarde" list');
+                                                                    alert('Book added to "Leer más tarde"');
                                                                     button.disabled = false; 
                                                                 } else {
                                                                     alert('Failed to add the book to the list');
@@ -192,6 +194,42 @@
 
                                                     isEventListenerAdded = true;
                                                 }
+
+                                                function markAsNotRecommended(button) {
+                                                    if (button.classList.contains('disabled')) {
+                                                        // If the button has the "disabled" class, don't proceed
+                                                        return;
+                                                    }
+                                                
+                                                    const csrftoken = getCookie('csrftoken');
+                                                    const bookDetails = button.closest('.book-details');
+                                                    const title = bookDetails.getAttribute('data-title');
+                                                    const author = bookDetails.getAttribute('data-author');
+                                                
+                                                    fetch('/mark-as-not-recommended/', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                            'X-CSRFToken': csrftoken,
+                                                        },
+                                                        body: JSON.stringify({
+                                                            title,
+                                                            author,
+                                                        }),
+                                                    })
+                                                    .then((response) => {
+                                                        if (response.ok) {
+                                                            alert('No te recomendaremos más este libro');
+                                                            // Add the "disabled" class to the button to prevent further clicks
+                                                            button.classList.add('disabled');
+                                                        } else {
+                                                            alert('Error al marcar como no recomendar.');
+                                                        }
+                                                    })
+                                                    .catch((error) => {
+                                                        console.error('Error:', error);
+                                                    });
+                                                }     
 
                                                 
                                             </script>
