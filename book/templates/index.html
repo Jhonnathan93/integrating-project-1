@@ -1,135 +1,314 @@
-{% extends 'base.html' %}
-{% block content %}
-<div class="custom-container">
-<style>
-    .custom-container {
-        margin-top: -100px;
-    }
-</style>
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>BookNexus</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href='{% static "img/icon.png" %}' rel="icon">
+  <link href='{% static "img/apple-touch-icon.png" %}' rel="apple-touch-icon">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  
+  <!-- Vendor CSS Files -->
+  <link href='{% static "vendor/bootstrap/css/bootstrap.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/bootstrap-icons/bootstrap-icons.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/fontawesome-free/css/all.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/glightbox/css/glightbox.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/swiper/swiper-bundle.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/aos/aos.css" %}' rel="stylesheet">
+  
+  <!-- Template Main CSS File -->
+  <link href='{% static "css/main.css" %}' rel="stylesheet">
+  
+
+  <!-- =======================================================
+  * Template Name: Logis
+  * Updated: Sep 18 2023 with Bootstrap v5.3.2
+  * Template URL: https://bootstrapmade.com/logis-bootstrap-logistics-website-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
 <body>
-    <main>
-       <div class="container mt-5">
-        <form method="POST" action = "{% url 'response' %}">
-            {% csrf_token %}
-            <div class="row">
-                <div class="col-6 justify-content-center p-5 mt-5">
-                    <p class="mt-5">Uno de mis libros favoritos es:</p>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="libro1" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-                    </div>
-                    <p class="mt-3">Uno de mis libros favoritos es:</p>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="libro2" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-                    </div>
-                    <p class="mt-3">Uno de mis libros favoritos es:</p>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="libro3" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-                    </div>
 
-                    <div class="mb-3">
-                        <label for="detalles" class="form-label">¿Quieres poner más detalles o comentarios para tu búsqueda?
-                        </label>
-                        <textarea class="form-control" id="detalles" name="detalles" rows="4"></textarea>
-                    </div>
+  <!-- ======= Header ======= -->
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+
+      <a href="http://127.0.0.1:8000/admin/" class="logo d-flex align-items-center">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <h1>BookNexus</h1>
+      </a>
+
+      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="http://127.0.0.1:8000/admin/" class="active">Inicio</a></li>
+          <!--  Estos deben de configurarse via JS como estan en el proyecto
+          <li><a href="about.html">About</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="pricing.html">Pricing</a></li> -->
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'accounts:logout' %}">Cerrar Sesión ({{ user.username }})</a></li>
+          {% else %}
+            <li><a href="{% url 'accounts:login' %}">Inicia sesión</a></li> 
+            <li><a class="register" href="{% url 'accounts:signup' %}">Regístrate</a></li>
+          {% endif %}
+        </ul> 
+      </nav><!-- .navbar -->
+
+    </div>
+  </header><!-- End Header -->
+  <!-- End Header -->
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="hero d-flex align-items-center">
+    <div class="container">
+      <div class="row gy-4 d-flex justify-content-between">
+        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+          <h2 data-aos="fade-up">¿Qué quieres leer?</h2>
+          <p data-aos="fade-up" data-aos-delay="100">Bienvenido a BookNexus, Somos un sistema de recomendación de libros que se enfoca en ti y tus gustos literarios. Nos importa tu pasión por la lectura, por lo que te hacemos una pregunta simple: ¿Qué tipo de libros te gusta? A partir de tus preferencias, generamos recomendaciones personalizadas, conectándote con lecturas que realmente disfrutarás.</p>
+
+          <button type="button" class="btn btn-lg btn-primary" data-aos="fade-up" data-aos-delay="200" onClick="document.getElementById('register').scrollIntoView();">Recomiéndame un libro</button>
+        </div>
+
+        <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out">
+          <img src='{% static "img/reading.svg" %}' class="img-fluid mb-3 mb-lg-0" alt="">
+        </div>
+
+      </div>
+    </div>
+  </section><!-- End Hero Section -->
+
+  <main id="main">
+
+    <!-- ======= Featured Services Section ======= -->
+    <section id="register" class="register">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row g-0">
+
+          <div class="col-lg-5 quote-bg" style="background-image: url('{% static "img/formImage.jpg" %}');"></div>
+
+          <div class="col-lg-7">
+            <form action="" method="post" class="php-email-form">
+              <p>Para saber que tipo de libro estas buscando menciona 4 libros que ayudaran a guiar la busqueda.</p>
+              <div class="row gy-4">
+
+                <div class="col-md-6">
+                  <input type="text" name="" class="form-control" placeholder="Libro 1" required>
                 </div>
 
-                <div class="col-6 justify-content-center p-5 mt-5">
-                    <h4 class="mt-5 mb-3">¿Qué temas te gustan?</h4>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="Fantasía" id="Fantasía" name="Fantasía">
-                        <label class="form-check-label" for="Fantasía">
-                            Fantasía
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="Romance" id="Romance" name="Romance">
-                        <label class="form-check-label" for="Romance">
-                            Romance
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="Historia" id="Historia" name="Historia">
-                        <label class="form-check-label" for="Historia">
-                            Historia
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="Suspenso" id="Suspenso" name="Suspenso">
-                        <label class="form-check-label" for="Suspenso">
-                            Suspenso
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="Autoayuda" id="Autoayuda" name="Autoayuda">
-                        <label class="form-check-label" for="Autoayuda">
-                            Autoayuda
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="Ciencia Ficción" id="Ciencia Ficción" name="Ciencia Ficción">
-                        <label class="form-check-label" for="Ciencia Ficción">
-                            Ciencia ficción
-                        </label>
-                    </div>
-                    <h4 class="mt-2 mb-3">¿Qué tipo de libro quieres leer?</h4>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="Biografía" id="Biografía" name="Biografía">
-                        <label class="form-check-label" for="Biografía">
-                            Biografía
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="Novela" id="Novela" name="Novela">
-                        <label class="form-check-label" for="Novela">
-                            Novela
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="Científico" id="Científico" name="Científico">
-                        <label class="form-check-label" for="Científico">
-                            Científico
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="Poesía" id="Poesía" name="Poesía">
-                        <label class="form-check-label" for="Poesía">
-                            Poesía
-                        </label>
-                    </div>
-                    <h4 class="mt-2 mb-3">¿Qué tan extenso ha de ser el libro?</h4>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="longitud" id="corto" value="50 paginas" checked>
-                        <label class="form-check-label" for="corto">
-                            Menos de 100 páginas
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="longitud" id="medio" value="100-500 paginas">
-                        <label class="form-check-label" for="medio">
-                        Entre 100 y 500 páginas
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="longitud" id="largo" value="mas de 500 paginas">
-                        <label class="form-check-label" for="largo">
-                        Más de 500 páginas
-                        </label>
-                    </div>
+                <div class="col-md-6">
+                  <input type="text" name="" class="form-control" placeholder="Libro 2" required>
                 </div>
-            
-            </div>
-            <div class="row">
-                <div class="d-grid gap-2 col-6 mx-auto">
-                    <button class="btn btn-primary" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;" type="submit">Enviar</button>
+
+                <div class="col-md-6">
+                  <input type="text" name="" class="form-control" placeholder="Libro 3" required>
                 </div>
-            </div>
-        </form>
 
-        
+                <div class="col-md-6">
+                  <input type="text" name="" class="form-control" placeholder="Libro 4" required>
+                </div>
 
-       </div>
-    </main>
- </body>
+                <div class="col-lg-12">
+                  <h4>Cuentanos mas de tus gustos</h4>
+                </div>
+
+                <h6>¿Qué géneros de libros prefieres? (Puedes marcar más de uno)</h6>
+                <div class="col-md-6 form-check">
+                    <input class="form-check-input" type="checkbox" value="Fantasía" id="Fantasía" name="Fantasía">
+                    <label class="form-check-label" for="Fantasía">
+                        Fantasía
+                    </label>
+                </div>
+                <div class=" col-md-6 form-check">
+                    <input class="form-check-input" type="checkbox" value="Romance" id="Romance" name="Romance">
+                    <label class="form-check-label" for="Romance">
+                        Romance
+                    </label>
+                </div>
+                <div class="col-md-6 form-check">
+                    <input class="form-check-input" type="checkbox" value="Historia" id="Historia" name="Historia">
+                    <label class="form-check-label" for="Historia">
+                        Historia
+                    </label>
+                </div>
+                <div class="col-md-6 form-check">
+                    <input class="form-check-input" type="checkbox" value="Suspenso" id="Suspenso" name="Suspenso">
+                    <label class="form-check-label" for="Suspenso">
+                        Suspenso
+                    </label>
+                </div>
+                <div class="col-md-6 form-check">
+                    <input class="form-check-input" type="checkbox" value="Autoayuda" id="Autoayuda" name="Autoayuda">
+                    <label class="form-check-label" for="Autoayuda">
+                        Autoayuda
+                    </label>
+                </div>
+                <div class="col-md-6 form-check">
+                    <input class="form-check-input" type="checkbox" value="Ciencia Ficción" id="Ciencia Ficción" name="Ciencia Ficción">
+                    <label class="form-check-label" for="Ciencia Ficción">
+                        Ciencia ficción
+                    </label>
+                </div>
+                
+                <h6>¿Qué tipo o caracter de libros quieres leer? (Puedes marcar más de uno)</h6>
+                <div class="form-check col-md-6">
+                    <input class="form-check-input" type="checkbox" value="Biografía" id="Biografía" name="Biografía">
+                    <label class="form-check-label" for="Biografía">
+                        Biografías
+                    </label>
+                </div>
+                <div class="form-check col-md-6">
+                    <input class="form-check-input" type="checkbox" value="Novela" id="Novela" name="Novela">
+                    <label class="form-check-label" for="Novela">
+                        Novelas
+                    </label>
+                </div>
+                <div class="form-check col-md-6">
+                    <input class="form-check-input" type="checkbox" value="Científico" id="Científico" name="Científico">
+                    <label class="form-check-label" for="Científico">
+                        Científico/Academico
+                    </label>
+                </div>
+                <div class="form-check col-md-6">
+                    <input class="form-check-input" type="checkbox" value="Poesía" id="Poesía" name="Poesía">
+                    <label class="form-check-label" for="Poesía">
+                        Poesía
+                    </label>
+                </div>
+
+                <h6 class="mt-3">¿Qué tan extenso ha de ser el libro?</h6>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="longitud" id="corto" value="50 paginas" checked>
+                    <label class="form-check-label" for="corto">
+                        Menos de 100 páginas
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="longitud" id="medio" value="100-500 paginas">
+                    <label class="form-check-label" for="medio">
+                    Entre 100 y 500 páginas
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="longitud" id="largo" value="mas de 500 paginas">
+                    <label class="form-check-label" for="largo">
+                    Más de 500 páginas
+                    </label>
+                </div>
+
+                <h6>¿Quieres poner más detalles o comentarios para tu búsqueda?</h6>
+                <div class="col-md-12">
+                  <textarea class="form-control" name="message" rows="4" placeholder="Copie aquí los detalles de la busqueda" required></textarea>
+                </div>
+
+                <div class="col-md-12 text-center">
+                  <div class="loading">Loading</div>
+                  <div class="error-message"></div>
+                  <div class="sent-message">Your quote request has been sent successfully. Thank you!</div>
+
+                  <button type="submit">Recomiéndame un libro</button>
+                </div>
+              </div>
+            </form>
+          </div><!-- End Quote Form -->
+
+        </div>
+
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-info">
+          <a href="http://127.0.0.1:8000/admin/" class="logo d-flex align-items-center">
+            <span>BookNexus</span>
+          </a>
+          <p>Booknexus es una aplicación basada en web que tiene como objetivo permitir al usuario descubrir libros e interactuar con ellos. Es una plataforma de recomendación de libros que ofrece sugerencias personalizadas basadas en las preferencias, el historial de lectura y los intereses de los usuarios. Además, la plataforma proporciona información completa sobre varios libros, incluidos detalles del autor, sinopsis y géneros, lo que permite a los usuarios tomar decisiones informadas sobre sus opciones de lectura.</p>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Navegación</h4>
+          <ul>
+            <li><a href="#">Inico</a></li>
+            <li><a href="#">Iniciar sesión</a></li>
+            <li><a href="#">Registrate</a></li>
+            <li><a href="#">Perfil</a></li>
+            <li><a href="#">Preguntas frecuentes</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+          <h4>Contactanos</h4>
+          <p>
+            book.nexus.p1@gmail.com <br><br>
+            <strong>Manuela Castaño Franco:</strong> <br> mcastanof1@eafit.edu.co<br>
+            <strong>Santiago Neusa Ruíz:</strong> <br> sneusar@eafit.edu.co <br>
+            <strong>Jhonnathan Stiven Ocampo Díaz:</strong> <br> jsocampod@eafit.edu.co<br>
+          </p>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Referencias</h4>
+          Esta pagina fue diseñada usando imagenes de googleBooks y de Freepik.com, todos los derechos reservados a sus autores.
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container mt-4">
+      <div class="copyright">
+        &copy; Copyright <strong><span>BookNexus</span></strong>.
+      </div>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/logis-bootstrap-logistics-website-template/ -->
+        <!-- Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> -->
+      </div>
+    </div>
+
+  </footer><!-- End Footer -->
+  <!-- End Footer -->
+
+  <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
+  <script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'js/main.js' %}"></script>
+
+
+</body>
+
 </html>
-</div>
-{% endblock content %}
