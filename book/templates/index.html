@@ -46,7 +46,7 @@
   <header id="header" class="header d-flex align-items-center fixed-top">
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
 
-      <a href="http://127.0.0.1:8000/admin/" class="logo d-flex align-items-center">
+      <a href="http://127.0.0.1:8000" class="logo d-flex align-items-center">
         <!-- Uncomment the line below if you also wish to use an image logo -->
         <!-- <img src="assets/img/logo.png" alt=""> -->
         <h1>BookNexus</h1>
@@ -56,11 +56,31 @@
       <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a href="http://127.0.0.1:8000/admin/" class="active">Inicio</a></li>
-          <!--  Estos deben de configurarse via JS como estan en el proyecto
-          <li><a href="about.html">About</a></li>
-          <li><a href="services.html">Services</a></li>
-          <li><a href="pricing.html">Pricing</a></li> -->
+          <li><a href="http://127.0.0.1:8000" class="active">Inicio</a></li>
+
+          {% if user.is_authenticated %}
+            {% if not user.is_staff %}
+              <li><a href="{% url 'accounts:profile' %}">Perfil</a></li>
+            {% endif %}
+            {% if user.is_staff %}
+              <li><a href="http://127.0.0.1:8000/admin/">Perfil</a></li>
+            {% endif %}
+          {% endif %}
+
+          {% if user.is_authenticated %}
+            {% if user.is_staff %}
+              <li><a href="{% url 'reports:report' %}">Géneros y Categorías</a></li>
+            {% endif %}
+          {% endif %}
+
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'top_books' %}">Top de libros</a></li>
+          {% endif %}
+                    
+          {% if user.is_authenticated %}
+            <li><a class="nav-link" href="{% url 'overview' %}">Reading Lists</a></li>
+          {% endif %}
+
           {% if user.is_authenticated %}
             <li><a href="{% url 'accounts:logout' %}">Cerrar Sesión ({{ user.username }})</a></li>
           {% else %}
@@ -104,24 +124,25 @@
           <div class="col-lg-5 quote-bg" style="background-image: url('{% static "img/formImage.jpg" %}');"></div>
 
           <div class="col-lg-7">
-            <form action="" method="post" class="php-email-form">
+            <form action = "{% url 'response' %}" method="post" class="php-email-form">
+              {% csrf_token %}
               <p>Para saber que tipo de libro estas buscando menciona 4 libros que ayudaran a guiar la busqueda.</p>
               <div class="row gy-4">
 
                 <div class="col-md-6">
-                  <input type="text" name="" class="form-control" placeholder="Libro 1" required>
+                  <input type="text" name="libro1" class="form-control" placeholder="Libro 1" required>
                 </div>
 
                 <div class="col-md-6">
-                  <input type="text" name="" class="form-control" placeholder="Libro 2" required>
+                  <input type="text" name="libro2" class="form-control" placeholder="Libro 2" required>
                 </div>
 
                 <div class="col-md-6">
-                  <input type="text" name="" class="form-control" placeholder="Libro 3" required>
+                  <input type="text" name="libro3" class="form-control" placeholder="Libro 3" required>
                 </div>
 
                 <div class="col-md-6">
-                  <input type="text" name="" class="form-control" placeholder="Libro 4" required>
+                  <input type="text" name="libro4" class="form-control" placeholder="Libro 4" required>
                 </div>
 
                 <div class="col-lg-12">
@@ -218,10 +239,6 @@
                 </div>
 
                 <div class="col-md-12 text-center">
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message">Your quote request has been sent successfully. Thank you!</div>
-
                   <button type="submit">Recomiéndame un libro</button>
                 </div>
               </div>
@@ -303,7 +320,7 @@
   <script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
   <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
   <script src="{% static 'vendor/aos/aos.js' %}"></script>
-  <script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+  <!--<script src="{% static 'vendor/php-email-form/validate.js' %}"></script>-->
 
   <!-- Template Main JS File -->
   <script src="{% static 'js/main.js' %}"></script>

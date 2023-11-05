@@ -30,7 +30,7 @@ def response(request):
 
         detalles = request.POST.get('detalles')
         libros = []
-        for libro in ['libro1', 'libro2', 'libro3']:
+        for libro in ['libro1', 'libro2', 'libro3', 'libro4']:
             if libro in request.POST: libros.append(request.POST[libro])
         temas = []
         for tema in ['Fantasía', 'Romance', 'Historia', 'Suspenso', 'Autoayuda', 'Ciencia Ficción']:
