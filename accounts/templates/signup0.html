@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<head>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+
+<div class="card mt-5 mb-3">
+    <div class="row g-0">
+        <div>
+            <div class="card-body">
+                <h5 class="card-title">Registro</h5>
+                {% if error %}
+                    <div class="alert alert-danger mt-3" role="alert">
+                        {{ error }}
+                    </div>
+                {% endif %}               
+                <p class="card-text">
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+ 
+                        <button type="submit" class="btn btn-primary">
+                           Sign Up
+                        </button>
+                    </form>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

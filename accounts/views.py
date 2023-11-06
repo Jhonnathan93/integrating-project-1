@@ -46,11 +46,11 @@ def signup_view(request):
                 return redirect('home')
             
             except IntegrityError:
-                return render(request, 'signup.html', {'form': UserCreateForm, 'error':'Username already taken. Choose new username.'})
+                return render(request, 'signup.html', {'error':'Nombre de usuario en uso, escoge otro.'})
 
-        else: return render(request, 'signup.html', {'form': UserCreateForm, 'error':'Passwords do not match'})
+        else: return render(request, 'signup.html', {'error':'Las contraseñas no concuerdan'})
     
-    return render(request, 'signup.html', {'form': UserCreateForm})
+    return render(request, 'signup.html')
 
 @login_required
 def profile(request):
@@ -90,7 +90,7 @@ def editprofile(request):
 
 def login_view(request):
     if request.method == 'GET':
-        return render(request, 'login.html', {'form': loginForm()})
+        return render(request, 'login.html')
     else:
         form = loginForm(data=request.POST)
 
