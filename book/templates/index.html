@@ -78,7 +78,7 @@
           {% endif %}
                     
           {% if user.is_authenticated %}
-            <li><a class="nav-link" href="{% url 'overview' %}">Reading Lists</a></li>
+            <li><a class="nav-link" href="{% url 'overview' %}">Listas de lectura</a></li>
           {% endif %}
 
           {% if user.is_authenticated %}
@@ -121,7 +121,7 @@
 
         <div class="row g-0">
 
-          <div class="col-lg-5 quote-bg" style="background-image: url('{% static "img/formImage.jpg" %}');"></div>
+          <div class="col-lg-5 quote-bg" style="background-image: url('https://github.com/jhothinnan/Images/blob/main/formImage.jpg?raw=true');"></div>
 
           <div class="col-lg-7">
             <form action = "{% url 'response' %}" method="post" class="php-email-form">

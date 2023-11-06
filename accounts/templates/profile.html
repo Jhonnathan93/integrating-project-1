@@ -1,59 +1,251 @@
-{% extends 'base.html' %}
-{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Logis Bootstrap Template - Services</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href='{% static "img/icon.png" %}' rel="icon">
+  <link href='{% static "img/apple-touch-icon.png" %}' rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href='{% static "vendor/bootstrap/css/bootstrap.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/bootstrap-icons/bootstrap-icons.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/fontawesome-free/css/all.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/glightbox/css/glightbox.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/swiper/swiper-bundle.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/aos/aos.css" %}' rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href='{% static "css/main.css" %}' rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Logis
+  * Updated: Sep 18 2023 with Bootstrap v5.3.2
+  * Template URL: https://bootstrapmade.com/logis-bootstrap-logistics-website-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
 
 <body>
-    <h1>Perfil</h1>
-    <div class="row">
-        <div class="col">
-            <div class="container mt-3">
-                <div class="card" style="width:500px">
 
-                    <img  class="card-img-top" src="{{  profile_picture.url }}" alt="" >
-                    <div class="card-body">
-                        <h2 class="card-title text-center">{{ user.username }}</h4>
-                        <p class="card-text"><strong>Preferencias: </strong> {{ preferences }}</p>
-                        <p class="card-text"><strong>Puntos: </strong>{{ points }}</p>
-                        <a class="btn btn-primary" href="/accounts/editprofile/" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;">
-                            Editar
-                        </a>
+  <!-- ======= Header ======= -->
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
 
-                    </div>
-                </div>
-            </div>
-        </div>
+      <a href="http://127.0.0.1:8000" class="logo d-flex align-items-center">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <h1>BookNexus</h1>
+      </a>
+
+      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="http://127.0.0.1:8000">Inicio</a></li>
+
+          {% if user.is_authenticated %}
+          {% if not user.is_staff %}
+          <li><a class="active" href="{% url 'accounts:profile' %}">Perfil</a></li>
+          {% endif %}
+          {% if user.is_staff %}
+          <li><a class="active" href="http://127.0.0.1:8000/admin/">Perfil</a></li>
+          {% endif %}
+          {% endif %}
+
+          {% if user.is_authenticated %}
+          {% if user.is_staff %}
+          <li><a href="{% url 'reports:report' %}">Géneros y Categorías</a></li>
+          {% endif %}
+          {% endif %}
+
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'top_books' %}">Top de libros</a></li>
+          {% endif %}
+
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'overview' %}">Listas de lectura</a></li>
+          {% endif %}
+
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'accounts:logout' %}">Cerrar Sesión ({{ user.username }})</a></li>
+          {% else %}
+          <li><a href="{% url 'accounts:login' %}">Inicia sesión</a></li>
+          <li><a class="register" href="{% url 'accounts:signup' %}">Regístrate</a></li>
+          {% endif %}
+        </ul>
+      </nav><!-- .navbar -->
+
     </div>
-        <br>
-    <h2>Tus Reading Lists: </h2>
-    <div class="row">
-        {% for readinglist in readinglists %}
-        <div class="col-md-4">
-            <div class="card mb-3 mx-auto" style="height: 400px;"  > 
-                <div class="col">
-                    <img src="{{ readinglist.cover.url }}" class="img-fluid text-center" alt="{{ readinglist.title }} Cover" style="max-height: 250px;" >
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title"><a href="{% url 'detail' readinglist.id %}">{{ readinglist.title }}</a></h5>
-                        <p class="card-text"><small class="text-muted">
-                            Fecha de creación: {{ readinglist.date_created }}
-                        </small></p>
-                        {% if user.is_authenticated and user == readinglist.user and readinglist.title != "Leer más tarde"%}
-                        <a class="btn btn-danger" href="{% url 'deletelist' readinglist.id %}">
-                            Eliminar
-                        </a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    
+  </header><!-- End Header -->
+  <!-- End Header -->
 
-{% comment %} <h1>Perfil de {{ user.username }}</h1>
-<p>Fecha de nacimiento: {{ birthdate }}</p>
-<img src="{{  profile_picture.url }}" alt="">
-<p>Preferencias: {{ preferences }}</p>
-<p>Puntos: {{ points }}</p> {% endcomment %}
+  <main id="main">
+
+    <!-- ======= Breadcrumbs ======= -->
+    <div class="breadcrumbs">
+      <div class="page-header d-flex align-items-center"
+        style="background-image: url('https://github.com/jhothinnan/Images/blob/main/library.jpg?raw=true');">
+        <div class="container position-relative">
+          <div class="row d-flex justify-content-center">
+            <div class="col-lg-6 text-center">
+              <h2>Perfil</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+      <nav>
+        <div class="container">
+          <ol>
+            <li><a href="http://127.0.0.1:8000">Inicio</a></li>
+            <li>Tu perfil</li>
+          </ol>
+        </div>
+      </nav>
+    </div><!-- End Breadcrumbs -->
+
+
+    <section id="team" class="team pt-0">
+        <div class="container" data-aos="fade-up">
+          <div class="row mt-3  " data-aos="fade-up" data-aos-delay="100">
+            <div class="col-lg-3 col-md-6 d-flex">
+              <h3 class="mt-3">Detalles del perfil:</h3>
+            </div>
+            <div class="col-lg-4 col-md-6 d-flex">
+              <h3 class="mt-3">Tus listas de lectura:</h3>
+            </div>
+          </div>
+          <div class="row mt-3  " data-aos="fade-up" data-aos-delay="100">
+            <div class="col-lg-3 col-md-6 d-flex">
+              <div class="member">
+                <img src="{{  profile_picture.url }}" class="img-fluid" alt="">
+                <div class="member-content">
+                  <h3>Nombre de usuario:</h3>
+                  <h4>{{ user.username }}</h4>
+                  <h6 class="mt-2">Preferencias:</h6>
+                  <p>{{ preferences }}</p>
+                  <h6>Puntos:</h6>
+                  <p>{{ points }}</p>
+                  <a class="btn btn-primary p-2" href="/accounts/editprofile/">Editar perfil</a>
+                </div>
+              </div>
+            </div><!-- End Team Member -->
+
+            {% for readinglist in readinglists %}
+              <div class="services col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="card">
+                  <div class="card-img">
+                    <img src="{{ readinglist.cover.url }}" alt="{{ readinglist.title }} Cover" class="img-fluid">
+                  </div>
+                  <h3><a href="{% url 'detail' readinglist.id %}" >{{ readinglist.title }}</a></h3>
+                  <p><small class="text-muted">Fecha de creación: {{ readinglist.date_created }}</small></p>
+                  <h3>Descripción:</h3>
+                  <p>{{ readinglist.description }}</p>
+
+                </div>
+              </div><!-- End Card Item -->
+            {% endfor %}
+  
+          </div>
+  
+        </div>
+      </section><!-- End Our Team Section -->
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-info">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span>BookNexus</span>
+          </a>
+          <p>Booknexus es una aplicación basada en web que tiene como objetivo permitir al usuario descubrir libros e
+            interactuar con ellos. Es una plataforma de recomendación de libros que ofrece sugerencias personalizadas
+            basadas en las preferencias, el historial de lectura y los intereses de los usuarios. Además, la plataforma
+            proporciona información completa sobre varios libros, incluidos detalles del autor, sinopsis y géneros, lo
+            que permite a los usuarios tomar decisiones informadas sobre sus opciones de lectura.</p>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Navegación</h4>
+          <ul>
+            <li><a href="#">Inico</a></li>
+            <li><a href="#">Iniciar sesión</a></li>
+            <li><a href="#">Registrate</a></li>
+            <li><a href="#">Perfil</a></li>
+            <li><a href="#">Preguntas frecuentes</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+          <h4>Contactanos</h4>
+          <p>
+            book.nexus.p1@gmail.com <br><br>
+            <strong>Manuela Castaño Franco:</strong> <br> mcastanof1@eafit.edu.co<br>
+            <strong>Santiago Neusa Ruíz:</strong> <br> sneusar@eafit.edu.co <br>
+            <strong>Jhonnathan Stiven Ocampo Díaz:</strong> <br> jsocampod@eafit.edu.co<br>
+          </p>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Referencias</h4>
+          Esta pagina fue diseñada usando imagenes de googleBooks y de Freepik.com, todos los derechos reservados a sus
+          autores.
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container mt-4">
+      <div class="copyright">
+        &copy; Copyright <strong><span>BookNexus</span></strong>.
+      </div>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/logis-bootstrap-logistics-website-template/ -->
+        <!-- Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> -->
+      </div>
+    </div>
+
+  </footer><!-- End Footer -->
+  <!-- End Footer -->
+
+  <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
+
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
+  <script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'js/main.js' %}"></script>
+
 </body>
-{% endblock content %}
+
+</html>

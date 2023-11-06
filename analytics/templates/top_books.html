@@ -1,27 +1,230 @@
-{% extends 'base.html' %}
-{% block content %}
-<main>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-6 mt-5">
-                <h3>Libros más leidos</h3>
-                <ol class="list-group list-group-numbered">
-                    {% for book in top_books %}
-                    <li class="list-group-item">{{ book.title }} - {{ book.book_count }} Lectura(s)</li>
-                    {% endfor %}
-                </ol>
-            </div>
-            <div class="col-6 mt-5">
-                <h3>Libros menos leídos</h3>
-                <ol class="list-group list-group-numbered">
-                    {% for book in least_books %}
-                    <li class="list-group-item">{{ book.title }} - {{ book.book_count }} Lectura(s)</li>
-                    {% endfor %}
-                </ol>
-            </div>
-        </div>
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Logis Bootstrap Template - Services</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href='{% static "img/icon.png" %}' rel="icon">
+  <link href='{% static "img/apple-touch-icon.png" %}' rel="apple-touch-icon">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  
+  <!-- Vendor CSS Files -->
+  <link href='{% static "vendor/bootstrap/css/bootstrap.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/bootstrap-icons/bootstrap-icons.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/fontawesome-free/css/all.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/glightbox/css/glightbox.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/swiper/swiper-bundle.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/aos/aos.css" %}' rel="stylesheet">
+  
+  <!-- Template Main CSS File -->
+  <link href='{% static "css/main.css" %}' rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Logis
+  * Updated: Sep 18 2023 with Bootstrap v5.3.2
+  * Template URL: https://bootstrapmade.com/logis-bootstrap-logistics-website-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+
+      <a href="http://127.0.0.1:8000" class="logo d-flex align-items-center">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <h1>BookNexus</h1>
+      </a>
+
+      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="http://127.0.0.1:8000">Inicio</a></li>
+
+          {% if user.is_authenticated %}
+            {% if not user.is_staff %}
+              <li><a href="{% url 'accounts:profile' %}">Perfil</a></li>
+            {% endif %}
+            {% if user.is_staff %}
+              <li><a href="http://127.0.0.1:8000/admin/">Perfil</a></li>
+            {% endif %}
+          {% endif %}
+
+          {% if user.is_authenticated %}
+            {% if user.is_staff %}
+              <li><a href="{% url 'reports:report' %}">Géneros y Categorías</a></li>
+            {% endif %}
+          {% endif %}
+
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'top_books' %}">Top de libros</a></li>
+          {% endif %}
+                    
+          {% if user.is_authenticated %}
+            <li><a class="active" href="{% url 'overview' %}">Listas de lectura</a></li>
+          {% endif %}
+
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'accounts:logout' %}">Cerrar Sesión ({{ user.username }})</a></li>
+          {% else %}
+            <li><a href="{% url 'accounts:login' %}">Inicia sesión</a></li> 
+            <li><a class="register" href="{% url 'accounts:signup' %}">Regístrate</a></li>
+          {% endif %}
+        </ul> 
+      </nav><!-- .navbar -->
+
     </div>
-    
-</main>
-    
-{% endblock content %}
+  </header><!-- End Header -->
+  <!-- End Header -->
+
+  <main id="main">
+
+    <!-- ======= Breadcrumbs ======= -->
+    <div class="breadcrumbs">
+      <div class="page-header d-flex align-items-center" style="background-image: url('https://github.com/jhothinnan/Images/blob/main/library.jpg?raw=true');">
+        <div class="container position-relative">
+          <div class="row d-flex justify-content-center">
+            <div class="col-lg-6 text-center">
+              <h2>Top de libros</h2>
+                <p>Te presentamos una selección de las obras literarias más destacadas. Aquí, podrás explorar las lecturas más populares entre nuestra comunidad de lectores apasionados. Ya sea que estés buscando inspiración para tu próxima lectura o simplemente quieras mantenerte al tanto de las tendencias literarias, esta sección es tu guía definitiva para descubrir los mejores libros en el mercado</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <nav>
+        <div class="container">
+          <ol>
+            <li><a href="http://127.0.0.1:8000">Inicio</a></li>
+            <li>Top de libros</li>
+          </ol>
+        </div>
+      </nav>
+    </div><!-- End Breadcrumbs -->
+
+        <!-- ======= Service Details Section ======= -->
+        <section id="service-details" class="service-details">
+            <div class="container" data-aos="fade-up">
+      
+              <div class="row gy-4">
+      
+                <div class="col-lg-6">
+                  <div class="services-list">
+                    {% for book in top_books %}
+                        <a href="#">{{ book.title }} - {{ book.book_count }} Lectura(s)</a>
+                    {% endfor %}
+                  </div>
+      
+                  <h4>Más Leídos</h4>
+                  <p>¿Curioso por conocer cuáles son los libros más leídos de la temporada? En nuestra subsección 'Más Leídos', te presentamos una lista de los títulos que han cautivado a un gran número de lectores. Desde bestsellers internacionales hasta obras que han tocado los corazones de muchos, aquí encontrarás lo que está en boca de todos. Sumérgete en estas historias que han dejado una huella imborrable en los lectores de todo el mundo.</p>
+                </div>
+      
+                <div class="col-lg-6">
+                  <div class="services-list">
+                    {% for book in least_books %}
+                        <a href="#">{{ book.title }} - {{ book.book_count }} Lectura(s)</a>
+                    {% endfor %}
+                  </div>
+      
+                  <h4>Menos leidos</h4>
+                  <p>Si eres de los que disfrutan explorar gemas literarias ocultas, nuestra subsección 'Menos Leídos' es el lugar perfecto para ti. Aquí te invitamos a descubrir joyas literarias que, a pesar de su calidad excepcional, aún no han alcanzado la fama masiva. Explora obras únicas, innovadoras y llenas de potencial que merecen ser leídas y apreciadas. Encontrarás libros que pueden sorprenderte y enriquecer tu biblioteca personal con tesoros literarios por descubrir</p>
+                </div>
+      
+              </div>
+      
+            </div>
+          </section><!-- End Service Details Section -->
+
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-info">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span>BookNexus</span>
+          </a>
+          <p>Booknexus es una aplicación basada en web que tiene como objetivo permitir al usuario descubrir libros e interactuar con ellos. Es una plataforma de recomendación de libros que ofrece sugerencias personalizadas basadas en las preferencias, el historial de lectura y los intereses de los usuarios. Además, la plataforma proporciona información completa sobre varios libros, incluidos detalles del autor, sinopsis y géneros, lo que permite a los usuarios tomar decisiones informadas sobre sus opciones de lectura.</p>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Navegación</h4>
+          <ul>
+            <li><a href="#">Inico</a></li>
+            <li><a href="#">Iniciar sesión</a></li>
+            <li><a href="#">Registrate</a></li>
+            <li><a href="#">Perfil</a></li>
+            <li><a href="#">Preguntas frecuentes</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+          <h4>Contactanos</h4>
+          <p>
+            book.nexus.p1@gmail.com <br><br>
+            <strong>Manuela Castaño Franco:</strong> <br> mcastanof1@eafit.edu.co<br>
+            <strong>Santiago Neusa Ruíz:</strong> <br> sneusar@eafit.edu.co <br>
+            <strong>Jhonnathan Stiven Ocampo Díaz:</strong> <br> jsocampod@eafit.edu.co<br>
+          </p>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Referencias</h4>
+          Esta pagina fue diseñada usando imagenes de googleBooks y de Freepik.com, todos los derechos reservados a sus autores.
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container mt-4">
+      <div class="copyright">
+        &copy; Copyright <strong><span>BookNexus</span></strong>.
+      </div>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/logis-bootstrap-logistics-website-template/ -->
+        <!-- Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> -->
+      </div>
+    </div>
+
+  </footer><!-- End Footer -->
+  <!-- End Footer -->
+
+  <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
+  <script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'js/main.js' %}"></script>
+
+</body>
+
+</html>
