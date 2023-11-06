@@ -73,11 +73,11 @@
           {% endif %}
 
           {% if user.is_authenticated %}
-            <li><a href="{% url 'top_books' %}">Top de libros</a></li>
+            <li><a class="active" href="{% url 'top_books' %}">Top de libros</a></li>
           {% endif %}
                     
           {% if user.is_authenticated %}
-            <li><a class="active" href="{% url 'overview' %}">Listas de lectura</a></li>
+            <li><a  href="{% url 'overview' %}">Listas de lectura</a></li>
           {% endif %}
 
           {% if user.is_authenticated %}

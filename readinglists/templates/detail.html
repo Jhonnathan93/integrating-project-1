@@ -1,203 +1,384 @@
-{% extends 'base.html' %}
-{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Logis Bootstrap Template - Services</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href='{% static "img/icon.png" %}' rel="icon">
+  <link href='{% static "img/apple-touch-icon.png" %}' rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href='{% static "vendor/bootstrap/css/bootstrap.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/bootstrap-icons/bootstrap-icons.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/fontawesome-free/css/all.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/glightbox/css/glightbox.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/swiper/swiper-bundle.min.css" %}' rel="stylesheet">
+  <link href='{% static "vendor/aos/aos.css" %}' rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href='{% static "css/main.css" %}' rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Logis
+  * Updated: Sep 18 2023 with Bootstrap v5.3.2
+  * Template URL: https://bootstrapmade.com/logis-bootstrap-logistics-website-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
 </head>
-<style>
-    .text-justify {
-        text-align: justify;
-    }
-    .custom-image {
-        max-width: 100%;
-        max-height: 100%;
-    }
-</style>
+
 <body>
-    <div class="container mt-4" >
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-success">
-                {{ message }}
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+
+      <a href="http://127.0.0.1:8000" class="logo d-flex align-items-center">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <h1>BookNexus</h1>
+      </a>
+
+      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="http://127.0.0.1:8000">Inicio</a></li>
+
+          {% if user.is_authenticated %}
+          {% if not user.is_staff %}
+          <li><a href="{% url 'accounts:profile' %}">Perfil</a></li>
+          {% endif %}
+          {% if user.is_staff %}
+          <li><a href="http://127.0.0.1:8000/admin/">Perfil</a></li>
+          {% endif %}
+          {% endif %}
+
+          {% if user.is_authenticated %}
+          {% if user.is_staff %}
+          <li><a href="{% url 'reports:report' %}">Géneros y Categorías</a></li>
+          {% endif %}
+          {% endif %}
+
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'top_books' %}">Top de libros</a></li>
+          {% endif %}
+
+          {% if user.is_authenticated %}
+          <li><a class="active" href="{% url 'overview' %}">Listas de lectura</a></li>
+          {% endif %}
+
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'accounts:logout' %}">Cerrar Sesión ({{ user.username }})</a></li>
+          {% else %}
+          <li><a href="{% url 'accounts:login' %}">Inicia sesión</a></li>
+          <li><a class="register" href="{% url 'accounts:signup' %}">Regístrate</a></li>
+          {% endif %}
+        </ul>
+      </nav><!-- .navbar -->
+
+    </div>
+  </header><!-- End Header -->
+  <!-- End Header -->
+
+  <main id="main">
+
+    <!-- ======= Breadcrumbs ======= -->
+    <div class="breadcrumbs">
+      <div class="page-header d-flex align-items-center"
+        style="background-image: url('https://github.com/jhothinnan/Images/blob/main/library.jpg?raw=true');">
+        <div class="container position-relative">
+          <div class="row d-flex justify-content-center">
+            <div class="col-lg-6 text-center">
+              <h2>Listas de lectura</h2>
+              <p>Con nuestra función de lista de lectura, podrás organizar y guardar tus libros favoritos de una manera
+                sencilla y conveniente. Ya no tendrás que preocuparte por perder el rastro de tus lecturas pendientes o
+                libros más queridos. Crea tu lista personalizada y disfruta de una experiencia de lectura más organizada
+                y gratificante.</p>
             </div>
-            {% endfor %}
-        {% endif %}
-        <h1>Detalles de la Reading List</h1>
-        <div class="card mb-3">
+          </div>
+        </div>
+      </div>
+      <nav>
+        <div class="container">
+          <ol>
+            <li><a href="http://127.0.0.1:8000">Inicio</a></li>
+            <li>Listas de lectura</li>
+          </ol>
+        </div>
+      </nav>
+    </div><!-- End Breadcrumbs -->
 
-            <div class="row g-0">
-                <div class="col-md-3">
-                    <img src="{{ reading_list.cover.url }}" class="img-fluid custom-image" alt="{{ reading_list.title }} Cover" >
-                </div>
-                <div class="col-md-9">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ reading_list.title }}</h5>
-                        <p class="card-text">{{ reading_list.description }}</p>
-                        <p class="card-text text-muted">
-                            Creada por: {{ user.username }}
-                            <br>
-                            Fecha de creación: {{ reading_list.date_created }}
-                        </p>
-                        {% if user.is_authenticated and reading_list.user == user %}
-                        <a class="btn btn-primary" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;" href="{% url 'updatereadinglist' reading_list.id %}">
-                            Editar
-                        </a>
-                        <button class="btn btn-info" style="background-color: #274690; color: #fff; border: solid #274690;" data-bs-toggle="modal" data-bs-target="#shareModal">
-                            Compartir
-                        </button>
-                        {% if reading_list.title != "Leer más tarde"%}
-                        <a class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;" href="{% url 'deletelist' reading_list.id %}">
-                            Eliminar
-                        </a>
-                        {% endif %}
-                        {% endif %}
+    <!-- ======= Features Section ======= -->
+    <section id="features" class="features">
+      <div class="container">
 
-                        
-                    </div>
-                </div>
+        <div class="row gy-4 align-items-center features-item" data-aos="fade-up">
+
+          <div class="col-md-5">
+            <img src="{{ reading_list.cover.url }}" class="img-fluid" alt="{{ reading_list.title }} Cover">
+          </div>
+          <div class="col-md-7">
+            <h3>{{ reading_list.title }}</h3>
+            <p>{{ reading_list.description }}</p>
+            <p class="text-muted"> Creada por: {{ user.username }}
+              <br>
+              Fecha de creación: {{ reading_list.date_created }}
+            </p>
+            {% if user.is_authenticated and reading_list.user == user %}
+            <a class="btn btn-primary" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;"
+              href="{% url 'updatereadinglist' reading_list.id %}">Editar</a>
+            <button class="btn btn-info" style="background-color: #274690; color: #fff; border: solid #274690;"
+              data-bs-toggle="modal" data-bs-target="#shareModal">Compartir</button>
+            {% if reading_list.title != "Leer más tarde"%}
+            <a class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;"
+              href="{% url 'deletelist' reading_list.id %}">Eliminar</a>
+            {% endif %}
+            {% endif %}
+          </div>
+        </div><!-- Features Item -->
+
+        <div class="row gy-4 mt-1 justify-content-center" data-aos="fade-up">
+          <div class="col-lg-8">
+            {% if user.is_authenticated and reading_list.user == user %}
+            <h3 class="mt-4">Agregar Libros</h3>
+
+            <p class="text-muted">Escribe aquí el título y autor del libro que deseas añadir a tu lista.</p>
+
+            <form method="post" class="php-email-form mt-3">
+              {% csrf_token %}
+              <div class="mb-3">
+                <input type="text" name="title" class="form-control" required id="id_title"
+                  placeholder="Título del libro que deseas agregar:">
+              </div>
+              <div class="mb-3">
+                <input type="text" name="author" class="form-control" id="id_author"
+                  placeholder="Nombre del autor del libro:" required>
+              </div>
+              <button type="submit" class="btn btn-primary"
+                style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;">Agregar</button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <section id="pricing" class="pricing">
+      <div class="container" data-aos="fade-up">
+        <div class="row gy-4">
+          <h2 class="text-center">Libros en esta Lista de lectura</h2>
+
+          {% for book in books %}
+
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="pricing-item">
+              <div class="text-center card-img">
+                {% if book.cover %}
+                <img src="{{  book.cover }}" alt="{{ book.title }} Cover" class="img-fluid ">
+                {% endif %}
+              </div>
+              <h3 class="mt-3">{{ book.title }}</h3>
+              <h6 class="text-body-secondary">Autor(es):</h6>
+              <p class="card-text">De {{ book.author }}</p>
+              <p class="card-text" id="book-description">{{ book.description|slice:":400" }}{% if book.description|length > 400 %}...</p>
+              <div class="text-center">
+                <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                  data-bs-target="#descriptionModal{{ book.id }}">Leer más</button>
+              {% endif %}
+                {% if user.is_authenticated and reading_list.user == user %}
+                <a class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;"
+                  href="{% url 'deletebook' reading_list.id book.id %}">
+                  Eliminar
+                </a>
+                {% endif %}
+              </div>
+
             </div>
-        </div>
+          </div><!-- End Pricing Item -->
 
-        
-        {% if user.is_authenticated and reading_list.user == user %}
-    <h3 class="mt-4">Agregar Libros</h3>
-
-    <p class="text-muted">Escribe aquí el título y autor del libro que deseas añadir.</p>
-
-    <form method="post" class="mt-3">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label for="id_title">Título:</label>
-            <input type="text" name="title" class="form-control" id="id_title" required>
-        </div>
-        <div class="mb-3">
-            <label for="id_author">Autor:</label>
-            <input type="text" name="author" class="form-control" id="id_author" required>
-        </div>
-        <button type="submit" class="btn btn-primary" style="background-color: #39A0ED; color: #fff; border: solid #39A0ED;">Agregar</button>
-    </form>
-{% endif %}
-
-
-        {% if error_message %}
-        <div class="alert alert-danger">
-            {{ error_message }}
-        </div>
-        {% endif %}
-
-        
-
-        <h3 class="mt-4">Libros en esta Reading List</h3>
-
-
-        
-        {% for book in books %}
-        <div class="card mb-3 mx-auto"> 
-            <div class="row g-0">
-                <div class="col-md-4">
-                    
-                    {% if book.cover %}
-                        
-                    <img src="{{ book.cover }}" alt="{{ book.title }} Cover" class="img-fluid" style="width: 250px; height: 350px;">
-
-                    {% endif %}
+          <div class="modal fade" id="descriptionModal{{ book.id }}" tabindex="-1"
+            aria-labelledby="descriptionModalLabel{{ book.id }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title" id="descriptionModalLabel{{ book.id }}">Descripción completa</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h3 class="card-title">{{ book.title }}</h3>
-                        <p class="card-text">De {{ book.author }}</p>
-                        <p class="card-text" id="book-description">{{ book.description|slice:":400" }}{% if book.description|length > 400 %}...</p>
-                            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#descriptionModal{{ book.id }}">
-                                Leer más
-                            </button>
-                            {% endif %}
-                            <br>
-                            <br>
-                            {% if user.is_authenticated and reading_list.user == user %}
-                            <a class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;" href="{% url 'deletebook' reading_list.id book.id %}">
-                                Eliminar
-                            </a>
-                            {% endif %}
-    
-                    </div>
+
+                <div class="modal-body ">
+                  {% if book.cover %}
+                  <img class="card-img-top mx-auto d-block img-fluid rounded-start" style="width: 200px; height: 300px;"
+                    src="{{ book.cover }}" alt="">
+                  {% endif %}
+                  <br>
+                  <h5 class="text-center">{{ book.title }}</h5>
+                  <h5 class="text-center"><em>{{ book.author }}</em></h5>
+                  <p class="text-justify">{{ book.description }}</p>
+
                 </div>
-                        <!-- Modal para la descripción completa-->
-                        <div class="modal fade" id="descriptionModal{{ book.id }}" tabindex="-1" aria-labelledby="descriptionModalLabel{{ book.id }}" aria-hidden="true">
-                            <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title" id="descriptionModalLabel{{ book.id }}">Descripción completa</h4>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    
-                                    <div class="modal-body ">
-                                        {% if book.cover %}
-                                        <img class="card-img-top mx-auto d-block img-fluid rounded-start" style="width: 200px; height: 300px;" src="{{ book.cover }}" alt="">
-                                        {% endif %}
-                                        <br>
-                                        <h5 class="text-center">{{ book.title }}</h5>
-                                        <h5 class="text-center"><em>{{ book.author }}</em></h5>
-                                        <p class="text-justify">{{ book.description }}</p>
-
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
 
 
-                    </div>      
-        </div>
-        {% endfor %}
 
-        <!-- Compartir Modal -->
-        <div class="modal fade" id="shareModal" tabindex="-1" aria-hidden="true">
+          <div class="modal fade" id="shareModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="shareModalLabel">Compartir esta lista</h5>
-                        
-                        <button type="button"  class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Dar click en el botón para copiar URL de la lista:</p>
-                        <input type="text" id="shareableURL" class="form-control" value="{{ reading_list.get_absolute_url }}" readonly>
-                        <button id="copyURLButton" class="btn btn-primary">Copiar</button>
-                        <div id="copyToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                            <div class="toast-header">
-                                <strong class="me-auto">Copiado.</strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close">
-                                
-                                </button>
-                            </div>
-                            <div class="toast-body">
-                                Copiada correctamente al portapapeles.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
-                    </div>
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="shareModalLabel">Compartir esta lista</h5>
+
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                  </button>
                 </div>
+                <div class="modal-body">
+                  <p>Dar click en el botón para copiar URL de la lista:</p>
+                  <input type="text" id="shareableURL" class="form-control" value="{{ reading_list.get_absolute_url }}"
+                    readonly>
+                  <div class="d-grid gap-2 col-6 mx-auto">
+                    <button id="copyURLButton" class="mt-3 btn btn-primary">Copiar</button>
+                  </div>
+                  <div class="row">
+                    <div id="copyToast" class="ms-3 toast mt-2 align-self-center" role="alert" aria-live="assertive" aria-atomic="true">
+                      <div class="toast-header">
+                        <strong class="me-auto">Copiado.</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                      </div>
+                      <div class="toast-body">
+                        Copiada correctamente al portapapeles.
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+              </div>
             </div>
+          </div>
+
+
+
+          {% endfor %}
+
         </div>
+      </div>
+
+
+
+
+
+    </section><!-- End Features Section -->
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-info">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span>BookNexus</span>
+          </a>
+          <p>Booknexus es una aplicación basada en web que tiene como objetivo permitir al usuario descubrir libros e
+            interactuar con ellos. Es una plataforma de recomendación de libros que ofrece sugerencias personalizadas
+            basadas en las preferencias, el historial de lectura y los intereses de los usuarios. Además, la plataforma
+            proporciona información completa sobre varios libros, incluidos detalles del autor, sinopsis y géneros, lo
+            que permite a los usuarios tomar decisiones informadas sobre sus opciones de lectura.</p>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Navegación</h4>
+          <ul>
+            <li><a href="#">Inico</a></li>
+            <li><a href="#">Iniciar sesión</a></li>
+            <li><a href="#">Registrate</a></li>
+            <li><a href="#">Perfil</a></li>
+            <li><a href="#">Preguntas frecuentes</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+          <h4>Contactanos</h4>
+          <p>
+            book.nexus.p1@gmail.com <br><br>
+            <strong>Manuela Castaño Franco:</strong> <br> mcastanof1@eafit.edu.co<br>
+            <strong>Santiago Neusa Ruíz:</strong> <br> sneusar@eafit.edu.co <br>
+            <strong>Jhonnathan Stiven Ocampo Díaz:</strong> <br> jsocampod@eafit.edu.co<br>
+          </p>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Referencias</h4>
+          Esta pagina fue diseñada usando imagenes de googleBooks y de Freepik.com, todos los derechos reservados a sus
+          autores.
+        </div>
+
+      </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script>
-        document.getElementById('copyURLButton').addEventListener('click', function () {
-            var urlInput = document.getElementById('shareableURL');
-            urlInput.select();
-            document.execCommand('copy');
-            var toast = new bootstrap.Toast(document.getElementById('copyToast'));
-            toast.show();
-        });
-    </script>
-    </body>
+    <div class="container mt-4">
+      <div class="copyright">
+        &copy; Copyright <strong><span>BookNexus</span></strong>.
+      </div>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/logis-bootstrap-logistics-website-template/ -->
+        <!-- Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> -->
+      </div>
+    </div>
+
+  </footer><!-- End Footer -->
+  <!-- End Footer -->
+
+  <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
+
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
+  <script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/aos/aos.js' %}"></script>
+  <script>
+    document.getElementById('copyURLButton').addEventListener('click', function () {
+        var urlInput = document.getElementById('shareableURL');
+        urlInput.select();
+        document.execCommand('copy');
+        var toast = new bootstrap.Toast(document.getElementById('copyToast'));
+        toast.show();
+    });
+</script>
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'js/main.js' %}"></script>
+
+</body>
+
 </html>
-{% endblock content %}

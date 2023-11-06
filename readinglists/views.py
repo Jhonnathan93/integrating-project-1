@@ -69,7 +69,7 @@ def createlist(request):
             existing_reading_lists = ReadingList.objects.filter(user=request.user)
             readinglists = ReadingList.objects.filter(user=request.user).order_by('-date_created')
 
-            if existing_reading_lists.count() >= 3:
+            if existing_reading_lists.count() >= 4:
                 error_message3 = "Excediste la cantidad permitida de reading lists"
                 return render(request, 'overview.html', {"readinglists": readinglists, 'error_message': error_message3})
 

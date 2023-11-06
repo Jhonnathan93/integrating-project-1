@@ -79,7 +79,7 @@
           {% endif %}
 
           {% if user.is_authenticated %}
-          <li><a class="active" href="{% url 'overview' %}">Listas de lectura</a></li>
+          <li><a href="{% url 'overview' %}">Listas de lectura</a></li>
           {% endif %}
 
           {% if user.is_authenticated %}
@@ -142,7 +142,7 @@
                 {% if not forloop.last %}, {% endif %}
                 {% endfor %}
               </small>
-              <p class="card-text" id="elemento-descripcion">{{ elemento.descripcion|slice:":400" }}{% if elemento.descripcion|length > 400 %}...</p>
+              <p class="card-text mt-2" id="elemento-descripcion">{{ elemento.descripcion|slice:":400" }}{% if elemento.descripcion|length > 400 %}...</p>
               
               
               <a href="#" class="buy-btn me-3 mb-3" data-bs-toggle="modal"
@@ -150,13 +150,22 @@
               {% endif %}
               <br>
               <a href="#" class="buy-btn me-3 mb-3" onclick="window.location.href='{{ elemento.buy_link }}'">Comprar</a>
-              <a href="#" class="buy-btn dropdown-toggle me-3 mb-3" role="button" data-bs-toggle="dropdown">Más
-                opciones</a>
+              <div class="book-details"
+                                                data-title="{{ elemento.titulo }}"
+                                                data-author="{{ elemento.autores|join:',' }}"
+                                                data-description="{{ elemento.descripcion }}"
+                                                data-buy-link="{{ elemento.buy_link }}"
+                                                data-cover="{{elemento.imagen_enlace}}"
+
+                                                
+                              >
+              <a href="#" class="buy-btn dropdown-toggle me-3 mb-3" role="button" data-bs-toggle="dropdown">Más opciones</a>
 
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#" onclick="addToReadLater(this)">Leer mas tarde</a></li>
-                <li><a class="dropdown-item" href="#" onclick="markAsNotRecommended(this)">No recomendar</a></li>
+                <li><a class="dropdown-item btn-add-to-list" href="#" onclick="addToReadLater(this)">Leer mas tarde</a></li>
+                <li><a class="dropdown-item btn-mark-as-not-recommended" href="#" onclick="markAsNotRecommended(this)">No recomendar</a></li>
               </ul>
+            </div>
             </div>
           </div><!-- End Pricing Item -->
 
@@ -190,6 +199,7 @@
               </div>
             </div>
           </div>
+          
           <div class="toast custom-toast" id="successToast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
               <strong class="mr-auto">Éxito</strong>
@@ -308,6 +318,158 @@
 
   <!-- Template Main JS File -->
   <script src="{% static 'js/main.js' %}"></script>
+
+  <script>
+        
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                
+                if (cookie.substring(0, name.length + 1) === name + '=') {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    let isEventListenerAdded = isEventListenerAdded || false;
+    
+    function showSuccessToast(message) {
+        const successToast = document.getElementById('successToast');
+        const toastBody = successToast.querySelector('.toast-body');
+        toastBody.innerText = message;
+      
+        const toast = new bootstrap.Toast(successToast);
+        toast.show();
+      }
+      
+      function showErrorToast(message) {
+        const errorToast = document.getElementById('errorToast');
+        const toastBody = errorToast.querySelector('.toast-body');
+        toastBody.innerText = message;
+      
+        const toast = new bootstrap.Toast(errorToast);
+        toast.show();
+      }
+
+    function addToReadLater(button) {
+        if (button.disabled) {
+            return; 
+        }
+        console.log('Button clicked'); 
+        const csrftoken = getCookie('csrftoken');
+
+        const bookDetails = button.closest('.book-details');
+        console.log('bookDetails:', bookDetails);
+        if (bookDetails) {
+            const title = bookDetails.getAttribute('data-title');
+            const author = bookDetails.getAttribute('data-author');
+            const description = bookDetails.getAttribute('data-description');
+            const buyLink = bookDetails.getAttribute('data-buy-link');
+            const cover = bookDetails.getAttribute('data-cover');
+
+           
+            console.log('Title: ' + title);
+            console.log('Author: ' + author);
+            console.log('Description: ' + description);
+            console.log('Buy Link: ' + buyLink);
+            console.log('Cover: ' + cover);
+
+            if (title && author && description && buyLink) {
+                button.disabled = true;
+                
+                fetch('/add-to-list/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    body: JSON.stringify({
+                        title,
+                        author,
+                        description,
+                        buyLink,
+                        cover,
+                        list: 'Leer más tarde',
+                    }),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.message) {
+                        showSuccessToast(data.message);
+                        button.disabled = false;
+                    } else if (data.error) {
+                        showErrorToast(data.error);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                })
+                .finally(() => {
+                    button.removeEventListener('click', addToReadLater);
+                });
+        } else {
+            showErrorToast('Book data is incomplete or missing');
+        }
+    } else {
+        showErrorToast('Book details not found');
+    }
+    }
+    
+
+    if (!isEventListenerAdded) {
+        document.getElementById('book-recommendations-container').addEventListener('click', function (event) {
+            if (event.target.classList.contains('btn-add-to-list')) {
+                addToReadLater(event.target); 
+            }
+        });
+
+        isEventListenerAdded = true;
+    }
+
+    function markAsNotRecommended(button) {
+        if (button.classList.contains('disabled')) {
+            
+            return;
+        }
+    
+        const csrftoken = getCookie('csrftoken');
+        const bookDetails = button.closest('.book-details');
+        const title = bookDetails.getAttribute('data-title');
+        const author = bookDetails.getAttribute('data-author');
+    
+        fetch('/mark-as-not-recommended/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({
+                title,
+                author,
+            }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.message) {
+                showSuccessToast(data.message);
+               
+                button.classList.add('disabled');
+            } else if (data.error) {
+                showErrorToast(data.error);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+    
+</script>
 
 </body>
 
