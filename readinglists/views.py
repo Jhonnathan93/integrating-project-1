@@ -1,8 +1,6 @@
 from django.shortcuts import render
 from .models import ReadingList
 from book.models import Book
-from .forms import ReadingListForm
-from .forms import AddBookForm
 from django.http import HttpResponseServerError
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
@@ -35,16 +33,12 @@ def add_to_reading_list(request):
     buy_link = data.get('buyLink')
     cover= data.get('cover')
 
-
     try:
-        
         reading_list = ReadingList.objects.get(user=request.user,title="Leer más tarde")
         
     except json.JSONDecodeError:
-
         return JsonResponse({'error': 'Invalid JSON data'}, status=400)
  
-    
     new_book = Book.objects.create(
         title=title,
         author=author,
@@ -63,63 +57,52 @@ def add_to_reading_list(request):
     return JsonResponse(data)
     
     
-    
 @login_required
 def createlist(request):
 
     if request.method == 'POST':
-        form = ReadingListForm(request.POST, request.FILES)
-        books = []
-        print(request.POST)
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        cover = request.FILES.get('cover')
  
-        if form.is_valid():
+        if title and description and cover:
             existing_reading_lists = ReadingList.objects.filter(user=request.user)
             readinglists = ReadingList.objects.filter(user=request.user).order_by('-date_created')
 
-            if existing_reading_lists.count() >= 4:
+            if existing_reading_lists.count() >= 3:
                 error_message3 = "Excediste la cantidad permitida de reading lists"
                 return render(request, 'overview.html', {"readinglists": readinglists, 'error_message': error_message3})
 
-            reading_list = form.save(commit=False)
-            reading_list.user = request.user
+            reading_list = ReadingList(title=title, description=description, cover=cover, user=request.user)
             reading_list.save()
+            
 
             messages.success(request, "Reading list creada exitosamente.")
             return redirect('detail', reading_list.id)
 
         else:
             messages.error(request, "Error creando la reading list. Verifique la información ingresada.")
-            print(form.errors)
+            
 
     else:
-        form = ReadingListForm()
+        return render(request, 'createlist.html')
 
-    return render(request, 'createlist.html', {'form': form})
 
 def detail(request, reading_list_id):
-    
     try:
         reading_list = get_object_or_404(ReadingList, id=reading_list_id)
         books = reading_list.books.all()
-        
+
         if request.method == 'POST':
-            book_form = AddBookForm(request.POST)
-            if book_form.is_valid():
-                
-                
-                
+            title = request.POST.get('title')
+            author = request.POST.get('author')
+
+            if title and author:
                 if reading_list.books.count() <= 14:
-                    
-                
-                    title_form = book_form.cleaned_data['title']
-                    author_form = book_form.cleaned_data['author']
-                    
-                    title, author,cover_url, synopsis, average_rating, year, categories, isbn, link = fetch_book_info(title_form, author_form)
-                    
+                    title, author, cover_url, synopsis, average_rating, year, categories, isbn, link = fetch_book_info(title, author)
+
                     if cover_url and synopsis:
-                        
                         new_book = Book.objects.create(title=title, author=author, cover=cover_url, isbn=isbn)
-                        
                         reading_list.books.add(new_book)
                         new_book.description = synopsis
                         dateparts = year.split('-')
@@ -128,39 +111,30 @@ def detail(request, reading_list_id):
                         new_book.topics = categories
                         new_book.buy_link = link
                         new_book.save()
-                        
+
                         messages.success(request, "Libro agregado exitosamente.")
-                    else: 
+                    else:
                         error_message1 = "Título o autor inválidos. Verifique la información e inténtelo de nuevo."
-                        return render(request, 'detail.html', {'reading_list': reading_list, 'book_form': book_form, "books": books, 'error_message': error_message1})
-                    
+                        return render(request, 'detail.html', {'reading_list': reading_list, 'books': books, 'error_message': error_message1})
                 else:
-                    error_message = "Exediste la cantidad de libros permitida en una reading list"
-                    return render(request, 'detail.html', {'reading_list': reading_list, 'book_form': book_form, "books": books, 'error_message': error_message})
-                    
+                    error_message = "Excediste la cantidad de libros permitida en una reading list"
+                    return render(request, 'detail.html', {'reading_list': reading_list, 'books': books, 'error_message': error_message})
             else:
-                
-                return render(request, 'detail.html', {'reading_list': reading_list, 'book_form': book_form, "books": books})
+                error_message1 = "Título o autor no pueden estar vacíos."
+                return render(request, 'detail.html', {'reading_list': reading_list, 'books': books, 'error_message': error_message1})
         else:
-            
-            book_form = AddBookForm()
+            books = reading_list.books.all()
+            print(f"Reading List ID: {reading_list_id}")
+            print(f"Number of Books: {books.count()}")
 
-        books = reading_list.books.all()
+            if books:
+                first_book = books[0]
 
-        print(f"Reading List ID: {reading_list_id}")
-        print(f"Number of Books: {books.count()}")
-
-        if books:
-            first_book = books[0]
-            
-        
-        return render(request, 'detail.html', {'reading_list': reading_list, 'book_form': book_form, "books": books})
-
+        return render(request, 'detail.html', {'reading_list': reading_list, 'books': books})
     except ValueError as e:
         print(f"ValueError: {e}")
         error_message = "Ocurrió un error. Verifica los datos de entrada e inténtalo de nuevo."
-        return render(request, 'detail.html', {'reading_list': reading_list, 'book_form': book_form, "books": books, 'error_message': error_message})
-
+        return render(request, 'detail.html', {'reading_list': reading_list, "books": books, 'error_message': error_message})
 
 
 def fetch_book_info(book_title, book_author):
@@ -242,24 +216,40 @@ def fetch_book_info(book_title, book_author):
 @login_required
 def updatereadinglist(request, reading_list_id):
     reading_list = get_object_or_404(ReadingList, id=reading_list_id)
+    
     if request.method == 'GET':
-        form1 = ReadingListForm(instance=reading_list)
+        
+        initial_data = {
+            'title': reading_list.title,
+            'description': reading_list.description,
+            
+        }
+        
         context = {
-        'form': form1,
-        'reading_list': reading_list,
-    }
+            'initial_data': initial_data,
+            'reading_list': reading_list,
+        }
         return render(request, 'updatereadinglist.html', context)
-    else:
-        try:
-            form = ReadingListForm(request.POST, request.FILES, instance=reading_list)
-            new_cover = request.FILES.get('cover')
+    
+    elif request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        new_cover = request.FILES.get('cover')
+        
+        if title and description:
+           
+            reading_list.title = title
+            reading_list.description = description
+            
             if new_cover:
                 reading_list.cover = new_cover
-            form.save()
+            
+            reading_list.save()
+            
             return redirect('detail', reading_list.id)
-        except ValueError:
-            return render(request, 'updatereadinglist.html',{'reading_list': reading_list,'form':form,'error':'Bad data in form'})
-        
+        else:
+            return render(request, 'updatereadinglist.html', {'reading_list': reading_list, 'error': 'Bad data in form'})
+
 
 
 
@@ -268,7 +258,6 @@ def deletelist(request, reading_list_id):
     reading_list = get_object_or_404(ReadingList, pk=reading_list_id)
 
     reading_list.delete()
-    
     
     messages.success(request, "Reading list eliminada exitosamente.")
     return redirect('overview') 
@@ -281,4 +270,4 @@ def deletebook(request, book_id, reading_list_id):
     
     book.delete()
     messages.success(request, "Libro eliminado exitosamente.")
-    return redirect('detail', reading_list.id)  
+    return redirect('detail', reading_list.id)
