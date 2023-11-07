@@ -15,7 +15,7 @@ class Book(models.Model):
     buy_link = models.URLField(default="https://books.google.com.co/books?uid=117901420878484918404&hl=es")
     author = models.CharField(max_length=100, default= None)
     disliked_by = models.ManyToManyField('accounts.userInformation', related_name='books_disliked_by_users', blank=True)
-    date = models.DateTimeField(default=timezone.now)
+    dateAdded = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title

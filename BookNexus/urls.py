@@ -55,8 +55,10 @@ urlpatterns = [
     path('mark-as-not-recommended/', BookViews.markasNotRecommended, name='mark-as-not-recommended'),
     
     path('send_email_to_readers/', Newsletter.send_email_to_readers, name='send_email_to_readers'),
-    path('top_books/', Analytics.top_books, name='top_books')
+    path('top_books/', Analytics.top_books, name='top_books'),
 
+    path('top_books/', Analytics.top_books, name='top_books'),
+    path('top_books/<str:period>/', Analytics.top_books, name='top_books_period'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
