@@ -89,17 +89,20 @@ def editprofile(request):
         
 
 def login_view(request):
+    
     if request.method == 'GET':
         return render(request, 'login.html')
+    
     else:
-        form = loginForm(data=request.POST)
 
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('home')
+        user = authenticate(request, username=request.POST['usuario'],password=request.POST['contraseña'])
 
-    return render(request, 'login.html', {'form': form})
+        if user is None:
+            return render(request,'login.html',{'error': 'Usuario y contraseña no coinciden'})
+        else:
+            login(request,user)
+
+    return render(request, 'login.html')
 
 
 @login_required       

@@ -10,4 +10,4 @@ class userInformation(models.Model):
     points = models.PositiveSmallIntegerField()
     disliked_books = models.ManyToManyField(Book, related_name='users_who_disliked', blank=True)
     
-    
+        
