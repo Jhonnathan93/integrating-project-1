@@ -117,38 +117,51 @@
       </nav>
     </div><!-- End Breadcrumbs -->
 
-        <!-- ======= Service Details Section ======= -->
-        <section id="service-details" class="service-details">
-            <div class="container" data-aos="fade-up">
-      
-              <div class="row gy-4">
-      
-                <div class="col-lg-6">
-                  <div class="services-list">
-                    {% for book in top_books %}
-                        <a href="#">{{ book.title }} - {{ book.book_count }} Lectura(s)</a>
-                    {% endfor %}
-                  </div>
-      
-                  <h4>Más Leídos</h4>
-                  <p>¿Curioso por conocer cuáles son los libros más leídos de la temporada? En nuestra subsección 'Más Leídos', te presentamos una lista de los títulos que han cautivado a un gran número de lectores. Desde bestsellers internacionales hasta obras que han tocado los corazones de muchos, aquí encontrarás lo que está en boca de todos. Sumérgete en estas historias que han dejado una huella imborrable en los lectores de todo el mundo.</p>
-                </div>
-      
-                <div class="col-lg-6">
-                  <div class="services-list">
-                    {% for book in least_books %}
-                        <a href="#">{{ book.title }} - {{ book.book_count }} Lectura(s)</a>
-                    {% endfor %}
-                  </div>
-      
-                  <h4>Menos leidos</h4>
-                  <p>Si eres de los que disfrutan explorar gemas literarias ocultas, nuestra subsección 'Menos Leídos' es el lugar perfecto para ti. Aquí te invitamos a descubrir joyas literarias que, a pesar de su calidad excepcional, aún no han alcanzado la fama masiva. Explora obras únicas, innovadoras y llenas de potencial que merecen ser leídas y apreciadas. Encontrarás libros que pueden sorprenderte y enriquecer tu biblioteca personal con tesoros literarios por descubrir</p>
-                </div>
-      
+    <!-- ======= Service Details Section ======= -->
+    <section id="service-details" class="service-details">
+        <div class="container" data-aos="fade-up">
+
+          
+  
+          <div class="row gy-4">
+  
+            <div class="col-lg-5">
+              <div class="services-list">
+                {% for book in top_books %}
+                    <a href="#">{{ book.title }} - {{ book.book_count }} Lectura(s)</a>
+                {% endfor %}
               </div>
-      
+  
+              <h4>Más Leídos</h4>
+              <p>¿Curioso por conocer cuáles son los libros más leídos de la temporada? En nuestra subsección 'Más Leídos', te presentamos una lista de los títulos que han cautivado a un gran número de lectores. Desde bestsellers internacionales hasta obras que han tocado los corazones de muchos, aquí encontrarás lo que está en boca de todos. Sumérgete en estas historias que han dejado una huella imborrable en los lectores de todo el mundo.</p>
             </div>
-          </section><!-- End Service Details Section -->
+  
+            <div class="col-lg-5">
+              <div class="services-list">
+                {% for book in least_books %}
+                    <a href="#">{{ book.title }} - {{ book.book_count }} Lectura(s)</a>
+                {% endfor %}
+              </div>
+  
+              <h4>Menos leidos</h4>
+              <p>Si eres de los que disfrutan explorar gemas literarias ocultas, nuestra subsección 'Menos Leídos' es el lugar perfecto para ti. Aquí te invitamos a descubrir joyas literarias que, a pesar de su calidad excepcional, aún no han alcanzado la fama masiva. Explora obras únicas, innovadoras y llenas de potencial que merecen ser leídas y apreciadas. Encontrarás libros que pueden sorprenderte y enriquecer tu biblioteca personal con tesoros literarios por descubrir</p>
+            </div>
+
+            <div class="col-lg-2">
+                <h3>Filtrar por período:</h3>
+                <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                <a href="{% url 'top_books' %}" class="btn btn-primary">Todos los tiempos</a>
+                <a href="{% url 'top_books_period' 'week' %}" class="btn btn-primary">Última semana</a>
+                <a href="{% url 'top_books_period' 'month' %}" class="btn btn-primary">Último mes</a>
+                <a href="{% url 'top_books_period' '6months' %}" class="btn btn-primary">Últimos 6 meses</a>
+                <a href="{% url 'top_books_period' 'year' %}" class="btn btn-primary">Último año</a>
+                </div>
+            </div>
+  
+          </div>
+  
+        </div>
+      </section><!-- End Service Details Section -->
 
 
   </main><!-- End #main -->
