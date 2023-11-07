@@ -126,7 +126,9 @@
               <div class="row gy-4 mt-1 justify-content-center">
       
                 <div class="col-lg-8 ">
-                  <form action="{% url 'accounts:signup' %}" method="POST" role="form" class="php-email-form">
+
+                    <form action="{% url 'accounts:signup' %}" method="POST" role="form" class="php-email-form" enctype="multipart/form-data">
+
                     {% csrf_token %}
                     <div class="row">
                       <h2 class="mb-2">Registro</h2>
@@ -134,7 +136,7 @@
                         <input type="text" name="username" class="form-control" id="usernaname" placeholder="Usuario" required>
                       </div>
                       <div class="col-md-6 form-group mt-3 mt-md-0">
-                        <input type="email" class="form-control" name="email" id="email" placeholder="Correo electronico" required>
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Correo electrónico" required>
                       </div>
                     </div>
       
@@ -156,7 +158,7 @@
                     </div>
                     
                     <div class="form-group mt-3">
-                      <textarea class="form-control" name="preferences" rows="5" placeholder="Cuentanos mas acerca de tus intereses en la lectura" required></textarea>
+                      <textarea class="form-control" name="preferences" rows="5" placeholder="Cuéntanos más acerca de tus intereses en la lectura" required></textarea>
                     </div>
                     
                     <div class="my-3">
@@ -195,16 +197,16 @@
         <div class="col-lg-2 col-6 footer-links">
           <h4>Navegación</h4>
           <ul>
-            <li><a href="#">Inico</a></li>
+            <li><a href="#">Inicio</a></li>
             <li><a href="#">Iniciar sesión</a></li>
-            <li><a href="#">Registrate</a></li>
+            <li><a href="#">Regístrate</a></li>
             <li><a href="#">Perfil</a></li>
             <li><a href="#">Preguntas frecuentes</a></li>
           </ul>
         </div>
 
         <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
-          <h4>Contactanos</h4>
+          <h4>Contáctanos</h4>
           <p>
             book.nexus.p1@gmail.com <br><br>
             <strong>Manuela Castaño Franco:</strong> <br> mcastanof1@eafit.edu.co<br>
@@ -215,7 +217,7 @@
 
         <div class="col-lg-2 col-6 footer-links">
           <h4>Referencias</h4>
-          Esta pagina fue diseñada usando imagenes de googleBooks y de Freepik.com, todos los derechos reservados a sus
+          Esta página fue diseñada usando imágenes de googleBooks y de Freepik.com, todos los derechos reservados a sus
           autores.
         </div>
 
