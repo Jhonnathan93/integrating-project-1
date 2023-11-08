@@ -34,7 +34,7 @@ sh requirements.txt -y
 2. Navigate to the project directory:
 
     ```bash
-    cd your-project
+    cd integrating-project-1
     ```
 
 3. Perform database migrations:
