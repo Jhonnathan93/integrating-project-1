@@ -102,7 +102,7 @@ def login_view(request):
         else:
             login(request,user)
 
-    return render(request, 'login.html')
+    return render(request, 'index.html')
 
 
 @login_required       

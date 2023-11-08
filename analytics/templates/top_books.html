@@ -6,12 +6,12 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Logis Bootstrap Template - Services</title>
+  <title>BookNexus</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href='{% static "img/icon.png" %}' rel="icon">
+  <link href='{% static "img/iconWhite.png" %}' rel="icon">
   <link href='{% static "img/apple-touch-icon.png" %}' rel="apple-touch-icon">
   
   <!-- Google Fonts -->
@@ -29,6 +29,7 @@
   
   <!-- Template Main CSS File -->
   <link href='{% static "css/main.css" %}' rel="stylesheet">
+  
 
   <!-- =======================================================
   * Template Name: Logis
@@ -172,7 +173,7 @@
     <div class="container">
       <div class="row gy-4">
         <div class="col-lg-5 col-md-12 footer-info">
-          <a href="index.html" class="logo d-flex align-items-center">
+          <a href="http://127.0.0.1:8000/admin/" class="logo d-flex align-items-center">
             <span>BookNexus</span>
           </a>
           <p>Booknexus es una aplicación basada en web que tiene como objetivo permitir al usuario descubrir libros e interactuar con ellos. Es una plataforma de recomendación de libros que ofrece sugerencias personalizadas basadas en las preferencias, el historial de lectura y los intereses de los usuarios. Además, la plataforma proporciona información completa sobre varios libros, incluidos detalles del autor, sinopsis y géneros, lo que permite a los usuarios tomar decisiones informadas sobre sus opciones de lectura.</p>
@@ -181,11 +182,27 @@
         <div class="col-lg-2 col-6 footer-links">
           <h4>Navegación</h4>
           <ul>
-            <li><a href="#">Inicio</a></li>
-            <li><a href="#">Iniciar sesión</a></li>
-            <li><a href="#">Regístrate</a></li>
-            <li><a href="#">Perfil</a></li>
+            <li><a href="http://127.0.0.1:8000">Inicio</a></li>
+            {% if user.is_authenticated %}
+              <li><a href="{% url 'top_books' %}">Top de libros</a></li>
+            {% endif %}
+            {% if user.is_authenticated %}
+              <li><a class="nav-link" href="{% url 'overview' %}">Listas de lectura</a></li>
+            {% endif %}
+            {% if user.is_authenticated %}
+              {% if not user.is_staff %}
+                <li><a href="{% url 'accounts:profile' %}">Perfil</a></li>
+              {% endif %}
+            {% endif %}
+
+            {% if not user.is_authenticated %}
+              <li><a href="{% url 'accounts:login' %}">Inicia sesión</a></li> 
+              <li><a class="register" href="{% url 'accounts:signup' %}">Regístrate</a></li>
+
+            {% endif %}
+
             <li><a href="#">Preguntas frecuentes</a></li>
+
           </ul>
         </div>
 

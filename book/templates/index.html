@@ -11,7 +11,7 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href='{% static "img/icon.png" %}' rel="icon">
+  <link href='{% static "img/iconWhite.png" %}' rel="icon">
   <link href='{% static "img/apple-touch-icon.png" %}' rel="apple-touch-icon">
   
   <!-- Google Fonts -->
@@ -268,11 +268,27 @@
         <div class="col-lg-2 col-6 footer-links">
           <h4>Navegación</h4>
           <ul>
-            <li><a href="#">Inicio</a></li>
-            <li><a href="#">Iniciar sesión</a></li>
-            <li><a href="#">Regístrate</a></li>
-            <li><a href="#">Perfil</a></li>
+            <li><a href="http://127.0.0.1:8000">Inicio</a></li>
+            {% if user.is_authenticated %}
+              <li><a href="{% url 'top_books' %}">Top de libros</a></li>
+            {% endif %}
+            {% if user.is_authenticated %}
+              <li><a class="nav-link" href="{% url 'overview' %}">Listas de lectura</a></li>
+            {% endif %}
+            {% if user.is_authenticated %}
+              {% if not user.is_staff %}
+                <li><a href="{% url 'accounts:profile' %}">Perfil</a></li>
+              {% endif %}
+            {% endif %}
+
+            {% if not user.is_authenticated %}
+              <li><a href="{% url 'accounts:login' %}">Inicia sesión</a></li> 
+              <li><a class="register" href="{% url 'accounts:signup' %}">Regístrate</a></li>
+
+            {% endif %}
+
             <li><a href="#">Preguntas frecuentes</a></li>
+
           </ul>
         </div>
 
