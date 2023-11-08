@@ -1,5 +1,6 @@
-pip install django
-pip install openai
-pip install django-recaptcha
 pip install python-dotenv
+pip install django
+pip install django-recaptcha
+pip install requests
+pip install openai
 pip install matplotlib

@@ -8,18 +8,18 @@ class Book(models.Model):
     isbn = models.CharField(max_length=13, default="N/A")
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=500, default="Sin descripción disponible")
-    year_publication = models.IntegerField(default=0)
-    topics = models.CharField(max_length=120, default="N/A")
-    rating = models.FloatField(default=0)
-    cover = models.URLField(default="https://user-images.githubusercontent.com/140737841/280489450-728d5fb6-442e-4912-bed3-f0a5689fbdec.png")
-    buy_link = models.URLField(default="https://books.google.com.co/books?uid=117901420878484918404&hl=es")
     author = models.CharField(max_length=100, default= None)
+    rating = models.FloatField(default=0)
+    buy_link = models.URLField(default="https://books.google.com.co/books?uid=117901420878484918404&hl=es")
+    year_publication = models.IntegerField(default=0)
+    cover = models.URLField(default="https://user-images.githubusercontent.com/140737841/280489450-728d5fb6-442e-4912-bed3-f0a5689fbdec.png")
+    topics = models.CharField(max_length=120, default="N/A")
     disliked_by = models.ManyToManyField('accounts.userInformation', related_name='books_disliked_by_users', blank=True)
     dateAdded = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title
-    
+
 class Reader(models.Model):
     id = models.AutoField(primary_key=True, default=0)
     name = models.CharField(max_length=40, default="")
@@ -32,11 +32,10 @@ class Reader(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 class History(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     books = models.CharField(max_length=160)
     topics = models.CharField(max_length=66)
     genres = models.CharField(max_length=38)
     date = models.DateTimeField(default=timezone.now)
-

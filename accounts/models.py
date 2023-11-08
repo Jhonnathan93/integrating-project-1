@@ -9,5 +9,3 @@ class userInformation(models.Model):
     profile_picture = models.ImageField(upload_to='accounts/profile_pics/')
     points = models.PositiveSmallIntegerField()
     disliked_books = models.ManyToManyField(Book, related_name='users_who_disliked', blank=True)
-    
-        
