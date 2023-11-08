@@ -125,11 +125,16 @@
               <div class="row gy-4 mt-1 justify-content-center">
       
                 <div class="col-lg-8 ">
-
+                  {% if error %}
+                    <div class="alert alert-danger mt-3" role="alert">
+                        {{ error }}
+                    </div>
+                  {% endif %} 
                     <form action="{% url 'accounts:signup' %}" method="POST" role="form" class="php-email-form" enctype="multipart/form-data">
 
                     {% csrf_token %}
                     <div class="row">
+
                       <h2 class="mb-2">Registro</h2>
                       <div class="col-md-6 form-group">
                         <input type="text" name="username" class="form-control" id="usernaname" placeholder="Usuario" required>

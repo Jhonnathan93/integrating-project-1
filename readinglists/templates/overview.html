@@ -126,6 +126,20 @@
                 <span>Tus listas de lectura</span>
                 <h2>Tus listas de lectura</h2>
             </div>
+            
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-success">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+            <br>
+            {% if error_message %}
+              <div class="alert alert-danger">
+                {{ error_message }}
+              </div>
+            {% endif %}
 
             <div class="row gy-4">
               {% if user.readinglist_set.count <= 3 %}

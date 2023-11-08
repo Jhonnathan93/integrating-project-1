@@ -153,6 +153,13 @@
 
         <div class="row gy-4 mt-1 justify-content-center" data-aos="fade-up">
           <div class="col-lg-8">
+
+            {% if error_message %}
+              <div class="alert alert-danger">
+                {{ error_message }}
+              </div>
+            {% endif %}
+
             {% if user.is_authenticated and reading_list.user == user %}
             <h3 class="mt-4">Agregar Libros</h3>
 
