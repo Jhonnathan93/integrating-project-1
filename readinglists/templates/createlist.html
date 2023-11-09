@@ -48,8 +48,7 @@
 
       <a href="http://127.0.0.1:8000" class="logo d-flex align-items-center">
         <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
-        <h1>BookNexus</h1>
+        <img src='{% static "img/book_logo.png" %}' alt="" style="height: 300px; width: auto;">
       </a>
 
       <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
@@ -128,7 +127,7 @@
                     {% csrf_token %}
                     <h4>Crea tu lista de lectura</h4>
                     <div class="form-group mt-3">
-                        <input type="text" name="title" class="form-control" required id="title"  placeholder="Título tu lista de lectura">
+                        <input type="text" name="title" class="form-control" required id="title"  placeholder="Título de tu lista de lectura">
                     </div>
                 
                     <div class="form-group mt-3">
