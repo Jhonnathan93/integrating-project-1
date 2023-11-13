@@ -126,7 +126,13 @@
       <div class="container">
 
         <div class="row gy-4 align-items-center features-item" data-aos="fade-up">
-
+          {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-success">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
           <div class="col-md-5">
             <img src="{{ reading_list.cover.url }}" class="img-fluid" alt="{{ reading_list.title }} Cover">
           </div>
