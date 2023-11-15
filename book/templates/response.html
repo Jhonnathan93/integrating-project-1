@@ -157,8 +157,10 @@
 
                                                 
                               >
-              <a href="#" class="buy-btn dropdown-toggle me-3 mb-3" role="button" data-bs-toggle="dropdown">Más opciones</a>
-
+              {% if user.is_authenticated %}
+                <a href="#" class="buy-btn dropdown-toggle me-3 mb-3" role="button" data-bs-toggle="dropdown">Más opciones</a>
+              {% endif %}
+              
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item btn-add-to-list" href="#" onclick="addToReadLater(this)">Leer más tarde</a></li>
                 <li><a class="dropdown-item btn-mark-as-not-recommended" href="#" onclick="markAsNotRecommended(this)">No recomendar</a></li>
