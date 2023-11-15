@@ -15,6 +15,9 @@ from django.contrib.auth.models import User, AnonymousUser
 from readinglists.models import ReadingList
 
 
+def faq(request):
+    return render(request, 'faq.html')
+
 def index(request):
     return render(request, 'index.html')
 

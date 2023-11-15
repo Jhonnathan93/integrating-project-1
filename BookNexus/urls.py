@@ -59,6 +59,7 @@ urlpatterns = [
 
     path('top_books/', Analytics.top_books, name='top_books'),
     path('top_books/<str:period>/', Analytics.top_books, name='top_books_period'),
+    path('faq/', BookViews.faq, name='faq'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
