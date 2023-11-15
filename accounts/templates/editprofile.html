@@ -136,6 +136,7 @@
 
                       <h2 class="mb-2">Edita los detalles de tu cuenta</h2>
                       <div class="col-md-12 form-group">
+                        <p>Usuario</p>
                         <input type="text" name="username" class="form-control" id="usernaname" placeholder="Usuario" value="{{ user.username }}" required>
                       </div>
                     </div>
@@ -152,10 +153,12 @@
                     -->
       
                     <div class="form-group mt-3">
+                      <p>Foto de perfil</p>
                       <input type="file" name="profile_picture" class="form-control" accept="image/*" id="profile_picture" placeholder="Elige tu imagen de perfil">
                     </div>
                     
                     <div class="form-group mt-3">
+                      <p>Preferencias</p>
                       <textarea class="form-control" name="preferences" rows="5" placeholder="Cuéntanos más acerca de tus intereses en la lectura" required>{{ user_profile.preferences }}</textarea>
                     </div>                  
                     
