@@ -32,7 +32,7 @@ import os
 api_key = ""
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name = 'admin'),
 
     path('', BookViews.index, name='home'),
 
@@ -41,7 +41,7 @@ urlpatterns = [
     
 
     path("recomendations/", BookViews.recomendations),
-    path("index/", BookViews.index),
+    path("index/", BookViews.index, name = 'index'),
     path('response/', BookViews.response, name='response'),
 
     path('overview/', ReadingListViews.overview, name='overview'),

@@ -46,7 +46,7 @@
   <header id="header" class="header d-flex align-items-center fixed-top">
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
 
-      <a href="http://127.0.0.1:8000" class="logo d-flex align-items-center">
+      <a href="{% url 'index' %}" class="logo d-flex align-items-center">
         <!-- Uncomment the line below if you also wish to use an image logo -->
         <img src='{% static "img/book_logo.png" %}' alt="" style="height: 300px; width: auto;">
       </a>
@@ -55,14 +55,14 @@
       <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a href="http://127.0.0.1:8000" >Inicio</a></li>
+          <li><a href="{% url 'index' %}" >Inicio</a></li>
 
           {% if user.is_authenticated %}
             {% if not user.is_staff %}
               <li><a href="{% url 'accounts:profile' %}">Perfil</a></li>
             {% endif %}
             {% if user.is_staff %}
-              <li><a href="http://127.0.0.1:8000/admin/">Perfil</a></li>
+              <li><a href="{% url 'admin' %}">Perfil</a></li>
             {% endif %}
           {% endif %}
 
@@ -110,7 +110,7 @@
       <nav>
         <div class="container">
           <ol>
-            <li><a href="http://127.0.0.1:8000">Inicio</a></li>
+            <li><a href="{% url 'index' %}">Inicio</a></li>
             <li>Reportes</li>
           </ol>
         </div>
@@ -178,7 +178,7 @@
     <div class="container">
       <div class="row gy-4">
         <div class="col-lg-5 col-md-12 footer-info">
-          <a href="http://127.0.0.1:8000/admin/" class="logo d-flex align-items-center">
+          <a href="{% url 'index' %}" class="logo d-flex align-items-center">
             <span>BookNexus</span>
           </a>
           <p>Booknexus es una aplicación basada en web que tiene como objetivo permitir al usuario descubrir libros e interactuar con ellos. Es una plataforma de recomendación de libros que ofrece sugerencias personalizadas basadas en las preferencias, el historial de lectura y los intereses de los usuarios. Además, la plataforma proporciona información completa sobre varios libros, incluidos detalles del autor, sinopsis y géneros, lo que permite a los usuarios tomar decisiones informadas sobre sus opciones de lectura.</p>
@@ -187,7 +187,7 @@
         <div class="col-lg-2 col-6 footer-links">
           <h4>Navegación</h4>
           <ul>
-            <li><a href="http://127.0.0.1:8000">Inicio</a></li>
+            <li><a href="{% url 'index' %}">Inicio</a></li>
             {% if user.is_authenticated %}
               <li><a href="{% url 'top_books' %}">Top de libros</a></li>
             {% endif %}
