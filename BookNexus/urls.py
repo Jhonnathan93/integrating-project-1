@@ -32,7 +32,7 @@ import os
 api_key = ""
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name = 'admin'),
 
     path('', BookViews.index, name='home'),
 
@@ -41,7 +41,7 @@ urlpatterns = [
     
 
     path("recomendations/", BookViews.recomendations),
-    path("index/", BookViews.index),
+    path("index/", BookViews.index, name = 'index'),
     path('response/', BookViews.response, name='response'),
 
     path('overview/', ReadingListViews.overview, name='overview'),
@@ -59,6 +59,7 @@ urlpatterns = [
 
     path('top_books/', Analytics.top_books, name='top_books'),
     path('top_books/<str:period>/', Analytics.top_books, name='top_books_period'),
+    path('faq/', BookViews.faq, name='faq'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
