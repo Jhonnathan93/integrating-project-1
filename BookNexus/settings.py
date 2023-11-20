@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,20 +20,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+_ = load_dotenv('keys.env')
 
-RECAPTCHA_PUBLIC_KEY = '6Le28R0oAAAAABszekY_bObx-g4grKQMwhFNiVxV'
-RECAPTCHA_PRIVATE_KEY = '6Le28R0oAAAAANR7ZpXu5LIN4HWo-0bAWTEzz_Vj'
+RECAPTCHA_PUBLIC_KEY = os.environ['RECAPTCHA_PUBLIC_KEY']
+RECAPTCHA_PRIVATE_KEY = os.environ['RECAPTCHA_PRIVATE_KEY']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-9y%pyr(0%^!k^%wdcf3p%on8h*%_hj(k_b)=o*d6u3ljuz75fv'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['34.172.226.76']
+ALLOWED_HOSTS = []
 
 
 # Application definition
