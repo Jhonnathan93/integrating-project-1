@@ -102,10 +102,7 @@ def editprofile(request):
             'points': points,
             'readinglists': readinglists,})  
     return render(request, 'editprofile.html', {'user_profile': user_profile, 'error':'Bad data in form'})
-    
-
-    # return render(request, 'editprofile.html',{'user_info': user_info,'form':form,'error':'Bad data in form'})
-        
+            
 
 def login_view(request):
     

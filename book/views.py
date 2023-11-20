@@ -263,10 +263,10 @@ def markAsNotRecommended(request):
         disliked_book.disliked_by.add(user_info)
         disliked_book.save()
         
-        response_data = {'message': f'No te recomendaremos más este libro'}
+        response_data = {'message': 'No te recomendaremos más este libro'.format()}
         return JsonResponse(response_data)
         
         
-    except Exception as e:
+    except Exception:
         response_data = {'error': 'An unexpected error occurred'}
         return JsonResponse(response_data, status=500)

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import user_passes_test
 from book.models import History
-from .methods import * 
+from .methods import plot_categories, plot_genres
 
 """
 @user_passes_test(lambda u: u.is_staff)

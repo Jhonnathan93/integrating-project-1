@@ -86,7 +86,7 @@ def createlist(request):
         return render(request, 'createlist.html')
 
 def add_book_to_list(request, reading_list, title, author):
-    title, author, cover_url, synopsis, average_rating, year, categories, isbn, link = fetch_book_info(title, author)
+    title, author, cover_url, synopsis, _, year, categories, isbn, link = fetch_book_info(title, author)
 
     if cover_url and synopsis:
         new_book = Book.objects.create(title=title, author=author, cover=cover_url, isbn=isbn)
