@@ -1,13 +1,11 @@
 from django.shortcuts import render, redirect
-from .forms import UserCreateForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import redirect
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
-from .forms import UserCreateForm, loginForm
-from .models import userInformation
+from .models import UserInformation
 from readinglists.models import ReadingList
 
 
@@ -29,7 +27,7 @@ def signup_view(request):
 
                 profile_picture = request.FILES.get('profile_picture')
                 
-                profile = userInformation(user = user, birthdate = request.POST['birthdate'], preferences = request.POST['preferences'], profile_picture = profile_picture, points = 0)
+                profile = UserInformation(user = user, birthdate = request.POST['birthdate'], preferences = request.POST['preferences'], profile_picture = profile_picture, points = 0)
                 profile.save()
                 
                 default_list = ReadingList(
@@ -54,7 +52,7 @@ def signup_view(request):
 
 @login_required
 def profile(request):
-    user_info = userInformation.objects.get(user=request.user)
+    user_info = UserInformation.objects.get(user=request.user)
     
     birthdate = user_info.birthdate
     preferences = user_info.preferences
@@ -73,7 +71,7 @@ def profile(request):
 
 def editprofile(request):
     user = request.user
-    user_profile = userInformation.objects.get(user=request.user)
+    user_profile = UserInformation.objects.get(user=request.user)
 
     if request.method == 'GET':
         return render(request, 'editprofile.html', {'user_profile': user_profile})

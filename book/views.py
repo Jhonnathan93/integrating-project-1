@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-from accounts.models import userInformation
+from accounts.models import UserInformation
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User, AnonymousUser
@@ -53,7 +53,7 @@ def response(request):
             
         
         if isinstance(request.user, User):
-            user_info = userInformation.objects.get(user=request.user)
+            user_info = UserInformation.objects.get(user=request.user)
             
             disliked_books = [book.title for book in user_info.disliked_books.all()]
             reading_list = ReadingList.objects.filter(user=request.user, title="Leer más tarde").first()
@@ -129,9 +129,9 @@ def response(request):
     
 @login_required
 @require_POST
-def markasNotRecommended(request):
+def markAsNotRecommended(request):
     
-    user_info = userInformation.objects.get(user=request.user)
+    user_info = UserInformation.objects.get(user=request.user)
     data = json.loads(request.body) 
     
     title = data.get('title')

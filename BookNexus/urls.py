@@ -21,15 +21,8 @@ from book import views as BookViews
 from readinglists import views as ReadingListViews
 from newsletter import views as Newsletter
 from analytics import views as Analytics
-from accounts import views as AccountsViews
-
 from django.conf import settings
 from django.conf.urls.static import static
-
-import openai
-import os
-
-api_key = ""
 
 urlpatterns = [
     path('admin/', admin.site.urls, name = 'admin'),
@@ -52,7 +45,7 @@ urlpatterns = [
     path('deletebook/<int:reading_list_id>/<int:book_id>/', ReadingListViews.deletebook, name='deletebook'),
     path('editreadinglist/<int:reading_list_id>', ReadingListViews.updatereadinglist, name='updatereadinglist'),
     path('add-to-list/', ReadingListViews.add_to_reading_list, name='add-to-list'),
-    path('mark-as-not-recommended/', BookViews.markasNotRecommended, name='mark-as-not-recommended'),
+    path('mark-as-not-recommended/', BookViews.markAsNotRecommended, name='mark-as-not-recommended'),
     
     path('send_email_to_readers/', Newsletter.send_email_to_readers, name='send_email_to_readers'),
     path('top_books/', Analytics.top_books, name='top_books'),
