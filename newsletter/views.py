@@ -1,19 +1,20 @@
 from django.shortcuts import render
 from django.shortcuts import render
-# from .models import Reader
 import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from book.models import Reader
+from dotenv import load_dotenv
+import os
 
 # Create your views here.
 def send_email_to_readers(request):
     # Obtén todos los lectores de la base de datos
     readers = Reader.objects.all()
 
-    # Configura la información del remitente
-    sender_email = "book.nexus.p1@gmail.com"
-    password = "akde meob puid rrbz"  # Reemplaza con tu contraseña
+    _ = load_dotenv('keys.env')
+    sender_email = os.environ.get('sender_email')
+    password = os.environ.get('password')
 
     # Define el mensaje que se enviará
     subject = "BookNexus - Newsletter Octubre"
