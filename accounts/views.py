@@ -16,7 +16,7 @@ def home(request):
 
 
 def signup_view(request):
-    
+    signUpPage = 'signup.html'
     if request.method == 'POST':
 
         if request.POST['password1'] == request.POST['password2']:
@@ -44,11 +44,11 @@ def signup_view(request):
                 return redirect('home')
             
             except IntegrityError:
-                return render(request, 'signup.html', {'error':'Nombre de usuario en uso, escoge otro.'})
+                return render(request, signUpPage, {'error':'Nombre de usuario en uso, escoge otro.'})
 
-        else: return render(request, 'signup.html', {'error':'Las contraseñas no concuerdan'})
+        else: return render(request, signUpPage, {'error':'Las contraseñas no concuerdan'})
     
-    return render(request, 'signup.html')
+    return render(request, signUpPage)
 
 @login_required
 def profile(request):

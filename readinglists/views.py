@@ -89,6 +89,7 @@ def createlist(request):
 
 
 def detail(request, reading_list_id):
+    detailPage = 'detail.html'
     try:
         reading_list = get_object_or_404(ReadingList, id=reading_list_id)
         books = reading_list.books.all()
@@ -115,13 +116,13 @@ def detail(request, reading_list_id):
                         messages.success(request, "Libro agregado exitosamente.")
                     else:
                         error_message1 = "Título o autor inválidos. Verifique la información e inténtelo de nuevo."
-                        return render(request, 'detail.html', {'reading_list': reading_list, 'books': books, 'error_message': error_message1})
+                        return render(request, detailPage, {'reading_list': reading_list, 'books': books, 'error_message': error_message1})
                 else:
                     error_message = "Excediste la cantidad de libros permitida en una reading list"
-                    return render(request, 'detail.html', {'reading_list': reading_list, 'books': books, 'error_message': error_message})
+                    return render(request, detailPage, {'reading_list': reading_list, 'books': books, 'error_message': error_message})
             else:
                 error_message1 = "Título o autor no pueden estar vacíos."
-                return render(request, 'detail.html', {'reading_list': reading_list, 'books': books, 'error_message': error_message1})
+                return render(request, detailPage, {'reading_list': reading_list, 'books': books, 'error_message': error_message1})
         else:
             books = reading_list.books.all()
             print(f"Reading List ID: {reading_list_id}")
@@ -130,11 +131,11 @@ def detail(request, reading_list_id):
             if books:
                 first_book = books[0]
 
-        return render(request, 'detail.html', {'reading_list': reading_list, 'books': books})
+        return render(request, detailPage, {'reading_list': reading_list, 'books': books})
     except ValueError as e:
         print(f"ValueError: {e}")
         error_message = "Ocurrió un error. Verifica los datos de entrada e inténtalo de nuevo."
-        return render(request, 'detail.html', {'reading_list': reading_list, "books": books, 'error_message': error_message})
+        return render(request, detailPage, {'reading_list': reading_list, "books": books, 'error_message': error_message})
 
 
 def fetch_book_info(book_title, book_author):
