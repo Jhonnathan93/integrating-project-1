@@ -27,10 +27,23 @@ def recomendations(request):
     return render(request, 'recomendations.html', {'books': books})
 
 def get_user_info(request):
+    disliked_books = []
+    reading_list = None
+
     if isinstance(request.user, User):
-        user_info = UserInformation.objects.get(user=request.user)
-        return user_info.disliked_books.all(), ReadingList.objects.filter(user=request.user, title="Leer más tarde").first()
-    return None, None
+        try:
+            user_info = UserInformation.objects.get(user=request.user)
+            disliked_books = [book.title for book in user_info.disliked_books.all()]
+            reading_list = ReadingList.objects.filter(user=request.user, title="Leer más tarde").first()
+        except UserInformation.DoesNotExist:
+            # If UserInformation does not exist, create a new one for the user
+            user_info = UserInformation.objects.create(user=request.user)
+            
+        if reading_list is None:
+            # If reading list does not exist, create a new one for the user
+            reading_list = ReadingList.objects.create(user=request.user, title="Leer más tarde")
+
+    return disliked_books, reading_list
 
 def process_books_request(request):
     detalles = request.POST.get('detalles')
@@ -55,9 +68,12 @@ def build_openai_messages(user, detalles, libros, temas, generos, longitud, read
         if disliked_books:
             disliked_books_str = ', '.join([book.title for book in disliked_books])
 
-        if readlater_books_titles:
+        if readlater_books_titles is not None and isinstance(readlater_books_titles, list):
             msg1 += 'Si un usuario te dice que tiene un libro en una lista de "Leer más tarde" vas a tener en cuenta los contenidos del libro para generar tus recomendaciones, pero NO vas a repetir el libro que te dice el usuario.'
             readlater_books_str = f"En mi lista de Leer más tarde, tengo los libros {', '.join(readlater_books_titles)}"
+        
+        else:
+            readlater_books_str = "No tengo libros en mi lista de Leer más tarde."
 
         if disliked_books_str:
             msg1 += "Si un usuario te dice que NO le gusta un libro, NO lo vas a recomendar"
