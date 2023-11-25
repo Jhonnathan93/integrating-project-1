@@ -9,14 +9,21 @@ import os
 
 # Create your views here.
 def send_email_to_readers(request):
-    # Obtén todos los lectores de la base de datos
+    """
+    Sends an email to all readers registered in the database.
+
+    :param request: Django request object.
+    :return: Rendering response or redirection.
+    """
+    # Retrieve all readers from the database
     readers = Reader.objects.all()
 
+     # Get sender credentials from environment variables
     _ = load_dotenv('keys.env')
     sender_email = os.environ.get('sender_email')
     password = os.environ.get('password')
 
-    # Define el mensaje que se enviará
+    # Define the message to be sent
     subject = "BookNexus - Newsletter Octubre"
     body = """\
         <html>
@@ -26,28 +33,23 @@ def send_email_to_readers(request):
         </html>
         """ 
 
-    # Crea una instancia de un servidor SMTP con SSL
+    # Create an instance of an SMTP server with SSL
     context = ssl.create_default_context()
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        # Inicia sesión en tu cuenta de Gmail
         server.login(sender_email, password)
 
         for reader in readers:
-            receiver_email = reader.email  # Obtiene el correo del lector
-            # Crea un mensaje MIMEText
+            receiver_email = reader.email 
             message = MIMEMultipart("alternative")
             message["Subject"] = subject
             message["From"] = sender_email
             message["To"] = receiver_email
 
-            # Crea la parte de texto del mensaje
             text = MIMEText(body, "html")
 
-            # Adjunta la parte de texto al mensaje
             message.attach(text)
 
-            # Envía el correo al lector
             server.sendmail(sender_email, receiver_email, message.as_string())
 
-    # Redirige a una página de confirmación u otra vista
+    # Redirect to a confirmation page
     return render(request, 'email_sent_confirmation.html')

@@ -8,50 +8,57 @@ from django.contrib.auth.decorators import login_required
 from .models import UserInformation
 from readinglists.models import ReadingList
 
-
-
 # Create your views here.
-def home(request):
-    return render(request, 'home.html', )
 
+def home(request):
+    """
+    Renders the home page.
+
+    :param request: Django request object.
+    :return: Rendering response for the home page.
+    """
+    return render(request, 'home.html')
 
 def signup_view(request):
+    """
+    Handles user registration.
+
+    :param request: Django request object.
+    :return: Rendering response for the signup page or redirects to home on success.
+    """
     signUpPage = 'signup.html'
     if request.method == 'POST':
-
         if request.POST['password1'] == request.POST['password2']:
-
             try:
-                user = User.objects.create_user(request.POST['username'], password = request.POST['password1'], email = request.POST['email'])
+                user = User.objects.create_user(request.POST['username'], password=request.POST['password1'], email=request.POST['email'])
                 user.save()
-
                 profile_picture = request.FILES.get('profile_picture')
-                
-                profile = UserInformation(user = user, birthdate = request.POST['birthdate'], preferences = request.POST['preferences'], profile_picture = profile_picture, points = 0)
+                profile = UserInformation(user=user, birthdate=request.POST['birthdate'], preferences=request.POST['preferences'], profile_picture=profile_picture, points=0)
                 profile.save()
-                
                 default_list = ReadingList(
-                title="Leer más tarde",
-                description="Tu lista predeterminada",
-                user=user,
-                is_default=True
+                    title="Leer más tarde",
+                    description="Tu lista predeterminada",
+                    user=user,
+                    is_default=True
                 )
                 default_list.save()
-
                 login(request, user)
-                
-                
                 return redirect('home')
-            
             except IntegrityError:
-                return render(request, signUpPage, {'error':'Nombre de usuario en uso, escoge otro.'})
+                return render(request, signUpPage, {'error': 'Nombre de usuario en uso, escoge otro.'})
+        else:
+            return render(request, signUpPage, {'error': 'Las contraseñas no concuerdan'})
 
-        else: return render(request, signUpPage, {'error':'Las contraseñas no concuerdan'})
-    
     return render(request, signUpPage)
 
 @login_required
 def profile(request):
+    """
+    Renders the user profile page.
+
+    :param request: Django request object.
+    :return: Rendering response for the user profile page.
+    """
     user_info = UserInformation.objects.get(user=request.user)
     
     birthdate = user_info.birthdate
@@ -68,8 +75,13 @@ def profile(request):
         'readinglists': readinglists,
     })
 
-
 def editprofile(request):
+    """
+    Handles user profile editing.
+
+    :param request: Django request object.
+    :return: Rendering response for the edit profile page or redirects to the user profile page on success.
+    """
     user = request.user
     user_profile = UserInformation.objects.get(user=request.user)
 
@@ -100,28 +112,36 @@ def editprofile(request):
             'preferences': preferences,
             'profile_picture': profile_picture,
             'points': points,
-            'readinglists': readinglists,})  
-    return render(request, 'editprofile.html', {'user_profile': user_profile, 'error':'Bad data in form'})
-            
+            'readinglists': readinglists,
+        })  
+    return render(request, 'editprofile.html', {'user_profile': user_profile, 'error': 'Bad data in form'})
 
 def login_view(request):
-    
+    """
+    Handles user login.
+
+    :param request: Django request object.
+    :return: Rendering response for the login page or redirects to the index page on success.
+    """
     if request.method == 'GET':
         return render(request, 'login.html')
-    
     else:
-
-        user = authenticate(request, username=request.POST['usuario'],password=request.POST['contraseña'])
+        user = authenticate(request, username=request.POST['usuario'], password=request.POST['contraseña'])
 
         if user is None:
-            return render(request,'login.html',{'error': 'Usuario y contraseña no coinciden'})
+            return render(request, 'login.html', {'error': 'Usuario y contraseña no coinciden'})
         else:
-            login(request,user)
+            login(request, user)
 
     return render(request, 'index.html')
 
-
 @login_required       
 def logout_view(request):
+    """
+    Logs the user out.
+
+    :param request: Django request object.
+    :return: Redirects to the home page after logging the user out.
+    """
     logout(request)
     return redirect('home')

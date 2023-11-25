@@ -17,12 +17,25 @@ from dotenv import load_dotenv
 import os
 
 def overview(request):
+    """
+    Renders the overview page displaying user's reading lists.
+
+    :param request: Django request object.
+    :return: Rendering response with reading lists.
+    """
+
     readinglists = ReadingList.objects.filter(user=request.user).order_by('-date_created')
     return render(request, 'overview.html', {"readinglists": readinglists})
 
 @login_required
 @require_POST
 def add_to_reading_list(request):
+    """
+    Adds a book to the user's default reading list.
+
+    :param request: Django request object.
+    :return: JSON response with success or error message.
+    """
     
     data = json.loads(request.body) 
 
@@ -57,6 +70,12 @@ def add_to_reading_list(request):
     
 @login_required
 def createlist(request):
+    """
+    Creates a new reading list for the user.
+
+    :param request: Django request object.
+    :return: Rendering response with success or error message.
+    """
 
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -86,6 +105,15 @@ def createlist(request):
         return render(request, 'createlist.html')
 
 def add_book_to_list(request, reading_list, title, author):
+    """
+    Adds a book to the specified reading list.
+
+    :param request: Django request object.
+    :param reading_list: ReadingList instance.
+    :param title: Title of the book.
+    :param author: Author of the book.
+    :return: True if the book is added successfully, False otherwise.
+    """
     title, author, cover_url, synopsis, _, year, categories, isbn, link = fetch_book_info(title, author)
 
     if cover_url and synopsis:
@@ -105,9 +133,23 @@ def add_book_to_list(request, reading_list, title, author):
         return False
 
 def validate_book_data(title, author):
+    """
+    Validates book title and author.
+
+    :param title: Title of the book.
+    :param author: Author of the book.
+    :return: True if title and author are valid, False otherwise.
+    """
     return title and author
 
 def detail(request, reading_list_id):
+    """
+    Renders the detail page for a specific reading list.
+
+    :param request: Django request object.
+    :param reading_list_id: ID of the reading list.
+    :return: Rendering response with reading list details.
+    """
     detail_page = 'detail.html'
     reading_list = get_object_or_404(ReadingList, id=reading_list_id)
     books = reading_list.books.all()
@@ -139,11 +181,25 @@ def detail(request, reading_list_id):
         error_message = "Ocurrió un error. Verifica los datos de entrada e inténtalo de nuevo."
         return render(request, detail_page, {'reading_list': reading_list, 'books': books, 'error_message': error_message})
 
-
 def get_google_books_url(encoded_title, encoded_author, order_by, api_key):
+    """
+    Generates the Google Books API URL for book information retrieval.
+
+    :param encoded_title: URL-encoded title of the book.
+    :param encoded_author: URL-encoded author of the book.
+    :param order_by: Sorting order for the search results.
+    :param api_key: Google Books API key.
+    :return: Google Books API URL.
+    """
     return f'https://www.googleapis.com/books/v1/volumes?q=intitle:{encoded_title}+inauthor:{encoded_author}&orderBy={order_by}&printType=books&langRestrict=es&key={api_key}'
 
 def extract_volume_info(volume_info):
+    """
+    Extracts relevant information from the Google Books API response.
+
+    :param volume_info: Dictionary containing book information.
+    :return: Dictionary with extracted book information.
+    """
     official_title = volume_info.get('title', 'Title Not Found')
     official_author = ', '.join(volume_info.get('authors', ['Author Not Found']))
     cover_url = volume_info.get('imageLinks', {}).get('thumbnail', None)
@@ -168,6 +224,12 @@ def extract_volume_info(volume_info):
     }
 
 def process_results(items):
+    """
+    Processes the search results from the Google Books API.
+
+    :param items: List of book items from the API response.
+    :return: List of dictionaries with extracted book information.
+    """
     results = []
     for item in items:
         volume_info = item.get('volumeInfo', {})
@@ -177,6 +239,13 @@ def process_results(items):
     return results
 
 def fetch_book_info(book_title, book_author):
+    """
+    Fetches book information from the Google Books API.
+
+    :param book_title: Title of the book.
+    :param book_author: Author of the book.
+    :return: Tuple with book information.
+    """
     encoded_title = quote(book_title)
     encoded_author = quote(book_author)
     order_by = 'relevance'
@@ -209,9 +278,15 @@ def fetch_book_info(book_title, book_author):
             print(f"Error: {e}")
             return None, None
 
-
 @login_required
 def updatereadinglist(request, reading_list_id):
+    """
+    Updates the information of a reading list.
+
+    :param request: Django request object.
+    :param reading_list_id: ID of the reading list to be updated.
+    :return: Rendering response with updated reading list information.
+    """
     reading_list = get_object_or_404(ReadingList, id=reading_list_id)
     
     if request.method == 'GET':
@@ -247,9 +322,15 @@ def updatereadinglist(request, reading_list_id):
         else:
             return render(request, 'updatereadinglist.html', {'reading_list': reading_list, 'error': 'Bad data in form'})
 
-
 @login_required
 def deletelist(request, reading_list_id):
+    """
+    Deletes a reading list.
+
+    :param request: Django request object.
+    :param reading_list_id: ID of the reading list to be deleted.
+    :return: Redirection to the overview page.
+    """
     reading_list = get_object_or_404(ReadingList, pk=reading_list_id)
 
     reading_list.delete()
@@ -259,6 +340,14 @@ def deletelist(request, reading_list_id):
 
 @login_required
 def deletebook(request, book_id, reading_list_id):
+    """
+    Deletes a book from a reading list.
+
+    :param request: Django request object.
+    :param book_id: ID of the book to be deleted.
+    :param reading_list_id: ID of the reading list containing the book.
+    :return: Redirection to the reading list detail page.
+    """
     book = get_object_or_404(Book, pk=book_id) 
     reading_list = get_object_or_404(ReadingList, id=reading_list_id)
     
