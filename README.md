@@ -2,7 +2,7 @@
 
 > Empowering users to make informed decisions about their reading choices.
 
-Project for the course Integrating Project 1 (ST0251) - EAFIT University.
+
 
 
 # General Information
