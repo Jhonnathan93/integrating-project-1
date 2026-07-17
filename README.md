@@ -63,19 +63,28 @@ python --version
    python -m pip install -r requirements.txt
    ```
 
-4. Create `keys.env` in the project root. This file must not be committed:
+4. Copy `.env.example` to `.env` in the project root and fill in the values. This file must not be committed:
+
+   ```powershell
+   Copy-Item .env.example .env
+   ```
 
    ```dotenv
    DJANGO_SECRET_KEY=a-secure-development-only-secret
    DJANGO_DEBUG=true
    GOOGLE_BOOKS_API_KEY=
+   LLM_PROVIDER=groq
+   GROQ_API_KEY=
+   GROQ_MODEL=llama-3.3-70b-versatile
    OPENAI_API_KEY=
+   OPENAI_MODEL=gpt-3.5-turbo
    NEWSLETTER_SENDER_EMAIL=
    NEWSLETTER_SENDER_PASSWORD=
    ```
 
-   Google Books, OpenAI, and newsletter credentials are optional to start the
-   application, but required for their respective features.
+   Google Books, the configured LLM provider (`groq` or `openai`), and newsletter
+   credentials are optional to start the application, but required for their
+   respective features.
 
 5. Apply migrations and start the development server:
 
@@ -120,7 +129,7 @@ docker build -t booknexus:local .
 Run the container:
 
 ```powershell
-docker run --rm -p 8000:8000 --env-file keys.env booknexus:local
+docker run --rm -p 8000:8000 --env-file .env booknexus:local
 ```
 
 The image uses Gunicorn and exposes port 8000. In a real deployment, configure
@@ -146,7 +155,7 @@ For external failure notifications, configure the optional
 
 ## Conventions
 
-- Do not commit `keys.env`, SQLite databases, `media/`, or virtual
+- Do not commit `.env`, SQLite databases, `media/`, or virtual
   environments.
 - Migrations are part of the codebase and must accompany every model change.
 - Database writes belong in a service.

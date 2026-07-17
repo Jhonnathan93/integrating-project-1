@@ -11,7 +11,8 @@ def books_recommended():
 
 def disliked_book_titles(*, user: User) -> list[str]:
     return list(
-        UserInformation.objects.filter(user=user).values_list(
-            "disliked_books__title", flat=True
-        )
+        UserInformation.objects.filter(user=user)
+        .exclude(disliked_books__title__isnull=True)
+        .exclude(disliked_books__title="")
+        .values_list("disliked_books__title", flat=True)
     )

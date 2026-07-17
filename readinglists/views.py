@@ -65,7 +65,7 @@ def add_to_reading_list(request):
 
 
 @login_required
-def createlist(request):
+def create_list(request):
     if request.method == "GET":
         return render(request, "createlist.html")
     title, description = (
@@ -139,7 +139,7 @@ def _detail_response(request, reading_list, error_message=None):
 
 
 @login_required
-def updatereadinglist(request, reading_list_id):
+def update_reading_list(request, reading_list_id):
     reading_list = reading_list_get_for_user(
         user=request.user, reading_list_id=reading_list_id
     )
@@ -179,7 +179,7 @@ def updatereadinglist(request, reading_list_id):
 
 @login_required
 @require_POST
-def deletelist(request, reading_list_id):
+def delete_list(request, reading_list_id):
     reading_list = reading_list_get_for_user(
         user=request.user, reading_list_id=reading_list_id
     )
@@ -193,7 +193,7 @@ def deletelist(request, reading_list_id):
 
 @login_required
 @require_POST
-def deletebook(request, reading_list_id, book_id):
+def delete_book(request, reading_list_id, book_id):
     reading_list = reading_list_get_for_user(
         user=request.user, reading_list_id=reading_list_id
     )
