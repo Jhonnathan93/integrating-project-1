@@ -17,10 +17,10 @@ Make sure you have Python installed:
 
 - [Python](https://www.python.org/downloads/): Programming language used in the project.
 
-The libraries and dependencies will be installed through this command:
+Install the project dependencies:
 
  ```bash
-sh requirements.txt -y
+python -m pip install -r requirements.txt
  ```
 
 # Instructions to run the program
@@ -43,6 +43,10 @@ sh requirements.txt -y
     python manage.py migrate
     ```
 
+   Configure secrets in `keys.env` (never commit this file). The supported names are
+   `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `GOOGLE_BOOKS_API_KEY`, `OPENAI_API_KEY`,
+   `NEWSLETTER_SENDER_EMAIL`, and `NEWSLETTER_SENDER_PASSWORD`.
+
 4. Start the development server:
 
     ```bash
@@ -50,6 +54,17 @@ sh requirements.txt -y
     ```
 
 5. Open your web browser and visit [http://localhost:8000/](http://localhost:8000/) to see the application running.
+
+# Architecture
+
+The domain code follows a service/selector split:
+
+- `services.py` contains transactional state changes and validation.
+- `selectors.py` contains database reads and query optimization.
+- `views.py` is the HTTP layer only: it validates input, calls a service or selector, and returns a response.
+- External integrations live behind dedicated modules such as `book/google_books.py`.
+
+This keeps business rules reusable from views, tasks, commands, and tests while making side effects explicit.
 
 
 

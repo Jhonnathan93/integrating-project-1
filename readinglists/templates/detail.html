@@ -149,8 +149,10 @@
             <button class="btn btn-info" style="background-color: #274690; color: #fff; border: solid #274690;"
               data-bs-toggle="modal" data-bs-target="#shareModal">Compartir</button>
             {% if reading_list.title != "Leer más tarde"%}
-            <a class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;"
-              href="{% url 'deletelist' reading_list.id %}">Eliminar</a>
+            <form method="post" action="{% url 'deletelist' reading_list.id %}" class="d-inline">
+              {% csrf_token %}
+              <button class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;">Eliminar</button>
+            </form>
             {% endif %}
             {% endif %}
           </div>
@@ -214,10 +216,10 @@
                   data-bs-target="#descriptionModal{{ book.id }}">Leer más</button>
               {% endif %}
                 {% if user.is_authenticated and reading_list.user == user %}
-                <a class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;"
-                  href="{% url 'deletebook' reading_list.id book.id %}">
-                  Eliminar
-                </a>
+                <form method="post" action="{% url 'deletebook' reading_list.id book.id %}" class="d-inline">
+                  {% csrf_token %}
+                  <button class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;">Eliminar</button>
+                </form>
                 {% endif %}
               </div>
 

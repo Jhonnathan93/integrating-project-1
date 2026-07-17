@@ -8,12 +8,12 @@ class ReadingList(models.Model):
     date_created = models.DateField(auto_now_add=True)
     description = models.CharField(max_length=250)
     cover = models.ImageField(upload_to='readinglists/covers/', default='readinglist/default_book.png', null=True, blank=True)   
-    books = models.ManyToManyField(Book) 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None) 
+    books = models.ManyToManyField(Book, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     is_default = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-            return reverse('detail', args=[str(self.id)])
+        return reverse('detail', args=[str(self.id)])

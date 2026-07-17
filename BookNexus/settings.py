@@ -17,24 +17,26 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
-_ = load_dotenv('keys.env')
+load_dotenv(BASE_DIR / "keys.env")
 
-RECAPTCHA_PUBLIC_KEY = os.environ['RECAPTCHA_PUBLIC_KEY']
-RECAPTCHA_PRIVATE_KEY = os.environ['RECAPTCHA_PRIVATE_KEY']
+GOOGLE_BOOKS_API_KEY = os.environ.get("GOOGLE_BOOKS_API_KEY", os.environ.get("googlebooks_api_key", ""))
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", os.environ.get("openAI_api_key", ""))
+NEWSLETTER_SENDER_EMAIL = os.environ.get("NEWSLETTER_SENDER_EMAIL", os.environ.get("sender_email", ""))
+NEWSLETTER_SENDER_PASSWORD = os.environ.get("NEWSLETTER_SENDER_PASSWORD", os.environ.get("password", ""))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", os.environ.get("SECRET_KEY", "unsafe-development-secret-key"))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() == "true"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [host for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if host] if not DEBUG else []
 
 
 # Application definition
@@ -49,7 +51,6 @@ INSTALLED_APPS = [
     'accounts',
     'book',
     'readinglists',
-    'captcha',
     'newsletter',
     'analytics',
     'reports',
@@ -131,11 +132,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-] 
+    BASE_DIR / 'static',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

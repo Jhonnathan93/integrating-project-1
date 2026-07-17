@@ -1,147 +1,60 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login, logout, authenticate
-from django.shortcuts import redirect
-from django.db import IntegrityError
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import UserInformation
-from readinglists.models import ReadingList
+from django.db import IntegrityError
+from django.shortcuts import redirect, render
 
-# Create your views here.
+from readinglists.selectors import reading_lists_for_user
 
-def home(request):
-    """
-    Renders the home page.
+from .selectors import user_profile_get
+from .services import profile_update, user_register
 
-    :param request: Django request object.
-    :return: Rendering response for the home page.
-    """
-    return render(request, 'home.html')
 
 def signup_view(request):
-    """
-    Handles user registration.
+    if request.method != "POST":
+        return render(request, "signup.html")
+    if request.POST.get("password1") != request.POST.get("password2"):
+        return render(request, "signup.html", {"error": "Las contraseñas no coinciden."})
+    try:
+        user = user_register(
+            username=request.POST.get("username", "").strip(), email=request.POST.get("email", "").strip(),
+            password=request.POST.get("password1", ""), birthdate=request.POST.get("birthdate"),
+            preferences=request.POST.get("preferences", "").strip(), profile_picture=request.FILES.get("profile_picture"),
+        )
+    except (IntegrityError, ValueError):
+        return render(request, "signup.html", {"error": "Revisa los datos o utiliza otro nombre de usuario."})
+    login(request, user)
+    return redirect("home")
 
-    :param request: Django request object.
-    :return: Rendering response for the signup page or redirects to home on success.
-    """
-    signUpPage = 'signup.html'
-    if request.method == 'POST':
-        if request.POST['password1'] == request.POST['password2']:
-            try:
-                user = User.objects.create_user(request.POST['username'], password=request.POST['password1'], email=request.POST['email'])
-                user.save()
-                profile_picture = request.FILES.get('profile_picture')
-                profile = UserInformation(user=user, birthdate=request.POST['birthdate'], preferences=request.POST['preferences'], profile_picture=profile_picture, points=0)
-                profile.save()
-                default_list = ReadingList(
-                    title="Leer más tarde",
-                    description="Tu lista predeterminada",
-                    user=user,
-                    is_default=True
-                )
-                default_list.save()
-                login(request, user)
-                return redirect('home')
-            except IntegrityError:
-                return render(request, signUpPage, {'error': 'Nombre de usuario en uso, escoge otro.'})
-        else:
-            return render(request, signUpPage, {'error': 'Las contraseñas no concuerdan'})
-
-    return render(request, signUpPage)
 
 @login_required
 def profile(request):
-    """
-    Renders the user profile page.
+    profile = user_profile_get(user=request.user)
+    return render(request, "profile.html", {"birthdate": profile.birthdate, "preferences": profile.preferences, "profile_picture": profile.profile_picture, "points": profile.points, "readinglists": reading_lists_for_user(user=request.user)})
 
-    :param request: Django request object.
-    :return: Rendering response for the user profile page.
-    """
-    user_info = UserInformation.objects.get(user=request.user)
-    
-    birthdate = user_info.birthdate
-    preferences = user_info.preferences
-    profile_picture = user_info.profile_picture
-    points = user_info.points
-    readinglists = ReadingList.objects.filter(user=request.user).order_by('-date_created')
 
-    return render(request, 'profile.html', {
-        'birthdate': birthdate,
-        'preferences': preferences,
-        'profile_picture': profile_picture,
-        'points': points,
-        'readinglists': readinglists,
-    })
-
+@login_required
 def editprofile(request):
-    """
-    Handles user profile editing.
+    profile = user_profile_get(user=request.user)
+    if request.method == "GET":
+        return render(request, "editprofile.html", {"user_profile": profile})
+    try:
+        profile_update(profile=profile, username=request.POST.get("username", "").strip(), preferences=request.POST.get("preferences", "").strip(), profile_picture=request.FILES.get("profile_picture"))
+    except (IntegrityError, ValueError):
+        return render(request, "editprofile.html", {"user_profile": profile, "error": "No fue posible actualizar el perfil."})
+    return redirect("accounts:profile")
 
-    :param request: Django request object.
-    :return: Rendering response for the edit profile page or redirects to the user profile page on success.
-    """
-    user = request.user
-    user_profile = UserInformation.objects.get(user=request.user)
-
-    if request.method == 'GET':
-        return render(request, 'editprofile.html', {'user_profile': user_profile})
-
-    if request.method == 'POST':
-        # Actualiza las preferencias y la foto de perfil si se proporcionan en el formulario
-        user_profile.preferences = request.POST['preferences']
-        if 'profile_picture' in request.FILES:
-            user_profile.profile_picture = request.FILES['profile_picture']
-        user_profile.save()
-
-        # Actualiza el nombre de usuario si se proporciona en el formulario
-        new_username = request.POST.get('username')
-        if new_username:
-            user.username = new_username
-            user.save()
-
-        birthdate = user_profile.birthdate
-        preferences = user_profile.preferences
-        profile_picture = user_profile.profile_picture
-        points = user_profile.points
-        readinglists = ReadingList.objects.filter(user=request.user).order_by('-date_created')
-        
-        return render(request, 'profile.html', {
-            'birthdate': birthdate,
-            'preferences': preferences,
-            'profile_picture': profile_picture,
-            'points': points,
-            'readinglists': readinglists,
-        })  
-    return render(request, 'editprofile.html', {'user_profile': user_profile, 'error': 'Bad data in form'})
 
 def login_view(request):
-    """
-    Handles user login.
+    if request.method == "GET":
+        return render(request, "login.html")
+    user = authenticate(request, username=request.POST.get("usuario"), password=request.POST.get("contraseña"))
+    if user is None:
+        return render(request, "login.html", {"error": "Usuario y contraseña no coinciden."})
+    login(request, user)
+    return redirect("home")
 
-    :param request: Django request object.
-    :return: Rendering response for the login page or redirects to the index page on success.
-    """
-    if request.method == 'GET':
-        return render(request, 'login.html')
-    else:
-        user = authenticate(request, username=request.POST['usuario'], password=request.POST['contraseña'])
 
-        if user is None:
-            return render(request, 'login.html', {'error': 'Usuario y contraseña no coinciden'})
-        else:
-            login(request, user)
-
-    return render(request, 'index.html')
-
-@login_required       
+@login_required
 def logout_view(request):
-    """
-    Logs the user out.
-
-    :param request: Django request object.
-    :return: Redirects to the home page after logging the user out.
-    """
     logout(request)
-    return redirect('home')
+    return redirect("home")

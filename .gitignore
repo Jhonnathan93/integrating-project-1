@@ -1,2 +1,65 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
 keys.env
+*.pem
+*.key
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
 venv_book_nexus/
+
+# Django runtime files
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Tests, coverage and type checking
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+
+# Build and package artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+pip-wheel-metadata/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
+*~
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# Local tooling
+.python-version

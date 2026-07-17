@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 
 from book import views as BookViews
 from readinglists import views as ReadingListViews
@@ -25,7 +25,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls, name = 'admin'),
+    path('admin/', admin.site.urls),
 
     path('', BookViews.index, name='home'),
 
@@ -33,8 +33,8 @@ urlpatterns = [
     path('reports/', include('reports.urls')),
     
 
-    path("recomendations/", BookViews.recomendations),
-    path("index/", BookViews.index, name = 'index'),
+    path("recomendations/", BookViews.recomendations, name="recommendations"),
+    path("index/", BookViews.index, name='index'),
     path('response/', BookViews.response, name='response'),
 
     path('overview/', ReadingListViews.overview, name='overview'),
@@ -48,8 +48,6 @@ urlpatterns = [
     path('mark-as-not-recommended/', BookViews.markAsNotRecommended, name='mark-as-not-recommended'),
     
     path('send_email_to_readers/', Newsletter.send_email_to_readers, name='send_email_to_readers'),
-    path('top_books/', Analytics.top_books, name='top_books'),
-
     path('top_books/', Analytics.top_books, name='top_books'),
     path('top_books/<str:period>/', Analytics.top_books, name='top_books_period'),
     path('faq/', BookViews.faq, name='faq'),

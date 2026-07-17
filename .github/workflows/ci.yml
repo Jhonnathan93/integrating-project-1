@@ -1,0 +1,322 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.12"
+  IMAGE_NAME: booknexus:${{ github.sha }}
+
+jobs:
+  validate-line-endings:
+    name: Validate line endings
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Require LF line endings and a final newline in text files
+        run: |
+          python - <<'PY'
+          import subprocess
+          from pathlib import Path
+
+          files = subprocess.check_output(["git", "ls-files", "-z"]).split(b"\0")
+          invalid_files = []
+          for raw_path in files:
+              if not raw_path:
+                  continue
+              path = Path(raw_path.decode())
+              content = path.read_bytes()
+              if b"\0" in content:
+                  continue
+              if b"\r\n" in content or b"\r" in content or (content and not content.endswith(b"\n")):
+                  invalid_files.append(str(path))
+          if invalid_files:
+              raise SystemExit("Files must use LF and end with a newline:\n" + "\n".join(invalid_files))
+          PY
+
+  validate-commits:
+    name: Validate Conventional Commit messages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out complete history
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Require Conventional Commits with a body
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          import subprocess
+
+          header_pattern = re.compile(
+              r"^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)"
+              r"(\([a-z0-9][a-z0-9._/-]*\))?!?: .+"
+          )
+          if os.environ["EVENT_NAME"] == "pull_request":
+              commit_range = f"{os.environ['BASE_SHA']}..{os.environ['HEAD_SHA']}"
+          elif os.environ["BEFORE_SHA"] and set(os.environ["BEFORE_SHA"]) != {"0"}:
+              commit_range = f"{os.environ['BEFORE_SHA']}..{os.environ['HEAD_SHA']}"
+          else:
+              commit_range = "HEAD"
+          commits = subprocess.check_output(
+              ["git", "log", "--format=%H%x00%B%x00%x00", commit_range], text=True
+          ).split("\0\0\n")
+          failures = []
+          for commit in commits:
+              if not commit.strip() or "\0" not in commit:
+                  continue
+              sha, message = commit.split("\0", 1)
+              lines = message.strip().splitlines()
+              header = lines[0] if lines else ""
+              body = [line for line in lines[1:] if line.strip()]
+              if not header_pattern.fullmatch(header) or not body:
+                  failures.append(f"{sha[:7]}: {header!r}")
+          if failures:
+              raise SystemExit("Each commit needs a Conventional Commit header and a non-empty body:\n" + "\n".join(failures))
+          PY
+
+  lint:
+    name: Lint (Ruff and Flake8-Django)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install application and lint dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt ruff flake8 flake8-django
+      - name: Run Ruff without modifying files
+        run: ruff check . --output-format=github
+      - name: Run Flake8 with Django checks
+        run: flake8 .
+
+  type-check:
+    name: Type check (mypy)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install application and typing dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt mypy django-stubs
+      - name: Run mypy
+        run: mypy --ignore-missing-imports --no-site-packages accounts analytics book newsletter readinglists reports BookNexus
+
+  sast:
+    name: Static application security testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install Semgrep
+        run: python -m pip install --upgrade pip semgrep
+      - name: Scan Python and Django rules
+        run: semgrep scan --config p/python --config p/django --error
+
+  secrets:
+    name: Scan repository secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  dependency-audit:
+    name: Audit dependencies and licenses
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install audit tooling
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pip-audit pip-licenses
+      - name: Detect known dependency vulnerabilities
+        run: pip-audit -r requirements.txt
+      - name: Enforce license policy and write report
+        run: pip-licenses --fail-on="GPL-3.0;AGPL-3.0"
+
+  migration-check:
+    name: Validate Django migrations
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_SECRET_KEY: ci-only-secret-key-not-for-production
+      DJANGO_DEBUG: "false"
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install application dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      - name: Check Django configuration
+        run: python manage.py check
+      - name: Ensure migrations are committed
+        run: python manage.py makemigrations --check --dry-run
+      - name: Apply migrations to an empty database
+        run: python manage.py migrate --noinput
+      - name: Ensure no migrations remain pending
+        run: python manage.py migrate --check
+
+  # Future independent stages: unit-tests, coverage, integration-tests,
+  # contract-tests, api-tests, and end-to-end-tests.
+  # Future SonarCloud stage: enable after configuring the project key and SONAR_TOKEN.
+
+  build:
+    name: Compile and package application
+    runs-on: ubuntu-latest
+    needs:
+      - validate-line-endings
+      - validate-commits
+      - lint
+      - type-check
+      - sast
+      - secrets
+      - dependency-audit
+      - migration-check
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install application dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      - name: Compile Python modules
+        run: python -m compileall -q accounts analytics book newsletter readinglists reports BookNexus
+  docker-build-and-scan:
+    name: Build and scan Docker image
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Docker Buildx cache
+        uses: docker/setup-buildx-action@v3
+      - name: Build Docker image with layer cache
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: ${{ env.IMAGE_NAME }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Scan high and critical image vulnerabilities
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.70.0 \
+            image --exit-code 1 --ignore-unfixed --severity HIGH,CRITICAL "${{ env.IMAGE_NAME }}"
+
+  publish-artifacts:
+    name: Publish GitHub build artifacts
+    runs-on: ubuntu-latest
+    needs: [build, docker-build-and-scan]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Set up Python for license artifact
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Generate license report
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pip-licenses
+          pip-licenses --format=json --output-file=licenses.json
+      - name: Create source artifact
+        run: tar --exclude-vcs --exclude='.venv' --exclude='venv' --exclude='media' -czf booknexus-source.tar.gz .
+      - name: Publish source artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: booknexus-source
+          path: booknexus-source.tar.gz
+          retention-days: 30
+      - name: Publish license report
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-report
+          path: licenses.json
+          retention-days: 30
+
+  notify-failure:
+    name: Notify failures
+    runs-on: ubuntu-latest
+    needs: [validate-line-endings, validate-commits, lint, type-check, sast, secrets, dependency-audit, migration-check, build, docker-build-and-scan, publish-artifacts]
+    if: ${{ failure() }}
+    steps:
+      - name: Write failure summary
+        run: |
+          echo "## CI/CD failed" >> "$GITHUB_STEP_SUMMARY"
+          echo "Review: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> "$GITHUB_STEP_SUMMARY"
+      - name: Send optional webhook notification
+        env:
+          WEBHOOK_URL: ${{ secrets.FAILURE_WEBHOOK_URL }}
+        run: |
+          if [ -z "$WEBHOOK_URL" ]; then
+            echo "FAILURE_WEBHOOK_URL is not configured; skipping external notification."
+            exit 0
+          fi
+          curl --fail --silent --show-error --request POST "$WEBHOOK_URL" \
+            --header 'Content-Type: application/json' \
+            --data "{\"text\":\"BookNexus CI/CD failed: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}"

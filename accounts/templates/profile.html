@@ -131,7 +131,9 @@
           <div class="row mt-3  " data-aos="fade-up" data-aos-delay="100">
             <div class="col-lg-3 col-md-6 d-flex">
               <div class="member">
-                <img src="{{  profile_picture.url }}" class="img-fluid" alt="">
+                {% if profile_picture %}
+                  <img src="{{ profile_picture.url }}" class="img-fluid" alt="Foto de perfil">
+                {% endif %}
                 <div class="member-content">
                   
                   <h3>{{ user.username }}</h3>

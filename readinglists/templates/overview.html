@@ -157,7 +157,10 @@
                         <h3><a href="{% url 'detail' readinglist.id %}" >{{ readinglist.title }}</a></h3>
                         <p><small class="text-muted">Fecha de creación: {{ readinglist.date_created }}</small></p>
                         {% if user.is_authenticated and user == readinglist.user and readinglist.title != "Leer más tarde" %}
-                            <a class="btn btn-danger ms-3 me-3 mb-3" href="{% url 'deletelist' readinglist.id %}"  style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;">Eliminar</a>
+                            <form method="post" action="{% url 'deletelist' readinglist.id %}" class="d-inline">
+                              {% csrf_token %}
+                              <button class="btn btn-danger ms-3 me-3 mb-3" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;">Eliminar</button>
+                            </form>
                         {% endif %}
                     </div>
                 </div><!-- End Card Item -->
