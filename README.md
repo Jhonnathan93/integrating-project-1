@@ -1,85 +1,154 @@
-<h1 align="center">BookNexus </h1>
+# BookNexus
 
-> Empowering users to make informed decisions about their reading choices.
+A Django web application for discovering books, receiving recommendations, and
+organizing personal reading lists.
 
+## Features
 
+- Recommendations based on preferences and reference books.
+- Book metadata retrieval through Google Books.
+- Private reading lists, including a default list.
+- User profiles and disliked-book tracking.
+- Book analytics and staff-only reports.
+- Staff-restricted newsletter delivery.
 
+## Architecture
 
-# General Information
+Each Django application separates responsibilities:
 
-Booknexus is a web-based book recommendation application that offers personalized suggestions based on users' preferences, and provides information about various books, including author details, synopses, and genres.
+| Layer | Responsibility |
+| --- | --- |
+| `views.py` | Receives HTTP requests, validates input, and returns responses. |
+| `services.py` | Performs state changes, domain validation, and transactions. |
+| `selectors.py` | Centralizes database queries and read operations. |
+| `models.py` | Defines data structures and simple entity-level rules. |
 
-This project also includes data analytics.
+External integrations live in dedicated modules, such as
+`book/google_books.py`. This structure keeps business logic out of views and
+makes it reusable from commands, tasks, and tests.
 
-# Requirements
+## Requirements
 
-Make sure you have Python installed:
+- Python 3.12
+- pip
+- Git
+- Docker, optionally, to build the application image
 
-- [Python](https://www.python.org/downloads/): Programming language used in the project.
+Check the active Python version:
 
-Install the project dependencies:
-
- ```bash
-python -m pip install -r requirements.txt
+```powershell
+python --version
 ```
 
-For local linting, type checking, and security checks, install the development tools:
+## Local setup
 
-```bash
+1. Clone the repository and enter its directory:
+
+   ```powershell
+   git clone https://github.com/Jhonnathan93/integrating-project-1.git
+   cd integrating-project-1
+   ```
+
+2. Create and activate a Python 3.12 virtual environment:
+
+   ```powershell
+   py -3.12 -m venv venv
+   .\venv\Scripts\Activate.ps1
+   ```
+
+3. Install application dependencies:
+
+   ```powershell
+   python -m pip install --upgrade pip
+   python -m pip install -r requirements.txt
+   ```
+
+4. Create `keys.env` in the project root. This file must not be committed:
+
+   ```dotenv
+   DJANGO_SECRET_KEY=a-secure-development-only-secret
+   DJANGO_DEBUG=true
+   GOOGLE_BOOKS_API_KEY=
+   OPENAI_API_KEY=
+   NEWSLETTER_SENDER_EMAIL=
+   NEWSLETTER_SENDER_PASSWORD=
+   ```
+
+   Google Books, OpenAI, and newsletter credentials are optional to start the
+   application, but required for their respective features.
+
+5. Apply migrations and start the development server:
+
+   ```powershell
+   python manage.py migrate
+   python manage.py runserver
+   ```
+
+Open <http://127.0.0.1:8000/>.
+
+## Development and quality checks
+
+Install development tools once:
+
+```powershell
 python -m pip install -r requirements-dev.txt
 ```
 
-Run the type check with:
+| Goal | Command |
+| --- | --- |
+| Django system check | `python manage.py check` |
+| Pending migrations | `python manage.py makemigrations --check --dry-run` |
+| Fast linting | `python -m ruff check .` |
+| Format with Ruff | `python -m ruff format .` |
+| Django linting | `python -m flake8 .` |
+| Type checking | `python -m mypy --config-file mypy.ini --ignore-missing-imports accounts analytics book newsletter readinglists reports BookNexus` |
+| Static security analysis | `python -m semgrep scan --config p/python --config p/django --error` |
+| Dependency vulnerability scan | `python -m pip_audit -r requirements.txt` |
+| Tests | `python manage.py test` |
 
-```bash
-python -m mypy --config-file mypy.ini --ignore-missing-imports accounts analytics book newsletter readinglists reports BookNexus
+> Use Python 3.12 for `flake8-django`. Python 3.14 is not compatible with
+> the current version of that plugin.
+
+## Docker
+
+Build the local image:
+
+```powershell
+docker build -t booknexus:local .
 ```
 
-# Instructions to run the program
+Run the container:
 
-1. Clone this repository to your local machine:
+```powershell
+docker run --rm -p 8000:8000 --env-file keys.env booknexus:local
+```
 
-    ```bash
-    git clone https://github.com/Jhonnathan93/integrating-project-1.git
-    ```
+The image uses Gunicorn and exposes port 8000. In a real deployment, configure
+a persistent database and production environment variables.
 
-2. Navigate to the project directory:
+## CI/CD
 
-    ```bash
-    cd integrating-project-1
-    ```
+The GitHub Actions workflow in
+[.github/workflows/ci.yml](.github/workflows/ci.yml) runs for every pull
+request targeting `main` and every push to `main`.
 
-3. Perform database migrations:
+It includes:
 
-    ```bash
-    python manage.py migrate
-    ```
+- Line-ending and Conventional Commit message validation.
+- Ruff, Flake8-Django, and mypy.
+- Semgrep, Gitleaks, dependency audit, and license checks.
+- Migration validation and application against a clean SQLite database.
+- Python compilation, Docker image build, and image vulnerability scanning.
+- Final publication of source and license artifacts in GitHub Actions.
 
-   Configure secrets in `keys.env` (never commit this file). The supported names are
-   `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `GOOGLE_BOOKS_API_KEY`, `OPENAI_API_KEY`,
-   `NEWSLETTER_SENDER_EMAIL`, and `NEWSLETTER_SENDER_PASSWORD`.
+For external failure notifications, configure the optional
+`FAILURE_WEBHOOK_URL` repository secret.
 
-4. Start the development server:
+## Conventions
 
-    ```bash
-    python manage.py runserver
-    ```
-
-5. Open your web browser and visit [http://localhost:8000/](http://localhost:8000/) to see the application running.
-
-# Architecture
-
-The domain code follows a service/selector split:
-
-- `services.py` contains transactional state changes and validation.
-- `selectors.py` contains database reads and query optimization.
-- `views.py` is the HTTP layer only: it validates input, calls a service or selector, and returns a response.
-- External integrations live behind dedicated modules such as `book/google_books.py`.
-
-This keeps business rules reusable from views, tasks, commands, and tests while making side effects explicit.
-
-
-
-
-
-
+- Do not commit `keys.env`, SQLite databases, `media/`, or virtual
+  environments.
+- Migrations are part of the codebase and must accompany every model change.
+- Database writes belong in a service.
+- Reusable queries belong in a selector.
+- Commits follow Conventional Commits and include a non-empty description.
