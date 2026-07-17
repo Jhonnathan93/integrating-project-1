@@ -30,6 +30,7 @@
               {% if error %}
                 <div class="alert alert-danger" role="alert">{{ error }}</div>
               {% endif %}
+              <!-- nosemgrep: python.django.security.django-no-csrf-token.django-no-csrf-token -- Django token is rendered immediately inside this form. -->
               <form action="{% url 'accounts:login' %}" method="post" class="auth-form">
                 {% csrf_token %}
                 <div class="mb-3">
