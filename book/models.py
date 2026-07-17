@@ -14,7 +14,6 @@ class Book(models.Model):
     year_publication = models.IntegerField(default=0)
     cover = models.URLField(default="https://user-images.githubusercontent.com/140737841/280489450-728d5fb6-442e-4912-bed3-f0a5689fbdec.png")
     topics = models.CharField(max_length=120, default="N/A")
-    disliked_by = models.ManyToManyField('accounts.userInformation', related_name='books_disliked_by_users', blank=True)
     dateAdded = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

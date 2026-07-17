@@ -21,7 +21,19 @@ Install the project dependencies:
 
  ```bash
 python -m pip install -r requirements.txt
- ```
+```
+
+For local linting, type checking, and security checks, install the development tools:
+
+```bash
+python -m pip install -r requirements-dev.txt
+```
+
+Run the type check with:
+
+```bash
+python -m mypy --config-file mypy.ini --ignore-missing-imports accounts analytics book newsletter readinglists reports BookNexus
+```
 
 # Instructions to run the program
 

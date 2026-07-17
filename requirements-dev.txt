@@ -1,0 +1,14 @@
+-r requirements.txt
+
+# Code quality and static analysis
+ruff>=0.9,<1.0
+flake8>=6.1,<7.0
+flake8-django>=1.4,<2.0
+mypy>=1.13,<2.0
+django-stubs>=5.1,<6.0
+types-requests>=2.32,<3.0
+
+# Security and dependency compliance
+semgrep>=1.100,<2.0
+pip-audit>=2.8,<3.0
+pip-licenses>=5.0,<6.0

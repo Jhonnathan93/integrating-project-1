@@ -25,18 +25,23 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
-      - name: Require LF line endings and a final newline in text files
+      - name: Require LF line endings and a final newline in project source files
         run: |
           python - <<'PY'
           import subprocess
           from pathlib import Path
 
           files = subprocess.check_output(["git", "ls-files", "-z"]).split(b"\0")
+          source_extensions = {".css", ".html", ".js", ".md", ".py", ".txt", ".yaml", ".yml"}
+          excluded_prefixes = ("static/img/", "static/vendor/")
           invalid_files = []
           for raw_path in files:
               if not raw_path:
                   continue
               path = Path(raw_path.decode())
+              project_path = path.as_posix()
+              if project_path.startswith(excluded_prefixes) or path.suffix not in source_extensions:
+                  continue
               content = path.read_bytes()
               if b"\0" in content:
                   continue
@@ -96,22 +101,18 @@ jobs:
   lint:
     name: Lint (Ruff and Flake8-Django)
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.11", "3.12"]
     steps:
       - uses: actions/checkout@v6
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
           cache-dependency-path: requirements.txt
       - name: Install application and lint dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt ruff flake8 flake8-django
+          python -m pip install -r requirements-dev.txt
       - name: Run Ruff without modifying files
         run: ruff check . --output-format=github
       - name: Run Flake8 with Django checks
@@ -120,24 +121,20 @@ jobs:
   type-check:
     name: Type check (mypy)
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.11", "3.12"]
     steps:
       - uses: actions/checkout@v6
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
           cache-dependency-path: requirements.txt
       - name: Install application and typing dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt mypy django-stubs
+          python -m pip install -r requirements-dev.txt
       - name: Run mypy
-        run: mypy --ignore-missing-imports --no-site-packages accounts analytics book newsletter readinglists reports BookNexus
+        run: mypy --config-file mypy.ini --ignore-missing-imports accounts analytics book newsletter readinglists reports BookNexus
 
   sast:
     name: Static application security testing
@@ -151,7 +148,7 @@ jobs:
           cache: pip
           cache-dependency-path: requirements.txt
       - name: Install Semgrep
-        run: python -m pip install --upgrade pip semgrep
+        run: python -m pip install --upgrade pip -r requirements-dev.txt
       - name: Scan Python and Django rules
         run: semgrep scan --config p/python --config p/django --error
 
@@ -181,7 +178,7 @@ jobs:
       - name: Install audit tooling
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt pip-audit pip-licenses
+          python -m pip install -r requirements-dev.txt
       - name: Detect known dependency vulnerabilities
         run: pip-audit -r requirements.txt
       - name: Enforce license policy and write report
@@ -282,7 +279,7 @@ jobs:
       - name: Generate license report
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt pip-licenses
+          python -m pip install -r requirements-dev.txt
           pip-licenses --format=json --output-file=licenses.json
       - name: Create source artifact
         run: tar --exclude-vcs --exclude='.venv' --exclude='venv' --exclude='media' -czf booknexus-source.tar.gz .
