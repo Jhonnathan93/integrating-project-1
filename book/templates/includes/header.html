@@ -1,0 +1,31 @@
+{% load static %}
+<header id="header" class="header d-flex align-items-center fixed-top">
+  <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+    <a href="{% url 'index' %}" class="logo d-flex align-items-center" aria-label="BookNexus, inicio">
+      <img src="{% static 'img/book_logo.png' %}" alt="BookNexus">
+    </a>
+
+    <i class="mobile-nav-toggle mobile-nav-show bi bi-list" aria-label="Abrir navegación" role="button" tabindex="0"></i>
+    <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x" aria-label="Cerrar navegación" role="button" tabindex="0"></i>
+    <nav id="navbar" class="navbar" aria-label="Navegación principal">
+      <ul>
+        <li><a href="{% url 'index' %}">Inicio</a></li>
+        <li><a href="{% url 'index' %}#recommendation-form">Recomendaciones</a></li>
+        <li><a href="{% url 'faq' %}">Preguntas frecuentes</a></li>
+        {% if user.is_authenticated %}
+          {% if user.is_staff %}
+            <li><a href="{% url 'reports:report' %}">Reportes</a></li>
+          {% else %}
+            <li><a href="{% url 'accounts:profile' %}">Perfil</a></li>
+          {% endif %}
+          <li><a href="{% url 'top_books' %}">Top de libros</a></li>
+          <li><a href="{% url 'overview' %}">Mis listas</a></li>
+          <li><a class="nav-login" href="{% url 'accounts:logout' %}">Cerrar sesión</a></li>
+        {% else %}
+          <li><a class="nav-login" href="{% url 'accounts:login' %}">Iniciar sesión</a></li>
+          <li><a class="register" href="{% url 'accounts:signup' %}">Crear cuenta</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+</header>

@@ -17,7 +17,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Questrial&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
   
   <!-- Vendor CSS Files -->
   <link href='{% static "vendor/bootstrap/css/bootstrap.min.css" %}' rel="stylesheet">
@@ -43,54 +43,7 @@
 <body>
 
   <!-- ======= Header ======= -->
-  <header id="header" class="header d-flex align-items-center fixed-top">
-    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
-
-      <a href="{% url 'index' %}" class="logo d-flex align-items-center">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <img src='{% static "img/book_logo.png" %}' alt="" style="height: 300px; width: auto;">
-      </a>
-
-      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
-      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
-      <nav id="navbar" class="navbar" aria-label="navbar">
-        <ul>
-          <li><a href="{% url 'index' %}">Inicio</a></li>
-
-          {% if user.is_authenticated %}
-          {% if not user.is_staff %}
-          <li><a href="{% url 'accounts:profile' %}">Perfil</a></li>
-          {% endif %}
-          {% if user.is_staff %}
-          <li><a href="#">Perfil</a></li>
-          {% endif %}
-          {% endif %}
-
-          {% if user.is_authenticated %}
-          {% if user.is_staff %}
-          <li><a href="{% url 'reports:report' %}">Géneros y Categorías</a></li>
-          {% endif %}
-          {% endif %}
-
-          {% if user.is_authenticated %}
-          <li><a href="{% url 'top_books' %}">Top de libros</a></li>
-          {% endif %}
-
-          {% if user.is_authenticated %}
-          <li><a href="{% url 'overview' %}">Listas de lectura</a></li>
-          {% endif %}
-
-          {% if user.is_authenticated %}
-          <li><a href="{% url 'accounts:logout' %}">Cerrar Sesión ({{ user.username }})</a></li>
-          {% else %}
-          <li><a href="{% url 'accounts:login' %}">Inicia sesión</a></li>
-          <li><a class="register" href="{% url 'accounts:signup' %}">Regístrate</a></li>
-          {% endif %}
-        </ul>
-      </nav><!-- .navbar -->
-
-    </div>
-  </header><!-- End Header -->
+  {% include "includes/header.html" %}
   <!-- End Header -->
 
   <main id="main">
@@ -242,75 +195,7 @@
   </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer">
-
-    <div class="container">
-      <div class="row gy-4">
-        <div class="col-lg-5 col-md-12 footer-info">
-          <a href="{% url 'index' %}" class="logo d-flex align-items-center">
-            <span>BookNexus</span>
-          </a>
-          <p>Booknexus es una aplicación basada en web que tiene como objetivo permitir al usuario descubrir libros e interactuar con ellos. Es una plataforma de recomendación de libros que ofrece sugerencias personalizadas basadas en las preferencias, el historial de lectura y los intereses de los usuarios. Además, la plataforma proporciona información completa sobre varios libros, incluidos detalles del autor, sinopsis y géneros, lo que permite a los usuarios tomar decisiones informadas sobre sus opciones de lectura.</p>
-        </div>
-
-        <div class="col-lg-2 col-6 footer-links">
-          <h4>Navegación</h4>
-          <ul>
-            <li><a href="{% url 'index' %}">Inicio</a></li>
-            {% if user.is_authenticated %}
-              <li><a href="{% url 'top_books' %}">Top de libros</a></li>
-            {% endif %}
-            {% if user.is_authenticated %}
-              <li><a class="nav-link" href="{% url 'overview' %}">Listas de lectura</a></li>
-            {% endif %}
-            {% if user.is_authenticated %}
-              {% if not user.is_staff %}
-                <li><a href="{% url 'accounts:profile' %}">Perfil</a></li>
-              {% endif %}
-            {% endif %}
-
-            {% if not user.is_authenticated %}
-              <li><a href="{% url 'accounts:login' %}">Inicia sesión</a></li> 
-              <li><a class="register" href="{% url 'accounts:signup' %}">Regístrate</a></li>
-
-            {% endif %}
-
-            <li><a href="{% url 'faq' %}">Preguntas frecuentes</a></li>
-
-          </ul>
-        </div>
-
-        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
-          <h4>Contáctanos</h4>
-          <p>
-            book.nexus.p1@gmail.com <br><br>
-            <strong>Manuela Castaño Franco:</strong> <br> mcastanof1@eafit.edu.co<br>
-            <strong>Santiago Neusa Ruíz:</strong> <br> sneusar@eafit.edu.co <br>
-            <strong>Jhonnathan Stiven Ocampo Díaz:</strong> <br> jsocampod@eafit.edu.co<br>
-          </p>
-        </div>
-
-        <div class="col-lg-2 col-6 footer-links">
-          <h4>Referencias</h4>
-          Esta página fue diseñada usando imágenes de googleBooks y de Freepik.com, todos los derechos reservados a sus autores.
-        </div>
-
-      </div>
-    </div>
-
-    <div class="container mt-4">
-      <div class="copyright">
-        &copy; Copyright <strong><span>BookNexus</span></strong>.
-      </div>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/logis-bootstrap-logistics-website-template/ -->
-      </div>
-    </div>
-
-  </footer><!-- End Footer -->
+  {% include "includes/footer.html" %}
   <!-- End Footer -->
 
   <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i

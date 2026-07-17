@@ -1,344 +1,150 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-  <title>BookNexus</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
-
-  <!-- Favicons -->
-  <link href='{% static "img/iconWhite.png" %}' rel="icon">
-  <link href='{% static "img/apple-touch-icon.png" %}' rel="apple-touch-icon">
-  
-  <!-- Google Fonts -->
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta name="description" content="Recomendaciones de libros personalizadas según tus gustos literarios.">
+  <title>BookNexus | Descubre tu próxima lectura</title>
+  <link href="{% static 'img/iconWhite.png' %}" rel="icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
-  
-  <!-- Vendor CSS Files -->
-  <link href='{% static "vendor/bootstrap/css/bootstrap.min.css" %}' rel="stylesheet">
-  <link href='{% static "vendor/bootstrap-icons/bootstrap-icons.css" %}' rel="stylesheet">
-  <link href='{% static "vendor/fontawesome-free/css/all.min.css" %}' rel="stylesheet">
-  <link href='{% static "vendor/glightbox/css/glightbox.min.css" %}' rel="stylesheet">
-  <link href='{% static "vendor/swiper/swiper-bundle.min.css" %}' rel="stylesheet">
-  <link href='{% static "vendor/aos/aos.css" %}' rel="stylesheet">
-  
-  <!-- Template Main CSS File -->
-  <link href='{% static "css/main.css" %}' rel="stylesheet">
-  
-
-  <!-- =======================================================
-  * Template Name: Logis
-  * Updated: Sep 18 2023 with Bootstrap v5.3.2
-  * Template URL: https://bootstrapmade.com/logis-bootstrap-logistics-website-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Questrial&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'css/main.css' %}" rel="stylesheet">
 </head>
 
 <body>
+  <a class="visually-hidden-focusable skip-link" href="#recommendation-form">Saltar al formulario de recomendaciones</a>
+  {% include "includes/header.html" %}
 
-  <!-- ======= Header ======= -->
-  <header id="header" class="header d-flex align-items-center fixed-top">
-    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
-
-      <a href="{% url 'index' %}" class="logo d-flex align-items-center">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <img src='{% static "img/book_logo.png" %}' alt="" style="height: 300px; width: auto;">
-      </a>
-
-      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
-      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
-      <nav id="navbar" class="navbar">
-        <ul>
-          <li><a href="{% url 'index' %}" class="active">Inicio</a></li>
-
-          {% if user.is_authenticated %}
-            {% if not user.is_staff %}
-              <li><a href="{% url 'accounts:profile' %}">Perfil</a></li>
-            {% endif %}
-            {% if user.is_staff %}
-              <li><a href="#">Perfil</a></li>
-            {% endif %}
-          {% endif %}
-
-          {% if user.is_authenticated %}
-            {% if user.is_staff %}
-              <li><a href="{% url 'reports:report' %}">Géneros y Categorías</a></li>
-            {% endif %}
-          {% endif %}
-
-          {% if user.is_authenticated %}
-            <li><a href="{% url 'top_books' %}">Top de libros</a></li>
-          {% endif %}
-                    
-          {% if user.is_authenticated %}
-            <li><a class="nav-link" href="{% url 'overview' %}">Listas de lectura</a></li>
-          {% endif %}
-
-          {% if user.is_authenticated %}
-            <li><a href="{% url 'accounts:logout' %}">Cerrar Sesión ({{ user.username }})</a></li>
-          {% else %}
-            <li><a href="{% url 'accounts:login' %}">Inicia sesión</a></li> 
-            <li><a class="register" href="{% url 'accounts:signup' %}">Regístrate</a></li>
-          {% endif %}
-        </ul> 
-      </nav><!-- .navbar -->
-
-    </div>
-  </header><!-- End Header -->
-  <!-- End Header -->
-
-  <!-- ======= Hero Section ======= -->
-  <section id="hero" class="hero d-flex align-items-center">
-    <div class="container">
-      <div class="row gy-4 d-flex justify-content-between">
-        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
-          <h2 data-aos="fade-up">¿Qué quieres leer?</h2>
-          <p data-aos="fade-up" data-aos-delay="100">Bienvenido a BookNexus, Somos un sistema de recomendación de libros que se enfoca en ti y tus gustos literarios. Nos importa tu pasión por la lectura, por lo que te hacemos una pregunta simple: ¿Qué tipo de libros te gusta? A partir de tus preferencias, generamos recomendaciones personalizadas, conectándote con lecturas que realmente disfrutarás.</p>
-
-          <button type="button" class="btn btn-lg btn-primary" data-aos="fade-up" data-aos-delay="200" onClick="document.getElementById('register').scrollIntoView();">Recomiéndame un libro</button>
+  <main>
+    <section id="hero" class="hero d-flex align-items-center" aria-labelledby="hero-title">
+      <div class="container">
+        <div class="row align-items-center gy-5 justify-content-between">
+          <div class="col-lg-7 d-flex flex-column justify-content-center" data-aos="fade-up">
+            <p class="text-uppercase fw-bold mb-3 hero-eyebrow">Tu biblioteca personal empieza aquí</p>
+            <h1 id="hero-title">Encuentra historias que se quedan contigo.</h1>
+            <p class="hero-copy">Cuéntanos qué disfrutas leer y recibe recomendaciones pensadas para tus gustos, tu ritmo y tu próxima gran aventura.</p>
+            <div class="d-flex flex-wrap gap-3 mt-2">
+              <a class="btn btn-primary btn-lg" href="#recommendation-form">Quiero una recomendación <i class="bi bi-arrow-down-right ms-1" aria-hidden="true"></i></a>
+              <a class="btn btn-outline-light btn-lg" href="{% url 'faq' %}">Cómo funciona</a>
+            </div>
+          </div>
+          <div class="col-lg-4 hero-img" data-aos="zoom-out" data-aos-delay="150">
+            <img src="{% static 'img/reading.svg' %}" class="img-fluid" alt="Persona disfrutando de la lectura">
+          </div>
         </div>
-
-        <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out">
-          <img src='{% static "img/reading.svg" %}' class="img-fluid mb-3 mb-lg-0" alt="">
-        </div>
-
-      </div>
-    </div>
-  </section><!-- End Hero Section -->
-
-  <main id="main">
-
-    <!-- ======= Featured Services Section ======= -->
-    <section id="register" class="register">
-      <div class="container" data-aos="fade-up">
-
-        <div class="row g-0">
-
-          <div class="col-lg-5 quote-bg" style="background-image: url('https://github.com/jhothinnan/Images/blob/main/formImage.jpg?raw=true');"></div>
-
-          <div class="col-lg-7">
-            <form action = "{% url 'response' %}" method="post" class="php-email-form">
-              {% csrf_token %}
-              <p>Para saber qué tipo de libro estás buscando menciona 4 libros que ayudarán a guiar la busqueda.</p>
-              <div class="row gy-4">
-
-                <div class="col-md-6">
-                  <input type="text" name="libro1" class="form-control" placeholder="Libro 1" required>
-                </div>
-
-                <div class="col-md-6">
-                  <input type="text" name="libro2" class="form-control" placeholder="Libro 2" required>
-                </div>
-
-                <div class="col-md-6">
-                  <input type="text" name="libro3" class="form-control" placeholder="Libro 3" required>
-                </div>
-
-                <div class="col-md-6">
-                  <input type="text" name="libro4" class="form-control" placeholder="Libro 4" required>
-                </div>
-
-                <div class="col-lg-12">
-                  <h4>Cuéntanos más de tus gustos</h4>
-                </div>
-
-                <h6>¿Qué géneros de libros prefieres? (Puedes marcar más de uno)</h6>
-                <div class="col-md-6 form-check">
-                    <input class="form-check-input" type="checkbox" value="Fantasía" id="Fantasía" name="Fantasía">
-                    <label class="form-check-label" for="Fantasía">
-                        Fantasía
-                    </label>
-                </div>
-                <div class=" col-md-6 form-check">
-                    <input class="form-check-input" type="checkbox" value="Romance" id="Romance" name="Romance">
-                    <label class="form-check-label" for="Romance">
-                        Romance
-                    </label>
-                </div>
-                <div class="col-md-6 form-check">
-                    <input class="form-check-input" type="checkbox" value="Historia" id="Historia" name="Historia">
-                    <label class="form-check-label" for="Historia">
-                        Historia
-                    </label>
-                </div>
-                <div class="col-md-6 form-check">
-                    <input class="form-check-input" type="checkbox" value="Suspenso" id="Suspenso" name="Suspenso">
-                    <label class="form-check-label" for="Suspenso">
-                        Suspenso
-                    </label>
-                </div>
-                <div class="col-md-6 form-check">
-                    <input class="form-check-input" type="checkbox" value="Autoayuda" id="Autoayuda" name="Autoayuda">
-                    <label class="form-check-label" for="Autoayuda">
-                        Autoayuda
-                    </label>
-                </div>
-                <div class="col-md-6 form-check">
-                    <input class="form-check-input" type="checkbox" value="Ciencia Ficción" id="Ciencia Ficción" name="Ciencia Ficción">
-                    <label class="form-check-label" for="Ciencia Ficción">
-                        Ciencia ficción
-                    </label>
-                </div>
-                
-                <h6>¿Qué tipo de libros quieres leer? (Puedes marcar más de uno)</h6>
-                <div class="form-check col-md-6">
-                    <input class="form-check-input" type="checkbox" value="Biografía" id="Biografía" name="Biografía">
-                    <label class="form-check-label" for="Biografía">
-                        Biografías
-                    </label>
-                </div>
-                <div class="form-check col-md-6">
-                    <input class="form-check-input" type="checkbox" value="Novela" id="Novela" name="Novela">
-                    <label class="form-check-label" for="Novela">
-                        Novelas
-                    </label>
-                </div>
-                <div class="form-check col-md-6">
-                    <input class="form-check-input" type="checkbox" value="Científico" id="Científico" name="Científico">
-                    <label class="form-check-label" for="Científico">
-                        Científico/Academico
-                    </label>
-                </div>
-                <div class="form-check col-md-6">
-                    <input class="form-check-input" type="checkbox" value="Poesía" id="Poesía" name="Poesía">
-                    <label class="form-check-label" for="Poesía">
-                        Poesía
-                    </label>
-                </div>
-
-                <h6 class="mt-3">¿Qué tan extenso ha de ser el libro?</h6>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="longitud" id="corto" value="50 paginas" checked>
-                    <label class="form-check-label" for="corto">
-                        Menos de 100 páginas
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="longitud" id="medio" value="100-500 paginas">
-                    <label class="form-check-label" for="medio">
-                    Entre 100 y 500 páginas
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="longitud" id="largo" value="mas de 500 paginas">
-                    <label class="form-check-label" for="largo">
-                    Más de 500 páginas
-                    </label>
-                </div>
-
-                <h6>¿Quieres poner más detalles o comentarios para tu búsqueda?</h6>
-                <div class="col-md-12">
-                  <textarea class="form-control" name="message" rows="4" placeholder="Escribe aquí detalles de la búsqueda" required></textarea>
-                </div>
-
-                <div class="col-md-12 text-center">
-                  <button type="submit">Recomiéndame un libro</button>
-                </div>
-              </div>
-            </form>
-          </div><!-- End Quote Form -->
-
-        </div>
-
       </div>
     </section>
 
-  </main><!-- End #main -->
-  
-
-  <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer">
-
-    <div class="container">
-      <div class="row gy-4">
-        <div class="col-lg-5 col-md-12 footer-info">
-          <a href="#" class="logo d-flex align-items-center">
-            <span>BookNexus</span>
-          </a>
-          <p>Booknexus es una aplicación basada en web que tiene como objetivo permitir al usuario descubrir libros e interactuar con ellos. Es una plataforma de recomendación de libros que ofrece sugerencias personalizadas basadas en las preferencias, el historial de lectura y los intereses de los usuarios. Además, la plataforma proporciona información completa sobre varios libros, incluidos detalles del autor, sinopsis y géneros, lo que permite a los usuarios tomar decisiones informadas sobre sus opciones de lectura.</p>
+    <section class="py-5 bg-white" aria-labelledby="benefits-title">
+      <div class="container py-lg-4">
+        <div class="row g-4">
+          <div class="col-lg-4" data-aos="fade-up">
+            <p class="section-kicker">Una experiencia hecha para lectores</p>
+            <h2 id="benefits-title">Menos tiempo buscando. Más tiempo leyendo.</h2>
+          </div>
+          <div class="col-md-4 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <article class="card h-100 p-4 border-0">
+              <i class="bi bi-stars feature-icon" aria-hidden="true"></i>
+              <h3>Recomendaciones personales</h3>
+              <p>Combinamos tus libros favoritos, temas y géneros para descubrir opciones relevantes.</p>
+            </article>
+          </div>
+          <div class="col-md-4 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+            <article class="card h-100 p-4 border-0">
+              <i class="bi bi-bookmark-heart feature-icon" aria-hidden="true"></i>
+              <h3>Listas que evolucionan contigo</h3>
+              <p>Guarda tus hallazgos y construye listas de lectura para cada momento.</p>
+            </article>
+          </div>
         </div>
-
-        <div class="col-lg-2 col-6 footer-links">
-          <h4>Navegación</h4>
-          <ul>
-            <li><a href="{% url 'index' %}">Inicio</a></li>
-            {% if user.is_authenticated %}
-              <li><a href="{% url 'top_books' %}">Top de libros</a></li>
-            {% endif %}
-            {% if user.is_authenticated %}
-              <li><a class="nav-link" href="{% url 'overview' %}">Listas de lectura</a></li>
-            {% endif %}
-            {% if user.is_authenticated %}
-              {% if not user.is_staff %}
-                <li><a href="{% url 'accounts:profile' %}">Perfil</a></li>
-              {% endif %}
-            {% endif %}
-
-            {% if not user.is_authenticated %}
-              <li><a href="{% url 'accounts:login' %}">Inicia sesión</a></li> 
-              <li><a class="register" href="{% url 'accounts:signup' %}">Regístrate</a></li>
-
-            {% endif %}
-
-            <li><a href="{% url 'faq' %}">Preguntas frecuentes</a></li>
-
-          </ul>
-        </div>
-
-        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
-          <h4>Contáctanos</h4>
-          <p>
-            book.nexus.p1@gmail.com <br><br>
-            <strong>Manuela Castaño Franco:</strong> <br> mcastanof1@eafit.edu.co<br>
-            <strong>Santiago Neusa Ruíz:</strong> <br> sneusar@eafit.edu.co <br>
-            <strong>Jhonnathan Stiven Ocampo Díaz:</strong> <br> jsocampod@eafit.edu.co<br>
-          </p>
-        </div>
-
-        <div class="col-lg-2 col-6 footer-links">
-          <h4>Referencias</h4>
-          Esta página fue diseñada usando imágenes de googleBooks y de Freepik.com, todos los derechos reservados a sus autores.
-        </div>
-
       </div>
-    </div>
+    </section>
 
-    <div class="container mt-4">
-      <div class="copyright">
-        &copy; Copyright <strong><span>BookNexus</span></strong>.
+    <section id="recommendation-form" class="register py-5" aria-labelledby="form-title">
+      <div class="container py-lg-4" data-aos="fade-up">
+        <div class="row g-0">
+          <div class="col-lg-5 quote-bg d-flex align-items-end p-4 p-lg-5">
+            <div class="text-white">
+              <p class="text-uppercase fw-bold mb-2">Tu siguiente capítulo</p>
+              <h2 class="text-white mb-0">Cuatro libros pueden abrir un universo de posibilidades.</h2>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <form action="{% url 'response' %}" method="post" class="php-email-form" novalidate>
+              {% csrf_token %}
+              <div class="mb-4">
+                <p class="section-kicker">Perfil de lectura</p>
+                <h2 id="form-title">Diseña tu próxima recomendación</h2>
+                <p class="mb-0">Completa los detalles que más representen tu forma de leer.</p>
+              </div>
+
+              <fieldset class="mb-4">
+                <legend>Cuatro libros que disfrutas</legend>
+                <div class="row g-3">
+                  <div class="col-md-6"><label class="visually-hidden" for="libro1">Libro 1</label><input id="libro1" type="text" name="libro1" class="form-control" placeholder="Libro 1" required></div>
+                  <div class="col-md-6"><label class="visually-hidden" for="libro2">Libro 2</label><input id="libro2" type="text" name="libro2" class="form-control" placeholder="Libro 2" required></div>
+                  <div class="col-md-6"><label class="visually-hidden" for="libro3">Libro 3</label><input id="libro3" type="text" name="libro3" class="form-control" placeholder="Libro 3" required></div>
+                  <div class="col-md-6"><label class="visually-hidden" for="libro4">Libro 4</label><input id="libro4" type="text" name="libro4" class="form-control" placeholder="Libro 4" required></div>
+                </div>
+              </fieldset>
+
+              <fieldset class="mb-4">
+                <legend>¿Qué temas te atraen?</legend>
+                <p class="form-text mt-0">Puedes seleccionar más de una opción.</p>
+                <div class="row g-2">
+                  <div class="col-sm-6"><div class="form-check"><input class="form-check-input" type="checkbox" value="Fantasía" id="fantasia" name="Fantasía"><label class="form-check-label" for="fantasia">Fantasía</label></div></div>
+                  <div class="col-sm-6"><div class="form-check"><input class="form-check-input" type="checkbox" value="Romance" id="romance" name="Romance"><label class="form-check-label" for="romance">Romance</label></div></div>
+                  <div class="col-sm-6"><div class="form-check"><input class="form-check-input" type="checkbox" value="Historia" id="historia" name="Historia"><label class="form-check-label" for="historia">Historia</label></div></div>
+                  <div class="col-sm-6"><div class="form-check"><input class="form-check-input" type="checkbox" value="Suspenso" id="suspenso" name="Suspenso"><label class="form-check-label" for="suspenso">Suspenso</label></div></div>
+                  <div class="col-sm-6"><div class="form-check"><input class="form-check-input" type="checkbox" value="Autoayuda" id="autoayuda" name="Autoayuda"><label class="form-check-label" for="autoayuda">Autoayuda</label></div></div>
+                  <div class="col-sm-6"><div class="form-check"><input class="form-check-input" type="checkbox" value="Ciencia Ficción" id="ciencia-ficcion" name="Ciencia Ficción"><label class="form-check-label" for="ciencia-ficcion">Ciencia ficción</label></div></div>
+                </div>
+              </fieldset>
+
+              <fieldset class="mb-4">
+                <legend>¿Qué tipo de lectura prefieres?</legend>
+                <p class="form-text mt-0">Puedes seleccionar más de una opción.</p>
+                <div class="row g-2">
+                  <div class="col-sm-6"><div class="form-check"><input class="form-check-input" type="checkbox" value="Biografía" id="biografia" name="Biografía"><label class="form-check-label" for="biografia">Biografías</label></div></div>
+                  <div class="col-sm-6"><div class="form-check"><input class="form-check-input" type="checkbox" value="Novela" id="novela" name="Novela"><label class="form-check-label" for="novela">Novelas</label></div></div>
+                  <div class="col-sm-6"><div class="form-check"><input class="form-check-input" type="checkbox" value="Científico" id="cientifico" name="Científico"><label class="form-check-label" for="cientifico">Científico o académico</label></div></div>
+                  <div class="col-sm-6"><div class="form-check"><input class="form-check-input" type="checkbox" value="Poesía" id="poesia" name="Poesía"><label class="form-check-label" for="poesia">Poesía</label></div></div>
+                </div>
+              </fieldset>
+
+              <fieldset class="mb-4">
+                <legend>Extensión ideal</legend>
+                <div class="row g-2">
+                  <div class="col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="longitud" id="corto" value="50 paginas" checked><label class="form-check-label" for="corto">Menos de 100 páginas</label></div></div>
+                  <div class="col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="longitud" id="medio" value="100-500 paginas"><label class="form-check-label" for="medio">100 a 500 páginas</label></div></div>
+                  <div class="col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="longitud" id="largo" value="mas de 500 paginas"><label class="form-check-label" for="largo">Más de 500 páginas</label></div></div>
+                </div>
+              </fieldset>
+
+              <div class="mb-4">
+                <label class="form-label fw-bold" for="message">Algo más que debamos saber</label>
+                <textarea class="form-control" id="message" name="message" rows="4" placeholder="Por ejemplo: busco una historia optimista, de ritmo ágil..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Recomiéndame un libro <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></button>
+            </form>
+          </div>
+        </div>
       </div>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/logis-bootstrap-logistics-website-template/ -->
-      </div>
-    </div>
+    </section>
+  </main>
+  {% include "includes/footer.html" %}
 
-  </footer><!-- End Footer -->
-  <!-- End Footer -->
-
-  <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
+  <a href="#" class="scroll-top d-flex align-items-center justify-content-center" aria-label="Volver al inicio"><i class="bi bi-arrow-up-short" aria-hidden="true"></i></a>
   <div id="preloader"></div>
-
-  <!-- Vendor JS Files -->
   <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
   <script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
   <script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
   <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
   <script src="{% static 'vendor/aos/aos.js' %}"></script>
-
-  <!-- Template Main JS File -->
   <script src="{% static 'js/main.js' %}"></script>
-
-
 </body>
-
 </html>

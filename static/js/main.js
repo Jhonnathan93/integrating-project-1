@@ -38,10 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     window.addEventListener('load', togglescrollTop);
     document.addEventListener('scroll', togglescrollTop);
-    scrollTop.addEventListener('click', window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    }));
+    scrollTop.addEventListener('click', event => {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   }
 
   /**
@@ -54,10 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
     el.addEventListener('click', function(event) {
       event.preventDefault();
       mobileNavToogle();
-    })
+    });
   });
 
   function mobileNavToogle() {
+    if (!mobileNavShow || !mobileNavHide) {
+      return;
+    }
+
     document.querySelector('body').classList.toggle('mobile-nav-active');
     mobileNavShow.classList.toggle('d-none');
     mobileNavHide.classList.toggle('d-none');
