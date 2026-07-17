@@ -4,16 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('accounts', '0002_alter_userinformation_disliked_books'),
-        ('book', '0006_alter_book_cover_alter_book_description'),
+        ("accounts", "0002_alter_userinformation_disliked_books"),
+        ("book", "0006_alter_book_cover_alter_book_description"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='book',
-            name='disliked_by',
-            field=models.ManyToManyField(blank=True, related_name='books_disliked_by_users', to='accounts.userinformation'),
+            model_name="book",
+            name="disliked_by",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="books_disliked_by_users",
+                to="accounts.userinformation",
+            ),
         ),
     ]

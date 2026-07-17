@@ -14,43 +14,62 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import include, path
 
-from book import views as BookViews
-from readinglists import views as ReadingListViews
-from newsletter import views as Newsletter
-from analytics import views as Analytics
+from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import include, path
+
+from analytics import views as Analytics
+from book import views as BookViews
+from newsletter import views as Newsletter
+from readinglists import views as ReadingListViews
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-
-    path('', BookViews.index, name='home'),
-
-    path('accounts/', include('accounts.urls')),
-    path('reports/', include('reports.urls')),
-    
-
+    path("admin/", admin.site.urls),
+    path("", BookViews.index, name="home"),
+    path("accounts/", include("accounts.urls")),
+    path("reports/", include("reports.urls")),
     path("recomendations/", BookViews.recomendations, name="recommendations"),
-    path("index/", BookViews.index, name='index'),
-    path('response/', BookViews.response, name='response'),
-
-    path('overview/', ReadingListViews.overview, name='overview'),
-    path('overview/<int:reading_list_id>/', ReadingListViews.detail, name='readinglist_detail'),
-    path('createlist/', ReadingListViews.createlist, name='createlist'),
-    path('deletelist/<int:reading_list_id>/', ReadingListViews.deletelist, name='deletelist'),
-    path('readinglist/<int:reading_list_id>/', ReadingListViews.detail, name='detail'),
-    path('deletebook/<int:reading_list_id>/<int:book_id>/', ReadingListViews.deletebook, name='deletebook'),
-    path('editreadinglist/<int:reading_list_id>', ReadingListViews.updatereadinglist, name='updatereadinglist'),
-    path('add-to-list/', ReadingListViews.add_to_reading_list, name='add-to-list'),
-    path('mark-as-not-recommended/', BookViews.markAsNotRecommended, name='mark-as-not-recommended'),
-    
-    path('send_email_to_readers/', Newsletter.send_email_to_readers, name='send_email_to_readers'),
-    path('top_books/', Analytics.top_books, name='top_books'),
-    path('top_books/<str:period>/', Analytics.top_books, name='top_books_period'),
-    path('faq/', BookViews.faq, name='faq'),
+    path("index/", BookViews.index, name="index"),
+    path("response/", BookViews.response, name="response"),
+    path("overview/", ReadingListViews.overview, name="overview"),
+    path(
+        "overview/<int:reading_list_id>/",
+        ReadingListViews.detail,
+        name="readinglist_detail",
+    ),
+    path("createlist/", ReadingListViews.createlist, name="createlist"),
+    path(
+        "deletelist/<int:reading_list_id>/",
+        ReadingListViews.deletelist,
+        name="deletelist",
+    ),
+    path("readinglist/<int:reading_list_id>/", ReadingListViews.detail, name="detail"),
+    path(
+        "deletebook/<int:reading_list_id>/<int:book_id>/",
+        ReadingListViews.deletebook,
+        name="deletebook",
+    ),
+    path(
+        "editreadinglist/<int:reading_list_id>",
+        ReadingListViews.updatereadinglist,
+        name="updatereadinglist",
+    ),
+    path("add-to-list/", ReadingListViews.add_to_reading_list, name="add-to-list"),
+    path(
+        "mark-as-not-recommended/",
+        BookViews.markAsNotRecommended,
+        name="mark-as-not-recommended",
+    ),
+    path(
+        "send_email_to_readers/",
+        Newsletter.send_email_to_readers,
+        name="send_email_to_readers",
+    ),
+    path("top_books/", Analytics.top_books, name="top_books"),
+    path("top_books/<str:period>/", Analytics.top_books, name="top_books_period"),
+    path("faq/", BookViews.faq, name="faq"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

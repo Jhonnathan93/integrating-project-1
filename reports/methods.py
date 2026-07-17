@@ -1,9 +1,10 @@
 from pathlib import Path
 
 import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 from django.conf import settings
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
 
 
 def plot_counts(*, values: dict[str, int], filename: str, title: str) -> None:

@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('readinglists', '0001_initial'),
+        ("readinglists", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='readinglist',
-            name='is_default',
+            model_name="readinglist",
+            name="is_default",
             field=models.BooleanField(default=False),
         ),
     ]

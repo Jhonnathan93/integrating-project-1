@@ -13,22 +13,35 @@ MAX_BOOKS_PER_LIST = 15
 
 @transaction.atomic
 def reading_list_create_default(*, user: User) -> ReadingList:
-    reading_list, _ = ReadingList.objects.get_or_create(user=user, is_default=True, defaults={"title": DEFAULT_LIST_TITLE, "description": "Tu lista predeterminada"})
+    reading_list, _ = ReadingList.objects.get_or_create(
+        user=user,
+        is_default=True,
+        defaults={
+            "title": DEFAULT_LIST_TITLE,
+            "description": "Tu lista predeterminada",
+        },
+    )
     return reading_list
 
 
 @transaction.atomic
-def reading_list_create(*, user: User, title: str, description: str, cover=None) -> ReadingList:
+def reading_list_create(
+    *, user: User, title: str, description: str, cover=None
+) -> ReadingList:
     if ReadingList.objects.filter(user=user).count() >= MAX_LISTS_PER_USER:
         raise ValidationError("Excediste la cantidad permitida de listas de lectura.")
-    reading_list = ReadingList(title=title, description=description, user=user, cover=cover)
+    reading_list = ReadingList(
+        title=title, description=description, user=user, cover=cover
+    )
     reading_list.full_clean()
     reading_list.save()
     return reading_list
 
 
 @transaction.atomic
-def reading_list_update(*, reading_list: ReadingList, title: str, description: str, cover=None) -> ReadingList:
+def reading_list_update(
+    *, reading_list: ReadingList, title: str, description: str, cover=None
+) -> ReadingList:
     reading_list.title = title
     reading_list.description = description
     fields = ["title", "description"]

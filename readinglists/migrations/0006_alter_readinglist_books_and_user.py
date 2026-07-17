@@ -12,6 +12,16 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(model_name="readinglist", name="books", field=models.ManyToManyField(blank=True, to="book.book")),
-        migrations.AlterField(model_name="readinglist", name="user", field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        migrations.AlterField(
+            model_name="readinglist",
+            name="books",
+            field=models.ManyToManyField(blank=True, to="book.book"),
+        ),
+        migrations.AlterField(
+            model_name="readinglist",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
+        ),
     ]

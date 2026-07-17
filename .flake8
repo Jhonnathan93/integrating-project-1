@@ -1,0 +1,12 @@
+[flake8]
+exclude =
+    .git,
+    .mypy_cache,
+    .ruff_cache,
+    .venv,
+    venv,
+    */migrations/*,
+    static/vendor/*
+max-line-length = 88
+extend-ignore =
+    E501

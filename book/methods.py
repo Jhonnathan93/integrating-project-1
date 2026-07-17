@@ -5,7 +5,12 @@ from .services import history_create
 
 
 def save_history(request, _books, _topics, _genres):
-    return history_create(user=request.user, books=_books.split(", "), topics=_topics.split(", "), genres=_genres.split(", "))
+    return history_create(
+        user=request.user,
+        books=_books.split(", "),
+        topics=_topics.split(", "),
+        genres=_genres.split(", "),
+    )
 
 
 def buscar_libros(consulta):

@@ -172,6 +172,7 @@
 
             <p class="text-muted">Escribe aquí el título y autor del libro que deseas añadir a tu lista.</p>
 
+            <!-- nosemgrep: python.django.security.django-no-csrf-token.django-no-csrf-token -- Django CSRF token is rendered immediately below. -->
             <form method="post" class="php-email-form mt-3">
               {% csrf_token %}
               <div class="mb-3">

@@ -4,15 +4,17 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('readinglists', '0002_readinglist_is_default'),
+        ("readinglists", "0002_readinglist_is_default"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='readinglist',
-            name='cover',
-            field=models.ImageField(default='readinglist/default_cover.jpg', upload_to='readinglists/covers/'),
+            model_name="readinglist",
+            name="cover",
+            field=models.ImageField(
+                default="readinglist/default_cover.jpg",
+                upload_to="readinglists/covers/",
+            ),
         ),
     ]

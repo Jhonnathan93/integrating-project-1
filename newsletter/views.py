@@ -12,5 +12,7 @@ def send_email_to_readers(request):
     try:
         newsletter_send()
     except ImproperlyConfigured as error:
-        return render(request, "email_sent_confirmation.html", {"error": str(error)}, status=503)
+        return render(
+            request, "email_sent_confirmation.html", {"error": str(error)}, status=503
+        )
     return render(request, "email_sent_confirmation.html")

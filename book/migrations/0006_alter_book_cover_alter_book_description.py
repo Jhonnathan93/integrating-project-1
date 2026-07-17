@@ -4,20 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('book', '0005_alter_history_date'),
+        ("book", "0005_alter_history_date"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='book',
-            name='cover',
-            field=models.URLField(default='https://user-images.githubusercontent.com/140737841/280489450-728d5fb6-442e-4912-bed3-f0a5689fbdec.png'),
+            model_name="book",
+            name="cover",
+            field=models.URLField(
+                default="https://user-images.githubusercontent.com/140737841/280489450-728d5fb6-442e-4912-bed3-f0a5689fbdec.png"
+            ),
         ),
         migrations.AlterField(
-            model_name='book',
-            name='description',
-            field=models.TextField(default='Sin descripción disponible', max_length=500),
+            model_name="book",
+            name="description",
+            field=models.TextField(
+                default="Sin descripción disponible", max_length=500
+            ),
         ),
     ]
