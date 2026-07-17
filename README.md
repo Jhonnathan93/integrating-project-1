@@ -29,7 +29,7 @@ makes it reusable from commands, tasks, and tests.
 
 ## Requirements
 
-- Python 3.12
+- Python 3.14
 - pip
 - Git
 - Docker, optionally, to build the application image
@@ -49,10 +49,10 @@ python --version
    cd integrating-project-1
    ```
 
-2. Create and activate a Python 3.12 virtual environment:
+2. Create and activate a Python 3.14 virtual environment:
 
    ```powershell
-   py -3.12 -m venv venv
+   py -3.14 -m venv venv
    .\venv\Scripts\Activate.ps1
    ```
 
@@ -77,7 +77,7 @@ python --version
    GROQ_API_KEY=
    GROQ_MODEL=llama-3.3-70b-versatile
    OPENAI_API_KEY=
-   OPENAI_MODEL=gpt-3.5-turbo
+   OPENAI_MODEL=gpt-5.4-mini
    NEWSLETTER_SENDER_EMAIL=
    NEWSLETTER_SENDER_PASSWORD=
    ```
@@ -109,14 +109,10 @@ python -m pip install -r requirements-dev.txt
 | Pending migrations | `python manage.py makemigrations --check --dry-run` |
 | Fast linting | `python -m ruff check .` |
 | Format with Ruff | `python -m ruff format .` |
-| Django linting | `python -m flake8 .` |
 | Type checking | `python -m mypy --config-file mypy.ini --ignore-missing-imports accounts analytics book newsletter readinglists reports BookNexus` |
 | Static security analysis | `python -m semgrep scan --config p/python --config p/django --error` |
 | Dependency vulnerability scan | `python -m pip_audit -r requirements.txt` |
 | Tests | `python manage.py test` |
-
-> Use Python 3.12 for `flake8-django`. Python 3.14 is not compatible with
-> the current version of that plugin.
 
 ## Docker
 
@@ -144,7 +140,7 @@ request targeting `main` and every push to `main`.
 It includes:
 
 - Line-ending and Conventional Commit message validation.
-- Ruff, Flake8-Django, and mypy.
+- Ruff and mypy.
 - Semgrep, Gitleaks, dependency audit, and license checks.
 - Migration validation and application against a clean SQLite database.
 - Python compilation, Docker image build, and image vulnerability scanning.

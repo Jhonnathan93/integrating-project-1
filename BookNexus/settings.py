@@ -29,7 +29,7 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", os.environ.get("openAI_api_key
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "groq").lower()
 GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
-OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-3.5-turbo")
+OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-5.4-mini")
 NEWSLETTER_SENDER_EMAIL = os.environ.get(
     "NEWSLETTER_SENDER_EMAIL", os.environ.get("sender_email", "")
 )

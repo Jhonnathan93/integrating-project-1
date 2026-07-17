@@ -1,6 +1,6 @@
-Django>=4.2,<5.0
-python-dotenv>=1.0,<2.0
-requests>=2.31,<3.0
-openai>=0.28,<1.0
-groq
-matplotlib>=3.7,<4.0
+Django>=6.0.7,<6.1
+python-dotenv>=1.2,<2.0
+requests>=2.32,<3.0
+openai>=2.45,<3.0
+groq>=1.5,<2.0
+matplotlib>=3.10,<4.0

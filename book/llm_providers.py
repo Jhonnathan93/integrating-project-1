@@ -19,15 +19,15 @@ class OpenAIRecommendationProvider:
         if not settings.OPENAI_API_KEY:
             raise ValueError("OPENAI_API_KEY is not configured.")
 
-        import openai
+        from openai import OpenAI
 
-        openai.api_key = settings.OPENAI_API_KEY
-        completion = openai.ChatCompletion.create(
+        client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        completion = client.responses.create(
             model=settings.OPENAI_MODEL,
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=900,
+            input=prompt,
+            max_output_tokens=900,
         )
-        return _parse_titles(completion.choices[0].message["content"])
+        return _parse_titles(completion.output_text)
 
 
 class GroqRecommendationProvider:
