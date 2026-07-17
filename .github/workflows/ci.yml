@@ -282,12 +282,14 @@ jobs:
           python -m pip install -r requirements-dev.txt
           pip-licenses --format=json --output-file=licenses.json
       - name: Create source artifact
-        run: tar --exclude-vcs --exclude='.venv' --exclude='venv' --exclude='media' -czf booknexus-source.tar.gz .
+        run: |
+          tar --exclude-vcs --exclude='.venv' --exclude='venv' --exclude='media' \
+            -czf "$RUNNER_TEMP/booknexus-source.tar.gz" .
       - name: Publish source artifact
         uses: actions/upload-artifact@v4
         with:
           name: booknexus-source
-          path: booknexus-source.tar.gz
+          path: ${{ runner.temp }}/booknexus-source.tar.gz
           retention-days: 30
       - name: Publish license report
         uses: actions/upload-artifact@v4
