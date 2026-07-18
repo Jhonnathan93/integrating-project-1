@@ -1,78 +1,105 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}BookNexus{% endblock %}
+{% block title %}Informes | BookNexus{% endblock %}
+{% block description %}Informes de preferencias de lectura para administradores de BookNexus.{% endblock %}
 
 {% block content %}
-<div class="breadcrumbs">
-      <div class="page-header d-flex align-items-center" style="background-image: url('https://github.com/jhothinnan/Images/blob/main/library.jpg?raw=true');">
-        <div class="container position-relative">
-          <div class="row d-flex justify-content-center">
-            <div class="col-lg-6 text-center">
-              <h2>Generos y Categorías</h2>
-            </div>
+  <div class="breadcrumbs">
+    <div class="page-header d-flex align-items-center" style="background-image: url('https://github.com/jhothinnan/Images/blob/main/library.jpg?raw=true');">
+      <div class="container position-relative">
+        <div class="row d-flex justify-content-center">
+          <div class="col-lg-8 text-center">
+            <p class="section-kicker section-kicker--light">Estadísticas de lectura</p>
+            <h1>Informes de lectura</h1>
+            <p>Explora los temas y géneros que definen a la comunidad de BookNexus.</p>
           </div>
         </div>
       </div>
-      <nav aria-label="breadcrumbs">
-        <div class="container">
-          <ol>
-            <li><a href="{% url 'index' %}">Inicio</a></li>
-            <li>Reportes</li>
-          </ol>
-        </div>
-      </nav>
-    </div><!-- End Breadcrumbs -->
-
-    <!-- ======= Featured Services Section ======= -->
-    <section id="register" class="register">
-      <div class="container" data-aos="fade-up">
-
-        <div class="row g-0">
-
-          <div class="col-lg-12">
-            <form action="">
-                <div class="mb-3">
-                    <div class="form-group">
-                        <label for="fecha_inicio" class="form-label">
-                            Fecha de Inicio:
-                        </label>
-                        <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
-                    </div>
-        
-                    <div class="form-group">
-                        <label for="fecha_fin" class="form-label">
-                            Fecha de Fin:
-                        </label>
-                        <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
-                    </div>
-                </div>    
-                
-                <button type="submit" class="btn btn-primary">Generar Informe</button>
-            </form>
-        
-            <br>
-            
-            {% if message %}
-            <div class="alert alert-success mb-4" role="alert">
-                {{ message }}
-            </div>
-            {% endif %}  
-        
-            <div class="row">
-                <div class="col-6">
-                    <img src="../../media/reports/categories.png" alt="Categorías" class="img-fluid">
-                    <a href="../../media/reports/categories.png" download="categories.png" class="btn btn-primary mt-2">Descargar Imagen</a>
-                </div>
-                <div class="col-6">
-                    <img src="../../media/reports/genres.png" alt="Géneros" class="img-fluid">
-                    <a href="../../media/reports/genres.png" download="genres.png" class="btn btn-primary mt-2">Descargar Imagen</a>
-                </div>
-            </div>
-          </div><!-- End Quote Form -->
-
-        </div>
-
+    </div>
+    <nav aria-label="Ruta de navegación">
+      <div class="container">
+        <ol>
+          <li><a href="{% url 'index' %}">Inicio</a></li>
+          <li aria-current="page">Informes</li>
+        </ol>
       </div>
-    </section>
+    </nav>
+  </div>
+
+  <section class="reports-page" aria-labelledby="reports-filter-title">
+    <div class="container" data-aos="fade-up">
+      <div class="reports-filter-card">
+        <div class="reports-filter-card__header">
+          <div>
+            <p class="section-kicker">Período de análisis</p>
+            <h2 id="reports-filter-title">Genera un informe de lectura</h2>
+            <p>Deja ambas fechas vacías para analizar todo el historial o selecciona un rango completo.</p>
+          </div>
+          <span class="reports-filter-card__icon bi bi-bar-chart-line" aria-hidden="true"></span>
+        </div>
+
+        <form action="{% url 'reports:report' %}" method="get" class="reports-filter-form">
+          <div class="row g-3 align-items-end">
+            <div class="col-md-5">
+              <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
+              <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
+            </div>
+            <div class="col-md-5">
+              <label for="fecha_fin" class="form-label">Fecha de finalización</label>
+              <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" value="{{ request.GET.fecha_fin }}">
+            </div>
+            <div class="col-md-2 d-grid">
+              <button type="submit" class="btn btn-primary">
+                Generar <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {% if message %}
+        <div class="reports-status alert alert-success" role="status">
+          <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+          <span>{{ message }}</span>
+        </div>
+      {% endif %}
+
+      {% if report_available %}
+        <div class="reports-results" aria-label="Gráficos del informe generado">
+          <article class="report-chart-card">
+            <header class="report-chart-card__header">
+              <div>
+                <p class="section-kicker">Temas</p>
+                <h2>Categorías más leídas</h2>
+              </div>
+              <i class="bi bi-bookmarks" aria-hidden="true"></i>
+            </header>
+            <figure>
+              <img src="{% get_media_prefix %}reports/categories.png" alt="Gráfico de barras con la cantidad de lecturas por categoría" class="img-fluid">
+            </figure>
+            <a href="{% get_media_prefix %}reports/categories.png" download="booknexus-categories-report.png" class="btn btn-outline-primary">
+              <i class="bi bi-download" aria-hidden="true"></i> Descargar gráfico
+            </a>
+          </article>
+
+          <article class="report-chart-card">
+            <header class="report-chart-card__header">
+              <div>
+                <p class="section-kicker">Géneros</p>
+                <h2>Géneros más leídos</h2>
+              </div>
+              <i class="bi bi-journal-richtext" aria-hidden="true"></i>
+            </header>
+            <figure>
+              <img src="{% get_media_prefix %}reports/genres.png" alt="Gráfico de barras con la cantidad de lecturas por género" class="img-fluid">
+            </figure>
+            <a href="{% get_media_prefix %}reports/genres.png" download="booknexus-genres-report.png" class="btn btn-outline-primary">
+              <i class="bi bi-download" aria-hidden="true"></i> Descargar gráfico
+            </a>
+          </article>
+        </div>
+      {% endif %}
+    </div>
+  </section>
 {% endblock %}

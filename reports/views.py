@@ -15,7 +15,10 @@ def reports(request):
         return render(
             request,
             "reports.html",
-            {"message": "Indica ambas fechas para filtrar el reporte."},
+            {
+                "message": "Indica ambas fechas para filtrar el informe.",
+                "report_available": False,
+            },
         )
     categories, genres = history_category_counts(
         start_date=start_date, end_date=end_date
@@ -23,8 +26,12 @@ def reports(request):
     plot_counts(values=categories, filename="categories.png", title="Categorías")
     plot_counts(values=genres, filename="genres.png", title="Géneros literarios")
     message = (
-        f"Reporte creado con historiales entre {start_date} y {end_date}."
+        f"Informe creado con historiales entre {start_date} y {end_date}."
         if start_date
-        else "Reporte creado con todos los historiales disponibles."
+        else "Informe creado con todos los historiales disponibles."
     )
-    return render(request, "reports.html", {"message": message})
+    return render(
+        request,
+        "reports.html",
+        {"message": message, "report_available": True},
+    )
