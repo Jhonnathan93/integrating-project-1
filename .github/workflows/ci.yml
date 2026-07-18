@@ -225,7 +225,7 @@ jobs:
     permissions:
       contents: read
     env:
-      DJANGO_SETTINGS_MODULE: BookNexus.settings_test
+      DJANGO_SETTINGS_MODULE: BookNexus.settings_testing
     steps:
       - uses: actions/checkout@v6
       - name: Set up Python

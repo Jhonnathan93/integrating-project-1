@@ -112,8 +112,8 @@ python -m pip install --require-hashes -r requirements-dev.lock
 | Type checking | `python -m mypy --config-file mypy.ini --ignore-missing-imports accounts analytics book newsletter readinglists reports BookNexus` |
 | Static security analysis | `python -m semgrep scan --config p/python --config p/django --error` |
 | Dependency vulnerability scan | `python -m pip_audit -r requirements.lock` |
-| Unit tests | `python manage.py test --settings=BookNexus.settings_test` |
-| Coverage check (minimum 85%) | `python -m coverage run --branch manage.py test --settings=BookNexus.settings_test; python -m coverage report --fail-under=85` |
+| Unit tests | `python manage.py test --settings=BookNexus.settings_testing` |
+| Coverage check (minimum 85%) | `python -m coverage run --branch manage.py test --settings=BookNexus.settings_testing; python -m coverage report --fail-under=85` |
 | HTML and XML coverage reports | `python -m coverage html; python -m coverage xml` |
 
 ## Docker
