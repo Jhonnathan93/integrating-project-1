@@ -833,13 +833,10 @@ section {
   font-weight: 700;
   text-transform: uppercase;
   margin-bottom: 20px;
-  padding-bottom: 0;
   color: #001973;
   position: relative;
   z-index: 2;
-  margin-bottom: 20px;
   padding-bottom: 20px;
-  position: relative;
 }
 
 .section-header h2:after {
@@ -1447,7 +1444,6 @@ section {
   position: absolute;
   width: 120px;
   height: 120px;
-  animation-delay: 0s;
   animation: pulsate-btn 2s;
   animation-direction: forwards;
   animation-iteration-count: infinite;
@@ -1721,7 +1717,6 @@ section {
   padding: 12px 35px;
   border-radius: 4px;
   color: var(--color-primary);
-  transition: none;
   font-size: 16px;
   font-weight: 500;
   font-family: var(--font-primary);
@@ -2103,7 +2098,6 @@ section {
   color: #fff;
   background-color: var(--color-primary);
   border: 2px solid var(--color-primary);
-  transition: none;
   font-size: 16px;
   font-weight: 500;
   transition: 0.3s;
@@ -2504,10 +2498,16 @@ section {
   padding-bottom: 18px;
   padding-left: 20px;
   padding-right: 20px;
-  border: none;
   margin-right: 10px;
   border: none !important;
   background: none !important;
+}
+
+.mobile-nav-toggle {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  padding: 0;
 }
 
 .hero form .form-control:hover,

@@ -129,10 +129,12 @@
             <form method="post" class="php-email-form mt-3">
               {% csrf_token %}
               <div class="mb-3">
+                <label for="id_title" class="form-label">Título</label>
                 <input type="text" name="title" class="form-control" required id="id_title"
                   placeholder="Título del libro que deseas agregar:">
               </div>
               <div class="mb-3">
+                <label for="id_author" class="form-label">Autor</label>
                 <input type="text" name="author" class="form-control" id="id_author"
                   placeholder="Nombre del autor del libro:" required>
               </div>
@@ -222,6 +224,7 @@
                 </div>
                 <div class="modal-body">
                   <p>Dar click en el botón para copiar URL de la lista:</p>
+                  <label for="shareableURL" class="form-label">URL de la lista</label>
                   <input type="text" id="shareableURL" class="form-control" value="{{ reading_list.get_absolute_url }}"
                     readonly>
                   <div class="d-grid gap-2 col-6 mx-auto">

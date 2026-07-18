@@ -100,7 +100,7 @@
                 data-bs-target="#descriptionModal{{ forloop.parentloop.counter }}_{{ forloop.counter }}">Leer más</a>
               {% endif %}
               <br>
-              <a href="#" class="buy-btn me-3 mb-3" onclick="window.location.href='{{ elemento.buy_link }}'">Comprar</a>
+              <a href="{{ elemento.buy_link }}" class="buy-btn me-3 mb-3">Comprar</a>
               <div class="book-details"
                                                 data-title="{{ elemento.titulo }}"
                                                 data-author="{{ elemento.autores|join:',' }}"
@@ -111,12 +111,12 @@
                                                 
                               >
               {% if user.is_authenticated %}
-                <a href="#" class="buy-btn dropdown-toggle me-3 mb-3" role="button" data-bs-toggle="dropdown">Más opciones</a>
+                <button type="button" class="buy-btn dropdown-toggle me-3 mb-3" data-bs-toggle="dropdown" aria-expanded="false">Más opciones</button>
               {% endif %}
               
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item btn-add-to-list" href="#" onclick="addToReadLater(this)">Leer más tarde</a></li>
-                <li><a class="dropdown-item btn-mark-as-not-recommended" href="#" onclick="markAsNotRecommended(this)">No recomendar</a></li>
+                <li><button type="button" class="dropdown-item btn-add-to-list">Leer más tarde</button></li>
+                <li><button type="button" class="dropdown-item btn-mark-as-not-recommended">No recomendar</button></li>
               </ul>
             </div>
             </div>
@@ -232,7 +232,7 @@
       return cookieValue;
     }
 
-    let isEventListenerAdded = isEventListenerAdded || false;
+    let isEventListenerAdded = false;
     
     function showSuccessToast(message) {
         const successToast = document.getElementById('successToast');
@@ -317,11 +317,20 @@
     }
     
 
-    if (!isEventListenerAdded) {
-        document.getElementById('book-recommendations-container').addEventListener('click', function (event) {
-            if (event.target.classList.contains('btn-add-to-list')) {
-                addToReadLater(event.target); 
+    const recommendationsContainer = document.getElementById('pricing');
+    if (recommendationsContainer && !isEventListenerAdded) {
+        recommendationsContainer.addEventListener('click', function (event) {
+            const button = event.target.closest('.btn-add-to-list, .btn-mark-as-not-recommended');
+            if (!button) {
+                return;
             }
+
+            if (button.classList.contains('btn-add-to-list')) {
+                addToReadLater(button);
+                return;
+            }
+
+            markAsNotRecommended(button);
         });
 
         isEventListenerAdded = true;

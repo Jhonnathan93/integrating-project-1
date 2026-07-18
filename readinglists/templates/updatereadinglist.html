@@ -80,6 +80,7 @@
                     {% csrf_token %}
                     <h4>Actualiza tu lista de lectura</h4>
                     <div class="form-group mt-3">
+                        <label for="id_title" class="form-label">Título</label>
                         {% if initial_data.title == "Leer más tarde" %}
                             <input type="text" name="title" class="form-control" id="id_title" value="{{ initial_data.title }}" required disabled>
                             <p class="text-muted">No puedes cambiar el título de esta Reading List.</p>
@@ -89,10 +90,12 @@
                     </div>
                 
                     <div class="form-group mt-3">
-                        <textarea class="form-control" id="description" name="description" id="id_description" rows="4" placeholder="Añade una Descripción a tu lista de lectura" required>{{ initial_data.description }}</textarea>
+                        <label for="id_description" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="id_description" name="description" rows="4" placeholder="Añade una Descripción a tu lista de lectura" required>{{ initial_data.description }}</textarea>
                     </div>
 
                     <div class="form-group mt-3">
+                        <label for="id_cover" class="form-label">Portada</label>
                         <input type="file" name="cover" class="form-control" accept="image/*" id="id_cover" placeholder="Elige la imagen de portada de la lista de lectura">
                     </div>
                 
