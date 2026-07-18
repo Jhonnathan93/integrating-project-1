@@ -197,11 +197,7 @@
         const bookDetails = button.closest('.book-details');
         console.log('bookDetails:', bookDetails);
         if (bookDetails) {
-            const title = bookDetails.getAttribute('data-title');
-            const author = bookDetails.getAttribute('data-author');
-            const description = bookDetails.getAttribute('data-description');
-            const buyLink = bookDetails.getAttribute('data-buy-link');
-            const cover = bookDetails.getAttribute('data-cover');
+            const { title, author, description, buyLink, cover } = bookDetails.dataset;
 
            
             console.log('Title: ' + title);
@@ -279,8 +275,7 @@
     
         const csrftoken = getCookie('csrftoken');
         const bookDetails = button.closest('.book-details');
-        const title = bookDetails.getAttribute('data-title');
-        const author = bookDetails.getAttribute('data-author');
+        const { title, author } = bookDetails.dataset;
     
         fetch('/mark-as-not-recommended/', {
             method: 'POST',

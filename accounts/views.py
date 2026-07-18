@@ -9,13 +9,15 @@ from readinglists.selectors import reading_lists_for_user
 from .selectors import user_profile_get
 from .services import profile_update, user_register
 
+SIGNUP_TEMPLATE = "signup.html"
+
 
 def signup_view(request):
     if request.method != "POST":
-        return render(request, "signup.html")
+        return render(request, SIGNUP_TEMPLATE)
     if request.POST.get("password1") != request.POST.get("password2"):
         return render(
-            request, "signup.html", {"error": "Las contraseñas no coinciden."}
+            request, SIGNUP_TEMPLATE, {"error": "Las contraseñas no coinciden."}
         )
     try:
         user = user_register(
@@ -29,7 +31,7 @@ def signup_view(request):
     except (IntegrityError, ValueError):
         return render(
             request,
-            "signup.html",
+            SIGNUP_TEMPLATE,
             {"error": "Revisa los datos o utiliza otro nombre de usuario."},
         )
     login(request, user)

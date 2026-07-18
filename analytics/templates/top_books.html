@@ -58,13 +58,13 @@
 
             <div class="col-lg-2">
                 <h3>Filtrar por período:</h3>
-                <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                <nav class="btn-group-vertical" aria-label="Filtrar por período">
                 <a href="{% url 'top_books' %}" class="btn btn-primary">Todos los tiempos</a>
                 <a href="{% url 'top_books_period' 'week' %}" class="btn btn-primary">Última semana</a>
                 <a href="{% url 'top_books_period' 'month' %}" class="btn btn-primary">Último mes</a>
                 <a href="{% url 'top_books_period' '6months' %}" class="btn btn-primary">Últimos 6 meses</a>
                 <a href="{% url 'top_books_period' 'year' %}" class="btn btn-primary">Último año</a>
-                </div>
+                </nav>
             </div>
   
           </div>

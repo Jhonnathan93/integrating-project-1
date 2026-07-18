@@ -5,6 +5,15 @@
 * Author: BootstrapMade.com
 * License: https://bootstrapmade.com/license/
 */
+function initializeAos() {
+  AOS.init({
+    duration: 1000,
+    easing: 'ease-in-out',
+    once: true,
+    mirror: false
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   "use strict";
 
@@ -107,23 +116,12 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * Initiate glightbox
    */
-  const glightbox = GLightbox({
+  GLightbox({
     selector: '.glightbox'
   });
 
-  /**
-   * Animation on scroll function and init
-   */
-  function aos_init() {
-    AOS.init({
-      duration: 1000,
-      easing: 'ease-in-out',
-      once: true,
-      mirror: false
-    });
-  }
   window.addEventListener('load', () => {
-    aos_init();
+    initializeAos();
   });
 
 });

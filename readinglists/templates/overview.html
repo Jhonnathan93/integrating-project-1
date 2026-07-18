@@ -4,27 +4,7 @@
 {% block title %}BookNexus{% endblock %}
 
 {% block content %}
-<!-- ======= Breadcrumbs ======= -->
-    <div class="breadcrumbs">
-      <div class="page-header d-flex align-items-center" style="background-image: url('https://github.com/jhothinnan/Images/blob/main/library.jpg?raw=true');">
-        <div class="container position-relative">
-          <div class="row d-flex justify-content-center">
-            <div class="col-lg-6 text-center">
-              <h2>Listas de lectura</h2>
-              <p>Con nuestra función de lista de lectura, podrás organizar y guardar tus libros favoritos de una manera sencilla y conveniente. Ya no tendrás que preocuparte por perder el rastro de tus lecturas pendientes o libros más queridos. Crea tu lista personalizada y disfruta de una experiencia de lectura más organizada y gratificante.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <nav aria-label="breadcrumbs">
-        <div class="container">
-          <ol>
-            <li><a href="{% url 'index' %}">Inicio</a></li>
-            <li>Listas de lectura</li>
-          </ol>
-        </div>
-      </nav>
-    </div><!-- End Breadcrumbs -->
+{% include 'includes/reading_list_breadcrumbs.html' %}
 
     <!-- ======= Reading list Section ======= -->
     <section id="service" class="services pt-0">
