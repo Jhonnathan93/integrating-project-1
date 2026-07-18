@@ -4,6 +4,7 @@ from typing import Protocol
 
 from django.conf import settings
 
+
 class RecommendationProvider(Protocol):
     """Contract implemented by any text-generation provider."""
 

@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import Any, Optional
+from typing import Any
 
 import requests
 from django.conf import settings
@@ -12,7 +12,7 @@ MAX_RETRY_ATTEMPTS = 3
 RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
 
 
-def search_book(*, title: str, author: str) -> Optional[dict[str, Any]]:
+def search_book(*, title: str, author: str) -> dict[str, Any] | None:
     params = {
         "q": _search_query(title=title, author=author),
         "orderBy": "relevance",
@@ -67,7 +67,7 @@ def _search_query(*, title: str, author: str) -> str:
     return f"{query}+inauthor:{author}" if author else query
 
 
-def _request_volumes(*, params: dict[str, str]) -> Optional[requests.Response]:
+def _request_volumes(*, params: dict[str, str]) -> requests.Response | None:
     """Request Google Books data, retrying only temporary provider failures."""
 
     for attempt in range(MAX_RETRY_ATTEMPTS):
@@ -102,7 +102,7 @@ def _request_volumes(*, params: dict[str, str]) -> Optional[requests.Response]:
     return None
 
 
-def _publication_year(value: Optional[str]) -> int:
+def _publication_year(value: str | None) -> int:
     try:
         return int((value or "").split("-", 1)[0])
     except ValueError:

@@ -1,12 +1,11 @@
 from collections import Counter
 from datetime import date
-from typing import Optional
 
 from book.models import History
 
 
 def history_category_counts(
-    *, start_date: Optional[date] = None, end_date: Optional[date] = None
+    *, start_date: date | None = None, end_date: date | None = None
 ):
     histories = History.objects.all()
     if start_date and end_date:
