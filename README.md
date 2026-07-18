@@ -100,7 +100,7 @@ Open <http://127.0.0.1:8000/>.
 Install development tools once:
 
 ```powershell
-python -m pip install -r requirements-dev.txt
+python -m pip install --require-hashes -r requirements-dev.lock
 ```
 
 | Goal | Command |
@@ -111,8 +111,10 @@ python -m pip install -r requirements-dev.txt
 | Format with Ruff | `python -m ruff format .` |
 | Type checking | `python -m mypy --config-file mypy.ini --ignore-missing-imports accounts analytics book newsletter readinglists reports BookNexus` |
 | Static security analysis | `python -m semgrep scan --config p/python --config p/django --error` |
-| Dependency vulnerability scan | `python -m pip_audit -r requirements.txt` |
-| Tests | `python manage.py test` |
+| Dependency vulnerability scan | `python -m pip_audit -r requirements.lock` |
+| Unit tests | `python manage.py test --settings=BookNexus.settings_test` |
+| Coverage check (minimum 60%) | `python -m coverage run --branch manage.py test --settings=BookNexus.settings_test; python -m coverage report --fail-under=60` |
+| HTML and XML coverage reports | `python -m coverage html; python -m coverage xml` |
 
 ## Docker
 

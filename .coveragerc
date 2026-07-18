@@ -1,0 +1,29 @@
+[run]
+branch = True
+source =
+    accounts
+    analytics
+    book
+    newsletter
+    readinglists
+    reports
+    BookNexus
+omit =
+    */migrations/*
+    */tests/*
+    */admin.py
+    */apps.py
+    manage.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if TYPE_CHECKING:
+show_missing = True
+skip_covered = True
+
+[html]
+directory = htmlcov
+
+[xml]
+output = coverage.xml

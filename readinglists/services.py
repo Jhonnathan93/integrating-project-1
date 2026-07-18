@@ -30,9 +30,10 @@ def reading_list_create(
 ) -> ReadingList:
     if ReadingList.objects.filter(user=user).count() >= MAX_LISTS_PER_USER:
         raise ValidationError("Excediste la cantidad permitida de listas de lectura.")
-    reading_list = ReadingList(
-        title=title, description=description, user=user, cover=cover
-    )
+    reading_list_data = {"title": title, "description": description, "user": user}
+    if cover:
+        reading_list_data["cover"] = cover
+    reading_list = ReadingList(**reading_list_data)
     reading_list.full_clean()
     reading_list.save()
     return reading_list
