@@ -1,0 +1,12 @@
+# Generated from requirements-dev.txt for CI tooling.
+# Update this file with a dependency lock tool whenever requirements-dev.txt changes.
+-r requirements.lock
+
+ruff==0.15.22
+mypy==1.20.2
+django-stubs==5.2.9
+django-stubs-ext==6.0.7
+types-requests==2.33.0.20260712
+semgrep==1.170.0
+pip-audit==2.10.1
+pip-licenses==5.5.5
