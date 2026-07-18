@@ -1,23 +1,12 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1" name="viewport">
-  <meta name="description" content="Inicia sesión en BookNexus.">
-  <title>Iniciar sesión | BookNexus</title>
-  <link href="{% static 'img/iconWhite.png' %}" rel="icon">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Questrial&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
-  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
-  <link href="{% static 'css/main.css' %}" rel="stylesheet">
-</head>
-<body>
-  {% include "includes/header.html" %}
-  <main class="auth-page">
-    <section class="auth-hero" aria-labelledby="login-title">
+
+{% block title %}Iniciar sesión | BookNexus{% endblock %}
+{% block description %}Inicia sesión en BookNexus.{% endblock %}
+{% block main_class %}auth-page{% endblock %}
+
+{% block content %}
+<section class="auth-hero" aria-labelledby="login-title">
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-lg-7 col-xl-6">
@@ -51,15 +40,4 @@
         </div>
       </div>
     </section>
-  </main>
-  {% include "includes/footer.html" %}
-  <a href="#" class="scroll-top d-flex align-items-center justify-content-center" aria-label="Volver al inicio"><i class="bi bi-arrow-up-short" aria-hidden="true"></i></a>
-  <div id="preloader"></div>
-  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-  <script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
-  <script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
-  <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
-  <script src="{% static 'vendor/aos/aos.js' %}"></script>
-  <script src="{% static 'js/main.js' %}"></script>
-</body>
-</html>
+{% endblock %}

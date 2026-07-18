@@ -1,26 +1,15 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1" name="viewport">
-  <meta name="description" content="Recomendaciones de libros personalizadas según tus gustos literarios.">
-  <title>BookNexus | Descubre tu próxima lectura</title>
-  <link href="{% static 'img/iconWhite.png' %}" rel="icon">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Questrial&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
-  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
-  <link href="{% static 'css/main.css' %}" rel="stylesheet">
-</head>
 
-<body>
+{% block title %}BookNexus | Descubre tu próxima lectura{% endblock %}
+{% block description %}Recomendaciones de libros personalizadas según tus gustos literarios.{% endblock %}
+
+{% block before_main %}
   <a class="visually-hidden-focusable skip-link" href="#recommendation-form">Saltar al formulario de recomendaciones</a>
-  {% include "includes/header.html" %}
+{% endblock %}
 
-  <main>
-    <section id="hero" class="hero d-flex align-items-center" aria-labelledby="hero-title">
+{% block content %}
+<section id="hero" class="hero d-flex align-items-center" aria-labelledby="hero-title">
       <div class="container">
         <div class="row align-items-center gy-5 justify-content-between">
           <div class="col-lg-7 d-flex flex-column justify-content-center" data-aos="fade-up">
@@ -135,16 +124,4 @@
         </div>
       </div>
     </section>
-  </main>
-  {% include "includes/footer.html" %}
-
-  <a href="#" class="scroll-top d-flex align-items-center justify-content-center" aria-label="Volver al inicio"><i class="bi bi-arrow-up-short" aria-hidden="true"></i></a>
-  <div id="preloader"></div>
-  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-  <script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
-  <script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
-  <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
-  <script src="{% static 'vendor/aos/aos.js' %}"></script>
-  <script src="{% static 'js/main.js' %}"></script>
-</body>
-</html>
+{% endblock %}
