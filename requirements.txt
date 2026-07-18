@@ -3,4 +3,3 @@ python-dotenv>=1.2,<2.0
 requests>=2.32,<3.0
 openai>=2.45,<3.0
 groq>=1.5,<2.0
-matplotlib>=3.10,<4.0

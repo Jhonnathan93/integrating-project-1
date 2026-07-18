@@ -910,25 +910,20 @@ select:focus-visible {
   font-size: clamp(1.35rem, 2vw, 1.85rem);
 }
 
-.report-chart-card figure {
+.report-chart-card__chart {
   align-items: center;
   background: #fbfcff;
   border: 1px solid rgba(4, 5, 91, 0.09);
   border-radius: 0.85rem;
   display: flex;
   margin: 1.5rem 0;
-  min-height: 18rem;
+  min-height: 21rem;
   padding: 0.75rem;
 }
 
-.report-chart-card figure img {
-  max-height: 24rem;
-  object-fit: contain;
+.report-chart-card__chart canvas {
+  max-height: 22rem;
   width: 100%;
-}
-
-.report-chart-card .btn {
-  align-self: flex-start;
 }
 
 @media (max-width: 991px) {

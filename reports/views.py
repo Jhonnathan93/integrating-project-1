@@ -2,8 +2,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
 
-from .methods import plot_counts
-from .selectors import history_category_counts
+from .selectors import report_chart_data
 
 
 @user_passes_test(lambda user: bool(getattr(user, "is_staff", False)))
@@ -20,11 +19,9 @@ def reports(request):
                 "report_available": False,
             },
         )
-    categories, genres = history_category_counts(
+    chart_data = report_chart_data(
         start_date=start_date, end_date=end_date
     )
-    plot_counts(values=categories, filename="categories.png", title="Categorías")
-    plot_counts(values=genres, filename="genres.png", title="Géneros literarios")
     message = (
         f"Informe creado con historiales entre {start_date} y {end_date}."
         if start_date
@@ -33,5 +30,9 @@ def reports(request):
     return render(
         request,
         "reports.html",
-        {"message": message, "report_available": True},
+        {
+            "message": message,
+            "report_available": True,
+            "chart_data": chart_data,
+        },
     )

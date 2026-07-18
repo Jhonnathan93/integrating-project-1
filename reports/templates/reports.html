@@ -9,9 +9,8 @@
     <div class="page-header d-flex align-items-center" style="background-image: url('https://github.com/jhothinnan/Images/blob/main/library.jpg?raw=true');">
       <div class="container position-relative">
         <div class="row d-flex justify-content-center">
-          <div class="col-lg-8 text-center">
-            <p class="section-kicker section-kicker--light">Estadísticas de lectura</p>
-            <h1>Informes de lectura</h1>
+          <div class="col-lg-6 text-center">
+            <h2>Informes de lectura</h2>
             <p>Explora los temas y géneros que definen a la comunidad de BookNexus.</p>
           </div>
         </div>
@@ -75,12 +74,9 @@
               </div>
               <i class="bi bi-bookmarks" aria-hidden="true"></i>
             </header>
-            <figure>
-              <img src="{% get_media_prefix %}reports/categories.png" alt="Gráfico de barras con la cantidad de lecturas por categoría" class="img-fluid">
-            </figure>
-            <a href="{% get_media_prefix %}reports/categories.png" download="booknexus-categories-report.png" class="btn btn-outline-primary">
-              <i class="bi bi-download" aria-hidden="true"></i> Descargar gráfico
-            </a>
+            <div class="report-chart-card__chart">
+              <canvas id="categories-chart" role="img" aria-label="Gráfico de barras con la cantidad de lecturas por categoría"></canvas>
+            </div>
           </article>
 
           <article class="report-chart-card">
@@ -91,15 +87,68 @@
               </div>
               <i class="bi bi-journal-richtext" aria-hidden="true"></i>
             </header>
-            <figure>
-              <img src="{% get_media_prefix %}reports/genres.png" alt="Gráfico de barras con la cantidad de lecturas por género" class="img-fluid">
-            </figure>
-            <a href="{% get_media_prefix %}reports/genres.png" download="booknexus-genres-report.png" class="btn btn-outline-primary">
-              <i class="bi bi-download" aria-hidden="true"></i> Descargar gráfico
-            </a>
+            <div class="report-chart-card__chart">
+              <canvas id="genres-chart" role="img" aria-label="Gráfico de barras con la cantidad de lecturas por género"></canvas>
+            </div>
           </article>
         </div>
       {% endif %}
     </div>
   </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  {% if report_available %}
+    {{ chart_data.categories|json_script:"categories-chart-data" }}
+    {{ chart_data.genres|json_script:"genres-chart-data" }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script>
+      const chartPalette = ["#04055B", "#2596BE", "#6270C9", "#0D6B8C"];
+
+      function renderReportChart(canvasId, dataId, label) {
+        const canvas = document.getElementById(canvasId);
+        const chartData = JSON.parse(document.getElementById(dataId).textContent);
+
+        new Chart(canvas, {
+          type: "bar",
+          data: {
+            labels: chartData.labels,
+            datasets: [{
+              label,
+              data: chartData.values,
+              backgroundColor: chartData.labels.map((_, index) => chartPalette[index % chartPalette.length]),
+              borderColor: "#04055B",
+              borderWidth: 1,
+              borderRadius: 8,
+            }],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: "#04055B",
+                displayColors: false,
+              },
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: "#000000" },
+              },
+              y: {
+                beginAtZero: true,
+                grid: { color: "rgba(4, 5, 91, 0.12)" },
+                ticks: { color: "#000000", precision: 0 },
+              },
+            },
+          },
+        });
+      }
+
+      renderReportChart("categories-chart", "categories-chart-data", "Lecturas por categoría");
+      renderReportChart("genres-chart", "genres-chart-data", "Lecturas por género");
+    </script>
+  {% endif %}
 {% endblock %}
