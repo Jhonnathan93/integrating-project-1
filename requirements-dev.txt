@@ -1,4 +1,4 @@
--r requirements.lock
+-r requirements.txt
 
 # Code quality and static analysis
 ruff>=0.15,<1.0

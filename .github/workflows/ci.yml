@@ -114,8 +114,7 @@ jobs:
           cache-dependency-path: requirements-dev.lock
       - name: Install application and lint dependencies
         run: |
-          python -m pip install --only-binary=:all: pip==26.1.2
-          python -m pip install --only-binary=:all: --requirement requirements-dev.lock
+          python -m pip install --only-binary=:all: --require-hashes --requirement requirements-dev.lock
       - name: Run Ruff without modifying files
         run: ruff check . --output-format=github
 
@@ -134,8 +133,7 @@ jobs:
           cache-dependency-path: requirements-dev.lock
       - name: Install application and typing dependencies
         run: |
-          python -m pip install --only-binary=:all: pip==26.1.2
-          python -m pip install --only-binary=:all: --requirement requirements-dev.lock
+          python -m pip install --only-binary=:all: --require-hashes --requirement requirements-dev.lock
       - name: Run mypy
         run: mypy --config-file mypy.ini --ignore-missing-imports accounts analytics book newsletter readinglists reports BookNexus
 
@@ -154,8 +152,7 @@ jobs:
           cache-dependency-path: requirements-dev.lock
       - name: Install Semgrep
         run: |
-          python -m pip install --only-binary=:all: pip==26.1.2
-          python -m pip install --only-binary=:all: --requirement requirements-dev.lock
+          python -m pip install --only-binary=:all: --require-hashes --requirement requirements-dev.lock
       - name: Scan Python and Django rules
         run: semgrep scan --config p/python --config p/django --error
 
@@ -188,8 +185,7 @@ jobs:
           cache-dependency-path: requirements-dev.lock
       - name: Install audit tooling
         run: |
-          python -m pip install --only-binary=:all: pip==26.1.2
-          python -m pip install --only-binary=:all: --requirement requirements-dev.lock
+          python -m pip install --only-binary=:all: --require-hashes --requirement requirements-dev.lock
       - name: Detect known dependency vulnerabilities
         run: pip-audit --requirement requirements.lock
       - name: Enforce license policy and write report
@@ -213,8 +209,7 @@ jobs:
           cache-dependency-path: requirements.lock
       - name: Install application dependencies
         run: |
-          python -m pip install --only-binary=:all: pip==26.1.2
-          python -m pip install --only-binary=:all: --requirement requirements.lock
+          python -m pip install --only-binary=:all: --require-hashes --requirement requirements.lock
       - name: Check Django configuration
         run: python manage.py check
       - name: Ensure migrations are committed
@@ -272,8 +267,7 @@ jobs:
           cache-dependency-path: requirements.lock
       - name: Install application dependencies
         run: |
-          python -m pip install --only-binary=:all: pip==26.1.2
-          python -m pip install --only-binary=:all: --requirement requirements.lock
+          python -m pip install --only-binary=:all: --require-hashes --requirement requirements.lock
       - name: Compile Python modules
         run: python -m compileall -q accounts analytics book newsletter readinglists reports BookNexus
   docker-build-and-scan:
@@ -335,8 +329,7 @@ jobs:
           cache-dependency-path: requirements-dev.lock
       - name: Generate license report
         run: |
-          python -m pip install --only-binary=:all: pip==26.1.2
-          python -m pip install --only-binary=:all: --requirement requirements-dev.lock
+          python -m pip install --only-binary=:all: --require-hashes --requirement requirements-dev.lock
           pip-licenses --format=json --output-file=licenses.json
       - name: Create source artifact
         run: |
