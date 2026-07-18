@@ -58,10 +58,10 @@
       </div>
 
       {% if message %}
-        <div class="reports-status alert alert-success" role="status">
+        <output class="reports-status alert alert-success">
           <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
           <span>{{ message }}</span>
-        </div>
+        </output>
       {% endif %}
 
       {% if report_available %}
@@ -75,7 +75,7 @@
               <i class="bi bi-bookmarks" aria-hidden="true"></i>
             </header>
             <div class="report-chart-card__chart">
-              <canvas id="categories-chart" role="img" aria-label="Gráfico de barras con la cantidad de lecturas por categoría"></canvas>
+              <canvas id="categories-chart">El gráfico de categorías no pudo cargarse.</canvas>
             </div>
           </article>
 
@@ -88,7 +88,7 @@
               <i class="bi bi-journal-richtext" aria-hidden="true"></i>
             </header>
             <div class="report-chart-card__chart">
-              <canvas id="genres-chart" role="img" aria-label="Gráfico de barras con la cantidad de lecturas por género"></canvas>
+              <canvas id="genres-chart">El gráfico de géneros no pudo cargarse.</canvas>
             </div>
           </article>
         </div>
@@ -101,7 +101,11 @@
   {% if report_available %}
     {{ chart_data.categories|json_script:"categories-chart-data" }}
     {{ chart_data.genres|json_script:"genres-chart-data" }}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"
+      integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC"
+      crossorigin="anonymous"
+    ></script>
     <script>
       const chartPalette = ["#04055B", "#2596BE", "#6270C9", "#0D6B8C"];
 
