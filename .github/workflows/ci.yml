@@ -222,9 +222,28 @@ jobs:
       - name: Ensure no migrations remain pending
         run: python manage.py migrate --check
 
+  sonarcloud:
+    name: SonarCloud analysis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Check out complete history
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Scan with SonarCloud
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: SonarSource/sonarqube-scan-action@1a6d90ebcb0e6a6b1d87e37ba693fe453195ae25 # v5.3.1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Explain skipped external pull request scan
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+        run: echo "SonarCloud is skipped because repository secrets are unavailable to external pull requests."
+
   # Future independent stages: unit-tests, coverage, integration-tests,
   # contract-tests, api-tests, and end-to-end-tests.
-  # Future SonarCloud stage: enable after configuring the project key and SONAR_TOKEN.
 
   build:
     name: Compile and package application
@@ -240,6 +259,7 @@ jobs:
       - secrets
       - dependency-audit
       - migration-check
+      - sonarcloud
     steps:
       - uses: actions/checkout@v6
       - name: Set up Python
@@ -255,10 +275,11 @@ jobs:
       - name: Compile Python modules
         run: python -m compileall -q accounts analytics book newsletter readinglists reports BookNexus
   docker-build-and-scan:
-    name: Build and scan Docker image
+    name: Build, scan, and publish Docker image
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: write
     needs: build
     steps:
       - uses: actions/checkout@v6
@@ -276,6 +297,23 @@ jobs:
         run: |
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.70.0 \
             image --exit-code 1 --ignore-unfixed --severity HIGH,CRITICAL "${{ env.IMAGE_NAME }}"
+      - name: Authenticate with GitHub Container Registry
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish scanned image to GitHub Container Registry
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GHCR_IMAGE: ghcr.io/${{ github.repository }}
+        run: |
+          ghcr_image="${GHCR_IMAGE,,}"
+          docker tag "$IMAGE_NAME" "$ghcr_image:$GITHUB_SHA"
+          docker tag "$IMAGE_NAME" "$ghcr_image:latest"
+          docker push "$ghcr_image:$GITHUB_SHA"
+          docker push "$ghcr_image:latest"
 
   publish-artifacts:
     name: Publish GitHub build artifacts
@@ -318,7 +356,7 @@ jobs:
   notify-failure:
     name: Notify failures
     runs-on: ubuntu-latest
-    needs: [validate-line-endings, validate-commits, lint, type-check, sast, secrets, dependency-audit, migration-check, build, docker-build-and-scan, publish-artifacts]
+    needs: [validate-line-endings, validate-commits, lint, type-check, sast, secrets, dependency-audit, migration-check, sonarcloud, build, docker-build-and-scan, publish-artifacts]
     if: ${{ failure() }}
     steps:
       - name: Write failure summary
