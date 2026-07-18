@@ -8,7 +8,17 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -r requirements.txt gunicorn
 
-COPY . .
+# Copy only the runtime source. Build metadata, local environments, and secret
+# files are intentionally excluded from the image (also enforced by .dockerignore).
+COPY manage.py ./
+COPY BookNexus/ ./BookNexus/
+COPY accounts/ ./accounts/
+COPY analytics/ ./analytics/
+COPY book/ ./book/
+COPY newsletter/ ./newsletter/
+COPY readinglists/ ./readinglists/
+COPY reports/ ./reports/
+COPY static/ ./static/
 
 RUN useradd --create-home appuser && chown -R appuser:appuser /app
 USER appuser

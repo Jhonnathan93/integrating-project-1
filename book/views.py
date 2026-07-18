@@ -4,7 +4,7 @@ import logging
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 
 from readinglists.services import reading_list_create_default
 
@@ -17,14 +17,17 @@ from .services import disliked_book_add, history_create
 logger = logging.getLogger(__name__)
 
 
+@require_GET
 def faq(request):
     return render(request, "faq.html")
 
 
+@require_GET
 def index(request):
     return render(request, "index.html")
 
 
+@require_GET
 def recommendations(request):
     return render(request, "recomendations.html", {"books": books_recommended()})
 

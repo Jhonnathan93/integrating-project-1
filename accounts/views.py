@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.shortcuts import redirect, render
+from django.views.decorators.http import require_GET
 
 from readinglists.selectors import reading_lists_for_user
 
@@ -36,6 +37,7 @@ def signup_view(request):
 
 
 @login_required
+@require_GET
 def profile(request):
     profile = user_profile_get(user=request.user)
     return render(
@@ -89,6 +91,7 @@ def login_view(request):
 
 
 @login_required
+@require_GET
 def logout_view(request):
     logout(request)
     return redirect("home")

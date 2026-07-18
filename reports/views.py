@@ -1,11 +1,13 @@
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render
+from django.views.decorators.http import require_GET
 
 from .methods import plot_counts
 from .selectors import history_category_counts
 
 
 @user_passes_test(lambda user: bool(getattr(user, "is_staff", False)))
+@require_GET
 def reports(request):
     start_date = request.GET.get("fecha_inicio")
     end_date = request.GET.get("fecha_fin")

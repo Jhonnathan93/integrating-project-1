@@ -21,6 +21,7 @@ def newsletter_send() -> int:
         )
     readers = Reader.objects.exclude(email="").values_list("email", flat=True)
     context = ssl.create_default_context()
+    context.minimum_version = ssl.TLSVersion.TLSv1_2
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
         server.login(sender_email, password)
         for recipient in readers:
