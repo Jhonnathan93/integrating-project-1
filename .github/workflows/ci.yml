@@ -115,8 +115,10 @@ jobs:
       - name: Install application and lint dependencies
         run: |
           python -m pip install --only-binary=:all: --require-hashes --requirement requirements-dev.lock
-      - name: Run Ruff without modifying files
+      - name: Run Ruff linting
         run: ruff check . --output-format=github
+      - name: Check Ruff formatting
+        run: ruff format --check .
 
   type-check:
     name: Type check (mypy)
