@@ -16,6 +16,9 @@
                 <form action="{% url 'createlist' %}" method="post" class="php-email-form" enctype="multipart/form-data">
                     {% csrf_token %}
                     <h4>Crea tu lista de lectura</h4>
+                    {% if error_message %}
+                      <div class="alert alert-danger" role="alert">{{ error_message }}</div>
+                    {% endif %}
                     <div class="form-group mt-3">
                         <label for="title" class="form-label">Título</label>
                         <input type="text" name="title" class="form-control" required id="title"  placeholder="Título de tu lista de lectura">

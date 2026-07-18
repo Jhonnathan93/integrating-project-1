@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Recomendaciones | BookNexus{% endblock %}
+{% block description %}Explora las recomendaciones guardadas por la comunidad de BookNexus.{% endblock %}
+
+{% block content %}
+  <div class="breadcrumbs">
+    <div class="page-header d-flex align-items-center" style="background-image: url('https://github.com/jhothinnan/Images/blob/main/library.jpg?raw=true');">
+      <div class="container position-relative">
+        <div class="row d-flex justify-content-center">
+          <div class="col-lg-6 text-center">
+            <h2>Recomendaciones</h2>
+            <p>Descubre libros que la comunidad de BookNexus ha guardado para su próxima lectura.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav aria-label="Ruta de navegación">
+      <div class="container">
+        <ol>
+          <li><a href="{% url 'index' %}">Inicio</a></li>
+          <li aria-current="page">Recomendaciones</li>
+        </ol>
+      </div>
+    </nav>
+  </div>
+
+  <section class="py-5" aria-labelledby="recommendations-title">
+    <div class="container" data-aos="fade-up">
+      <div class="section-header">
+        <h2 id="recommendations-title">Libros recomendados</h2>
+      </div>
+      <div class="row g-4">
+        {% for book in books %}
+          <article class="col-md-6 col-lg-4">
+            <div class="card h-100 p-4">
+              <h3>{{ book.title }}</h3>
+              <p class="mb-2">{{ book.author }}</p>
+              <p class="mb-0">{{ book.description|truncatechars:160 }}</p>
+            </div>
+          </article>
+        {% empty %}
+          <p>No hay recomendaciones disponibles todavía.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

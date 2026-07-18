@@ -9,6 +9,7 @@ from readinglists.services import (
     book_add_to_reading_list,
     reading_list_create,
     reading_list_create_default,
+    reading_list_update,
 )
 
 
@@ -49,3 +50,19 @@ class ReadingListCreateTests(TestCase):
         self.assertTrue(book_add_to_reading_list(reading_list=reading_list, book=book))
         self.assertFalse(book_add_to_reading_list(reading_list=reading_list, book=book))
         self.assertEqual(reading_list.books.count(), 1)
+
+    def test_reading_list_update_changes_title_and_description(self) -> None:
+        reading_list = reading_list_create(
+            user=self.user,
+            title="Before",
+            description="Before description",
+        )
+
+        updated_list = reading_list_update(
+            reading_list=reading_list,
+            title="After",
+            description="After description",
+        )
+
+        self.assertEqual(updated_list.title, "After")
+        self.assertEqual(updated_list.description, "After description")

@@ -1,3 +1,5 @@
+from unittest.mock import Mock, patch
+
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
@@ -58,3 +60,28 @@ class AuthenticationViewsTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse("accounts:login"), response["Location"])
+
+    def test_edit_profile_updates_authenticated_user(self) -> None:
+        user = User.objects.create_user(username="reader", password="password")
+        UserInformation.objects.create(user=user, preferences="Before")
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("accounts:editprofile"),
+            {"username": "updated-reader", "preferences": "After"},
+        )
+
+        user.refresh_from_db()
+        self.assertRedirects(response, reverse("accounts:profile"))
+        self.assertEqual(user.username, "updated-reader")
+
+    @patch("accounts.views.authenticate", return_value=None)
+    def test_login_rejects_invalid_credentials(self, authenticate: Mock) -> None:
+        response = self.client.post(
+            reverse("accounts:login"),
+            {"usuario": "reader", "contraseña": "wrong"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Usuario y contraseña no coinciden.")
+        authenticate.assert_called_once()

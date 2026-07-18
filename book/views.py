@@ -29,7 +29,7 @@ def index(request):
 
 @require_GET
 def recommendations(request):
-    return render(request, "recomendations.html", {"books": books_recommended()})
+    return render(request, "recommendations.html", {"books": books_recommended()})
 
 
 @require_POST

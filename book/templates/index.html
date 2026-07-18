@@ -70,6 +70,9 @@
                 <h2 id="form-title">Diseña tu próxima recomendación</h2>
                 <p class="mb-0">Completa los detalles que más representen tu forma de leer.</p>
               </div>
+              {% if error %}
+                <div class="alert alert-danger" role="alert">{{ error }}</div>
+              {% endif %}
 
               <fieldset class="mb-4">
                 <legend>Cuatro libros que disfrutas</legend>

@@ -1,9 +1,11 @@
 import json
+from unittest.mock import Mock, patch
 
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
+from book.models import Book
 from readinglists.models import ReadingList
 
 
@@ -30,7 +32,14 @@ class ReadingListViewsTests(TestCase):
         )
 
         reading_list = ReadingList.objects.get(user=self.user, title="Favorites")
-        self.assertRedirects(response, reverse("detail", args=[reading_list.id]))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["Location"], reverse("detail", args=[reading_list.id]))
+
+    def test_create_list_shows_validation_error_for_missing_data(self) -> None:
+        response = self.client.post(reverse("createlist"), {"title": ""})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "El título y la descripción son obligatorios.")
 
     def test_add_to_reading_list_rejects_invalid_json(self) -> None:
         response = self.client.post(
@@ -52,3 +61,80 @@ class ReadingListViewsTests(TestCase):
         default_list = ReadingList.objects.get(user=self.user, is_default=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(default_list.books.count(), 1)
+
+    def test_detail_shows_reading_list_for_owner(self) -> None:
+        reading_list = ReadingList.objects.create(
+            user=self.user, title="Favorites", description="Description"
+        )
+
+        response = self.client.get(reverse("detail", args=[reading_list.id]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Favorites")
+
+    def test_detail_rejects_submission_without_title_or_author(self) -> None:
+        reading_list = ReadingList.objects.create(
+            user=self.user, title="Favorites", description="Description"
+        )
+
+        response = self.client.post(reverse("detail", args=[reading_list.id]), {})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "El título y el autor son obligatorios.")
+
+    def test_update_reading_list_persists_valid_submission(self) -> None:
+        reading_list = ReadingList.objects.create(
+            user=self.user, title="Before", description="Before description"
+        )
+
+        response = self.client.post(
+            reverse("updatereadinglist", args=[reading_list.id]),
+            {"title": "After", "description": "After description"},
+        )
+
+        reading_list.refresh_from_db()
+        self.assertRedirects(response, reverse("detail", args=[reading_list.id]))
+        self.assertEqual(reading_list.title, "After")
+
+    def test_delete_list_removes_non_default_list(self) -> None:
+        reading_list = ReadingList.objects.create(
+            user=self.user, title="Favorites", description="Description"
+        )
+
+        response = self.client.post(reverse("deletelist", args=[reading_list.id]))
+
+        self.assertRedirects(response, reverse("overview"))
+        self.assertFalse(ReadingList.objects.filter(pk=reading_list.id).exists())
+
+    def test_delete_book_removes_book_from_list(self) -> None:
+        reading_list = ReadingList.objects.create(
+            user=self.user, title="Favorites", description="Description"
+        )
+        book = Book.objects.create(title="Dune", author="Frank Herbert")
+        reading_list.books.add(book)
+
+        response = self.client.post(reverse("deletebook", args=[reading_list.id, book.id]))
+
+        self.assertRedirects(response, reverse("detail", args=[reading_list.id]))
+        self.assertFalse(reading_list.books.filter(pk=book.id).exists())
+
+    @patch("readinglists.views.search_book")
+    def test_detail_adds_book_found_by_provider(self, search_book: Mock) -> None:
+        reading_list = ReadingList.objects.create(
+            user=self.user, title="Favorites", description="Description"
+        )
+        search_book.return_value = {
+            "title": "Dune",
+            "author": "Frank Herbert",
+            "description": "Description",
+            "cover": "https://example.com/dune.jpg",
+            "buy_link": "https://example.com/dune",
+        }
+
+        response = self.client.post(
+            reverse("detail", args=[reading_list.id]),
+            {"title": "Dune", "author": "Frank Herbert"},
+        )
+
+        self.assertRedirects(response, reverse("detail", args=[reading_list.id]))
+        self.assertEqual(reading_list.books.count(), 1)
