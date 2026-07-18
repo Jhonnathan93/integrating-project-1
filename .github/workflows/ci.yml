@@ -242,7 +242,7 @@ jobs:
       - name: Enforce minimum coverage
         run: python -m coverage report --fail-under=85
       - name: Generate coverage reports
-        if: always()
+        if: ${{ hashFiles('.coverage') != '' }}
         run: |
           python -m coverage html
           python -m coverage xml
@@ -254,6 +254,7 @@ jobs:
           path: |
             coverage.xml
             htmlcov/
+          if-no-files-found: ignore
           retention-days: 30
 
   sonarcloud:
