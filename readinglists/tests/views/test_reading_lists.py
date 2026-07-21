@@ -23,7 +23,9 @@ class ReadingListViewsTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "overview.html")
-        self.assertEqual(list(response.context["readinglists"]), list(ReadingList.objects.all()))
+        self.assertEqual(
+            list(response.context["readinglists"]), list(ReadingList.objects.all())
+        )
 
     def test_create_list_persists_valid_submission(self) -> None:
         response = self.client.post(
@@ -33,7 +35,9 @@ class ReadingListViewsTests(TestCase):
 
         reading_list = ReadingList.objects.get(user=self.user, title="Favorites")
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response["Location"], reverse("detail", args=[reading_list.id]))
+        self.assertEqual(
+            response["Location"], reverse("detail", args=[reading_list.id])
+        )
 
     def test_create_list_shows_validation_error_for_missing_data(self) -> None:
         response = self.client.post(reverse("createlist"), {"title": ""})
@@ -113,7 +117,9 @@ class ReadingListViewsTests(TestCase):
         book = Book.objects.create(title="Dune", author="Frank Herbert")
         reading_list.books.add(book)
 
-        response = self.client.post(reverse("deletebook", args=[reading_list.id, book.id]))
+        response = self.client.post(
+            reverse("deletebook", args=[reading_list.id, book.id])
+        )
 
         self.assertRedirects(response, reverse("detail", args=[reading_list.id]))
         self.assertFalse(reading_list.books.filter(pk=book.id).exists())

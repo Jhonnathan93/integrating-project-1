@@ -18,7 +18,9 @@ class NewsletterViewsTests(TestCase):
         self.assertEqual(response.status_code, 405)
 
     @patch("newsletter.views.newsletter_send", return_value=2)
-    def test_send_email_to_readers_uses_newsletter_service(self, newsletter_send: Mock) -> None:
+    def test_send_email_to_readers_uses_newsletter_service(
+        self, newsletter_send: Mock
+    ) -> None:
         response = self.client.post(reverse("send_email_to_readers"))
 
         self.assertEqual(response.status_code, 200)

@@ -19,9 +19,7 @@ def reports(request):
                 "report_available": False,
             },
         )
-    chart_data = report_chart_data(
-        start_date=start_date, end_date=end_date
-    )
+    chart_data = report_chart_data(start_date=start_date, end_date=end_date)
     message = (
         f"Informe creado con historiales entre {start_date} y {end_date}."
         if start_date

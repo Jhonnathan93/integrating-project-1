@@ -63,9 +63,7 @@ def _selected_values(post_data, fields):
 
 def _recommend_books(user, books, topics, genres, details, length):
     titles = _llm_recommendations(user, books, topics, genres, details, length)
-    return [
-        result for title in titles if (result := search_recommended_book(title))
-    ]
+    return [result for title in titles if (result := search_recommended_book(title))]
 
 
 def _llm_recommendations(user, books, topics, genres, details, length):
@@ -95,7 +93,7 @@ def _llm_recommendations(user, books, topics, genres, details, length):
 def mark_as_not_recommended(request):
     try:
         data = json.loads(request.body)
-    except (TypeError, json.JSONDecodeError):
+    except TypeError, json.JSONDecodeError:
         return JsonResponse({"error": "Datos JSON inválidos."}, status=400)
     title, author = (
         (data.get("title") or "").strip(),

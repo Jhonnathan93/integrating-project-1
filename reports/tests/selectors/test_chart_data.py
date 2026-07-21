@@ -47,7 +47,11 @@ class HistoryCategoryCountsTests(TestCase):
             user=user, books="In range", topics="Fantasy", genres="Novel", date=in_range
         )
         History.objects.create(
-            user=user, books="Out of range", topics="History", genres="Essay", date=out_of_range
+            user=user,
+            books="Out of range",
+            topics="History",
+            genres="Essay",
+            date=out_of_range,
         )
 
         categories, genres = history_category_counts(

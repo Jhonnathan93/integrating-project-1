@@ -22,7 +22,9 @@ class ReadingListCreateTests(TestCase):
         second_list = reading_list_create_default(user=self.user)
 
         self.assertEqual(first_list, second_list)
-        self.assertEqual(ReadingList.objects.filter(user=self.user, is_default=True).count(), 1)
+        self.assertEqual(
+            ReadingList.objects.filter(user=self.user, is_default=True).count(), 1
+        )
 
     def test_reading_list_create_enforces_user_limit(self) -> None:
         for index in range(MAX_LISTS_PER_USER):

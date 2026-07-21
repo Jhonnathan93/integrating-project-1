@@ -68,7 +68,9 @@ class NavigationViewsTests(TestCase):
         self.assertEqual(response.json()["error"], "Datos JSON inválidos.")
 
     @patch("book.views.disliked_book_add")
-    def test_mark_as_not_recommended_adds_valid_book(self, disliked_book_add: Mock) -> None:
+    def test_mark_as_not_recommended_adds_valid_book(
+        self, disliked_book_add: Mock
+    ) -> None:
         user = User.objects.create_user(username="reader", password="password")
         self.client.force_login(user)
 

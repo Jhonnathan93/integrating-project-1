@@ -22,8 +22,12 @@ class RecommendationProviderTests(SimpleTestCase):
         self.assertIsInstance(get_recommendation_provider(), GroqRecommendationProvider)
 
     @override_settings(LLM_PROVIDER="openai")
-    def test_get_recommendation_provider_returns_configured_openai_adapter(self) -> None:
-        self.assertIsInstance(get_recommendation_provider(), OpenAIRecommendationProvider)
+    def test_get_recommendation_provider_returns_configured_openai_adapter(
+        self,
+    ) -> None:
+        self.assertIsInstance(
+            get_recommendation_provider(), OpenAIRecommendationProvider
+        )
 
     @override_settings(LLM_PROVIDER="unsupported")
     def test_get_recommendation_provider_rejects_unknown_adapter(self) -> None:
@@ -32,20 +36,28 @@ class RecommendationProviderTests(SimpleTestCase):
 
     @override_settings(GROQ_API_KEY="test-key", GROQ_MODEL="test-model")
     @patch("groq.Groq")
-    def test_groq_provider_uses_sdk_without_network_calls(self, groq_client: Mock) -> None:
+    def test_groq_provider_uses_sdk_without_network_calls(
+        self, groq_client: Mock
+    ) -> None:
         completion = SimpleNamespace(
-            choices=[SimpleNamespace(message=SimpleNamespace(content="Dune - Frank Herbert"))]
+            choices=[
+                SimpleNamespace(message=SimpleNamespace(content="Dune - Frank Herbert"))
+            ]
         )
         groq_client.return_value.chat.completions.create.return_value = completion
 
-        titles = GroqRecommendationProvider().generate_recommendations(prompt="Recommend")
+        titles = GroqRecommendationProvider().generate_recommendations(
+            prompt="Recommend"
+        )
 
         self.assertEqual(titles, ["Dune - Frank Herbert"])
         groq_client.return_value.chat.completions.create.assert_called_once()
 
     @override_settings(OPENAI_API_KEY="test-key", OPENAI_MODEL="test-model")
     @patch("openai.OpenAI")
-    def test_openai_provider_uses_sdk_without_network_calls(self, openai_client: Mock) -> None:
+    def test_openai_provider_uses_sdk_without_network_calls(
+        self, openai_client: Mock
+    ) -> None:
         openai_client.return_value.responses.create.return_value = SimpleNamespace(
             output_text="Dune - Frank Herbert; Foundation - Isaac Asimov"
         )

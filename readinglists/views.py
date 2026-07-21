@@ -34,7 +34,7 @@ def overview(request):
 def add_to_reading_list(request):
     try:
         data = json.loads(request.body)
-    except (TypeError, json.JSONDecodeError):
+    except TypeError, json.JSONDecodeError:
         return JsonResponse({"error": "Datos JSON inválidos."}, status=400)
     title = (data.get("title") or "").strip()
     author = (data.get("author") or "").strip()

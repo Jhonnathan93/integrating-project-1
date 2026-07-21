@@ -28,7 +28,7 @@ def signup_view(request):
             preferences=request.POST.get("preferences", "").strip(),
             profile_picture=request.FILES.get("profile_picture"),
         )
-    except (IntegrityError, ValueError):
+    except IntegrityError, ValueError:
         return render(
             request,
             SIGNUP_TEMPLATE,
@@ -67,7 +67,7 @@ def editprofile(request):
             preferences=request.POST.get("preferences", "").strip(),
             profile_picture=request.FILES.get("profile_picture"),
         )
-    except (IntegrityError, ValueError):
+    except IntegrityError, ValueError:
         return render(
             request,
             "editprofile.html",

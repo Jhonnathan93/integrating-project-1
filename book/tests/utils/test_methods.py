@@ -14,7 +14,9 @@ class RecommendationMetadataTests(SimpleTestCase):
         self.assertEqual(book["isbn"], "N/A")
 
     @patch("book.methods.search_book")
-    def test_search_recommended_book_returns_provider_metadata(self, search_book: Mock) -> None:
+    def test_search_recommended_book_returns_provider_metadata(
+        self, search_book: Mock
+    ) -> None:
         metadata = {"title": "Dune", "author": "Frank Herbert"}
         search_book.return_value = metadata
 

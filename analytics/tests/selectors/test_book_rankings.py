@@ -17,5 +17,11 @@ class BookRankingsTests(TestCase):
 
         top_books, least_books = book_rankings(period="week")
 
-        self.assertEqual(list(top_books), [{"title": recent.title, "isbn": recent.isbn, "book_count": 1}])
-        self.assertEqual(list(least_books), [{"title": recent.title, "isbn": recent.isbn, "book_count": 1}])
+        self.assertEqual(
+            list(top_books),
+            [{"title": recent.title, "isbn": recent.isbn, "book_count": 1}],
+        )
+        self.assertEqual(
+            list(least_books),
+            [{"title": recent.title, "isbn": recent.isbn, "book_count": 1}],
+        )

@@ -25,7 +25,9 @@ class GoogleBooksTests(SimpleTestCase):
                         "authors": ["Frank Herbert"],
                         "description": "A science-fiction novel.",
                         "imageLinks": {"thumbnail": "https://example.com/dune.jpg"},
-                        "industryIdentifiers": [{"type": "ISBN_13", "identifier": "978"}],
+                        "industryIdentifiers": [
+                            {"type": "ISBN_13", "identifier": "978"}
+                        ],
                         "averageRating": 4.5,
                         "publishedDate": "1965-01-01",
                         "categories": ["Science fiction"],
