@@ -43,7 +43,7 @@ class RecommendationFlowIntegrationTests(TestCase):
         request_get.return_value = metadata_response
 
         response = self.client.post(
-            reverse("response"),
+            reverse("book:response"),
             {
                 "libro1": "Foundation",
                 TOPIC_CHOICES[0]: TOPIC_CHOICES[0],

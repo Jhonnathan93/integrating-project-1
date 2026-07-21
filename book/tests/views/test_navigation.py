@@ -10,25 +10,32 @@ from book.views import _selected_values
 
 
 class NavigationViewsTests(TestCase):
+    def test_root_redirects_to_the_book_module(self) -> None:
+        response = self.client.get("/")
+
+        self.assertRedirects(
+            response, reverse("book:home"), fetch_redirect_response=False
+        )
+
     def test_index_is_available_with_get(self) -> None:
-        response = self.client.get(reverse("index"))
+        response = self.client.get(reverse("book:index"))
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "index.html")
 
     def test_faq_rejects_post_requests(self) -> None:
-        response = self.client.post(reverse("faq"))
+        response = self.client.post(reverse("book:faq"))
 
         self.assertEqual(response.status_code, 405)
 
     def test_recommendations_renders_available_books(self) -> None:
-        response = self.client.get(reverse("recommendations"))
+        response = self.client.get(reverse("book:recommendations"))
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "recommendations.html")
 
     def test_response_requires_at_least_one_reference_book(self) -> None:
-        response = self.client.post(reverse("response"), {})
+        response = self.client.post(reverse("book:response"), {})
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Selecciona al menos un libro.")
@@ -41,7 +48,7 @@ class NavigationViewsTests(TestCase):
         self.client.force_login(user)
 
         response = self.client.post(
-            reverse("response"),
+            reverse("book:response"),
             {
                 "libro1": "Dune",
                 "Fantasía": "Fantasía",
@@ -59,7 +66,7 @@ class NavigationViewsTests(TestCase):
         self.client.force_login(user)
 
         response = self.client.post(
-            reverse("mark-as-not-recommended"),
+            reverse("book:mark-as-not-recommended"),
             data="not-json",
             content_type="application/json",
         )
@@ -75,7 +82,7 @@ class NavigationViewsTests(TestCase):
         self.client.force_login(user)
 
         response = self.client.post(
-            reverse("mark-as-not-recommended"),
+            reverse("book:mark-as-not-recommended"),
             data=json.dumps({"title": "Dune", "author": "Frank Herbert"}),
             content_type="application/json",
         )

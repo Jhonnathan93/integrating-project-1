@@ -26,7 +26,7 @@ class NewsletterDeliveryIntegrationTests(TestCase):
     ) -> None:
         smtp_server = smtp_ssl.return_value.__enter__.return_value
 
-        response = self.client.post(reverse("send_email_to_readers"))
+        response = self.client.post(reverse("newsletter:send_email_to_readers"))
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "email_sent_confirmation.html")

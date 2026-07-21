@@ -23,7 +23,7 @@
       <nav aria-label="breadcrumbs">
         <div class="container">
           <ol>
-            <li><a href="{% url 'index' %}">Inicio</a></li>
+            <li><a href="{% url 'book:index' %}">Inicio</a></li>
             <li>Listas de lectura</li>
           </ol>
         </div>
@@ -54,11 +54,11 @@
             </p>
             {% if user.is_authenticated and reading_list.user == user %}
             <a class="btn btn-primary"
-              href="{% url 'updatereadinglist' reading_list.id %}">Editar</a>
+              href="{% url 'readinglists:updatereadinglist' reading_list.id %}">Editar</a>
             <button class="btn btn-info" style="background-color: #274690; color: #fff; border: solid #274690;"
               data-bs-toggle="modal" data-bs-target="#shareModal">Compartir</button>
             {% if reading_list.title != "Leer más tarde"%}
-            <form method="post" action="{% url 'deletelist' reading_list.id %}" class="d-inline">
+            <form method="post" action="{% url 'readinglists:deletelist' reading_list.id %}" class="d-inline">
               {% csrf_token %}
               <button class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;">Eliminar</button>
             </form>
@@ -127,7 +127,7 @@
                   data-bs-target="#descriptionModal{{ book.id }}">Leer más</button>
               {% endif %}
                 {% if user.is_authenticated and reading_list.user == user %}
-                <form method="post" action="{% url 'deletebook' reading_list.id book.id %}" class="d-inline">
+                <form method="post" action="{% url 'readinglists:deletebook' reading_list.id book.id %}" class="d-inline">
                   {% csrf_token %}
                   <button class="btn btn-danger" style="background-color: #DD1C1A; color: #fff; border: solid #DD1C1A;">Eliminar</button>
                 </form>

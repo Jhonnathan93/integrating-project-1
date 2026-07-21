@@ -19,7 +19,7 @@
       <nav aria-label="breadcrumbs">
         <div class="container">
           <ol>
-            <li><a href="{% url 'index' %}">Inicio</a></li>
+            <li><a href="{% url 'book:index' %}">Inicio</a></li>
             <li>Tu perfil</li>
           </ol>
         </div>
@@ -61,7 +61,7 @@
                   <div class="card-img">
                     <img src="{{ readinglist.cover.url }}" alt="{{ readinglist.title }} Cover" class="img-fluid">
                   </div>
-                  <h3><a href="{% url 'detail' readinglist.id %}" >{{ readinglist.title }}</a></h3>
+                  <h3><a href="{% url 'readinglists:detail' readinglist.id %}" >{{ readinglist.title }}</a></h3>
                   <p><small class="text-muted">Fecha de creación: {{ readinglist.date_created }}</small></p>
                   <h3>Descripción:</h3>
                   <p>{{ readinglist.description }}</p>

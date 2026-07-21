@@ -65,7 +65,7 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           BEFORE_SHA: ${{ github.event.before }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           python - <<'PY'
           import os
@@ -362,6 +362,35 @@ jobs:
         run: |
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.70.0 \
             image --exit-code 1 --ignore-unfixed --severity HIGH,CRITICAL "${{ env.IMAGE_NAME }}"
+      - name: Start Docker container
+        run: |
+          docker run --detach \
+            --name booknexus-ci \
+            --publish 8000:8000 \
+            --env DJANGO_SECRET_KEY=ci-only-secret \
+            --env DJANGO_DEBUG=false \
+            --env DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1 \
+            "${{ env.IMAGE_NAME }}"
+      - name: Wait for health endpoint
+        run: |
+          for attempt in {1..30}; do
+            if curl --fail --silent --show-error http://127.0.0.1:8000/health/; then
+              exit 0
+            fi
+
+            if [ "$(docker inspect --format='{{.State.Running}}' booknexus-ci 2>/dev/null || true)" != "true" ]; then
+              docker logs booknexus-ci
+              exit 1
+            fi
+
+            sleep 2
+          done
+
+          docker logs booknexus-ci
+          exit 1
+      - name: Stop test container
+        if: always()
+        run: docker rm --force booknexus-ci || true
       - name: Authenticate with GitHub Container Registry
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0

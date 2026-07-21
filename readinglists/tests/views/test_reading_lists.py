@@ -19,7 +19,7 @@ class ReadingListViewsTests(TestCase):
             user=self.user, title="Favorites", description="Description"
         )
 
-        response = self.client.get(reverse("overview"))
+        response = self.client.get(reverse("readinglists:overview"))
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "overview.html")
@@ -29,25 +29,25 @@ class ReadingListViewsTests(TestCase):
 
     def test_create_list_persists_valid_submission(self) -> None:
         response = self.client.post(
-            reverse("createlist"),
+            reverse("readinglists:createlist"),
             {"title": "Favorites", "description": "Books to revisit"},
         )
 
         reading_list = ReadingList.objects.get(user=self.user, title="Favorites")
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
-            response["Location"], reverse("detail", args=[reading_list.id])
+            response["Location"], reverse("readinglists:detail", args=[reading_list.id])
         )
 
     def test_create_list_shows_validation_error_for_missing_data(self) -> None:
-        response = self.client.post(reverse("createlist"), {"title": ""})
+        response = self.client.post(reverse("readinglists:createlist"), {"title": ""})
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "El título y la descripción son obligatorios.")
 
     def test_add_to_reading_list_rejects_invalid_json(self) -> None:
         response = self.client.post(
-            reverse("add-to-list"),
+            reverse("readinglists:add-to-list"),
             data="not-json",
             content_type="application/json",
         )
@@ -57,7 +57,7 @@ class ReadingListViewsTests(TestCase):
 
     def test_add_to_reading_list_creates_default_list_and_book(self) -> None:
         response = self.client.post(
-            reverse("add-to-list"),
+            reverse("readinglists:add-to-list"),
             data=json.dumps({"title": "Dune", "author": "Frank Herbert"}),
             content_type="application/json",
         )
@@ -71,7 +71,9 @@ class ReadingListViewsTests(TestCase):
             user=self.user, title="Favorites", description="Description"
         )
 
-        response = self.client.get(reverse("detail", args=[reading_list.id]))
+        response = self.client.get(
+            reverse("readinglists:detail", args=[reading_list.id])
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Favorites")
@@ -81,7 +83,9 @@ class ReadingListViewsTests(TestCase):
             user=self.user, title="Favorites", description="Description"
         )
 
-        response = self.client.post(reverse("detail", args=[reading_list.id]), {})
+        response = self.client.post(
+            reverse("readinglists:detail", args=[reading_list.id]), {}
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "El título y el autor son obligatorios.")
@@ -92,12 +96,14 @@ class ReadingListViewsTests(TestCase):
         )
 
         response = self.client.post(
-            reverse("updatereadinglist", args=[reading_list.id]),
+            reverse("readinglists:updatereadinglist", args=[reading_list.id]),
             {"title": "After", "description": "After description"},
         )
 
         reading_list.refresh_from_db()
-        self.assertRedirects(response, reverse("detail", args=[reading_list.id]))
+        self.assertRedirects(
+            response, reverse("readinglists:detail", args=[reading_list.id])
+        )
         self.assertEqual(reading_list.title, "After")
 
     def test_delete_list_removes_non_default_list(self) -> None:
@@ -105,9 +111,11 @@ class ReadingListViewsTests(TestCase):
             user=self.user, title="Favorites", description="Description"
         )
 
-        response = self.client.post(reverse("deletelist", args=[reading_list.id]))
+        response = self.client.post(
+            reverse("readinglists:deletelist", args=[reading_list.id])
+        )
 
-        self.assertRedirects(response, reverse("overview"))
+        self.assertRedirects(response, reverse("readinglists:overview"))
         self.assertFalse(ReadingList.objects.filter(pk=reading_list.id).exists())
 
     def test_delete_book_removes_book_from_list(self) -> None:
@@ -118,10 +126,12 @@ class ReadingListViewsTests(TestCase):
         reading_list.books.add(book)
 
         response = self.client.post(
-            reverse("deletebook", args=[reading_list.id, book.id])
+            reverse("readinglists:deletebook", args=[reading_list.id, book.id])
         )
 
-        self.assertRedirects(response, reverse("detail", args=[reading_list.id]))
+        self.assertRedirects(
+            response, reverse("readinglists:detail", args=[reading_list.id])
+        )
         self.assertFalse(reading_list.books.filter(pk=book.id).exists())
 
     @patch("readinglists.views.search_book")
@@ -138,9 +148,11 @@ class ReadingListViewsTests(TestCase):
         }
 
         response = self.client.post(
-            reverse("detail", args=[reading_list.id]),
+            reverse("readinglists:detail", args=[reading_list.id]),
             {"title": "Dune", "author": "Frank Herbert"},
         )
 
-        self.assertRedirects(response, reverse("detail", args=[reading_list.id]))
+        self.assertRedirects(
+            response, reverse("readinglists:detail", args=[reading_list.id])
+        )
         self.assertEqual(reading_list.books.count(), 1)

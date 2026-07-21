@@ -3,7 +3,11 @@
 import tempfile
 from pathlib import Path
 
-from .settings import *  # noqa: F403
+from . import settings as base_settings
+
+for setting_name in dir(base_settings):
+    if setting_name.isupper():
+        globals()[setting_name] = getattr(base_settings, setting_name)
 
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 MEDIA_ROOT = Path(tempfile.gettempdir()) / "booknexus-test-media"

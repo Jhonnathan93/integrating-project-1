@@ -18,6 +18,8 @@ from .services import (
     reading_list_update,
 )
 
+READING_LIST_DETAIL_ROUTE = "readinglists:detail"
+
 
 @login_required
 @require_GET
@@ -96,7 +98,7 @@ def create_list(request):
             },
         )
     messages.success(request, "Lista de lectura creada exitosamente.")
-    return redirect("detail", reading_list.id)
+    return redirect(READING_LIST_DETAIL_ROUTE, reading_list.id)
 
 
 @login_required
@@ -128,7 +130,7 @@ def detail(request, reading_list_id):
         except ValidationError as error:
             return _detail_response(request, reading_list, error.messages[0])
         messages.success(request, "Libro agregado exitosamente.")
-        return redirect("detail", reading_list.id)
+        return redirect(READING_LIST_DETAIL_ROUTE, reading_list.id)
     return _detail_response(request, reading_list)
 
 
@@ -175,7 +177,7 @@ def update_reading_list(request, reading_list_id):
         description=description,
         cover=request.FILES.get("cover"),
     )
-    return redirect("detail", reading_list.id)
+    return redirect(READING_LIST_DETAIL_ROUTE, reading_list.id)
 
 
 @login_required
@@ -189,7 +191,7 @@ def delete_list(request, reading_list_id):
     else:
         reading_list.delete()
         messages.success(request, "Lista de lectura eliminada exitosamente.")
-    return redirect("overview")
+    return redirect("readinglists:overview")
 
 
 @login_required
@@ -200,4 +202,4 @@ def delete_book(request, reading_list_id, book_id):
     )
     reading_list.books.remove(book_id)
     messages.success(request, "Libro eliminado exitosamente.")
-    return redirect("detail", reading_list.id)
+    return redirect(READING_LIST_DETAIL_ROUTE, reading_list.id)

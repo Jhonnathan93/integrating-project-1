@@ -13,7 +13,7 @@
         <div class="row gy-4 mt-1 justify-content-center">
             <div class="col-lg-8 ">
                 <!-- nosemgrep: python.django.security.django-no-csrf-token.django-no-csrf-token -- Django CSRF token is rendered immediately below. -->
-                <form action="{% url 'createlist' %}" method="post" class="php-email-form" enctype="multipart/form-data">
+                <form action="{% url 'readinglists:createlist' %}" method="post" class="php-email-form" enctype="multipart/form-data">
                     {% csrf_token %}
                     <h4>Crea tu lista de lectura</h4>
                     {% if error_message %}
