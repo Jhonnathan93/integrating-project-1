@@ -18,7 +18,7 @@
             <p class="hero-copy">Cuéntanos qué disfrutas leer y recibe recomendaciones pensadas para tus gustos, tu ritmo y tu próxima gran aventura.</p>
             <div class="d-flex flex-wrap gap-3 mt-2">
               <a class="btn btn-primary btn-lg" href="#recommendation-form">Quiero una recomendación <i class="bi bi-arrow-down-right ms-1" aria-hidden="true"></i></a>
-              <a class="btn btn-outline-light btn-lg" href="{% url 'faq' %}">Cómo funciona</a>
+              <a class="btn btn-outline-light btn-lg" href="{% url 'book:faq' %}">Cómo funciona</a>
             </div>
           </div>
           <div class="col-lg-4 hero-img" data-aos="zoom-out" data-aos-delay="150">
@@ -63,7 +63,7 @@
             </div>
           </div>
           <div class="col-lg-7">
-            <form action="{% url 'response' %}" method="post" class="php-email-form" novalidate>
+            <form action="{% url 'book:response' %}" method="post" class="php-email-form" novalidate>
               {% csrf_token %}
               <div class="mb-4">
                 <p class="section-kicker">Perfil de lectura</p>

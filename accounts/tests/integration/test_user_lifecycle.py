@@ -24,7 +24,7 @@ class UserLifecycleIntegrationTests(TestCase):
         )
 
         user = User.objects.get(username="integration-reader")
-        self.assertRedirects(response, reverse("home"))
+        self.assertRedirects(response, reverse("book:home"))
         self.assertEqual(self.client.session["_auth_user_id"], str(user.pk))
         self.assertTrue(UserInformation.objects.filter(user=user).exists())
         self.assertTrue(ReadingList.objects.filter(user=user, is_default=True).exists())
@@ -48,11 +48,11 @@ class UserLifecycleIntegrationTests(TestCase):
 
         user.refresh_from_db()
         profile.refresh_from_db()
-        self.assertRedirects(login_response, reverse("home"))
+        self.assertRedirects(login_response, reverse("book:home"))
         self.assertEqual(profile_response.status_code, 200)
         self.assertEqual(update_response.status_code, 302)
         self.assertEqual(update_response["Location"], reverse("accounts:profile"))
         self.assertEqual(user.username, "updated-reader")
         self.assertEqual(profile.preferences, "Mystery")
-        self.assertRedirects(logout_response, reverse("home"))
+        self.assertRedirects(logout_response, reverse("book:home"))
         self.assertNotIn("_auth_user_id", self.client.session)

@@ -29,7 +29,7 @@ class AuthenticationViewsTests(TestCase):
         )
 
         user = User.objects.get(username="new-reader")
-        self.assertRedirects(response, reverse("home"))
+        self.assertRedirects(response, reverse("book:home"))
         self.assertIn("_auth_user_id", self.client.session)
         self.assertTrue(UserInformation.objects.filter(user=user).exists())
         self.assertTrue(ReadingList.objects.filter(user=user, is_default=True).exists())
@@ -52,7 +52,7 @@ class AuthenticationViewsTests(TestCase):
             {"usuario": "reader", "contraseña": "secure-password"},
         )
 
-        self.assertRedirects(response, reverse("home"))
+        self.assertRedirects(response, reverse("book:home"))
         self.assertIn("_auth_user_id", self.client.session)
 
     def test_profile_requires_authentication(self) -> None:

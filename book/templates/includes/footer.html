@@ -2,17 +2,17 @@
   <div class="container py-5">
     <div class="row gy-4 justify-content-between">
       <div class="col-lg-5">
-        <a href="{% url 'index' %}" class="footer-brand">BookNexus</a>
+        <a href="{% url 'book:index' %}" class="footer-brand">BookNexus</a>
         <p class="mt-3 mb-0">Descubre libros con recomendaciones que entienden tus gustos y acompaña cada lectura con intención.</p>
       </div>
       <div class="col-6 col-lg-2 footer-links">
         <h3>Explora</h3>
         <ul>
-          <li><a href="{% url 'index' %}">Inicio</a></li>
-          <li><a href="{% url 'faq' %}">Preguntas frecuentes</a></li>
+          <li><a href="{% url 'book:index' %}">Inicio</a></li>
+          <li><a href="{% url 'book:faq' %}">Preguntas frecuentes</a></li>
           {% if user.is_authenticated %}
             <li><a href="{% url 'top_books' %}">Top de libros</a></li>
-            <li><a href="{% url 'overview' %}">Mis listas</a></li>
+            <li><a href="{% url 'readinglists:overview' %}">Mis listas</a></li>
           {% endif %}
         </ul>
       </div>

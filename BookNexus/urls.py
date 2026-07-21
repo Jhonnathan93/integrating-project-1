@@ -19,57 +19,18 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-
-from analytics import views as Analytics
-from book import views as BookViews
-from newsletter import views as Newsletter
-from readinglists import views as ReadingListViews
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", BookViews.index, name="home"),
+    path("health/", include("BookNexus.health_urls")),
     path("accounts/", include("accounts.urls")),
     path("reports/", include("reports.urls")),
-    path("recommendations/", BookViews.recommendations, name="recommendations"),
-    path("index/", BookViews.index, name="index"),
-    path("response/", BookViews.response, name="response"),
-    path("overview/", ReadingListViews.overview, name="overview"),
-    path(
-        "overview/<int:reading_list_id>/",
-        ReadingListViews.detail,
-        name="readinglist_detail",
-    ),
-    path("createlist/", ReadingListViews.create_list, name="createlist"),
-    path(
-        "deletelist/<int:reading_list_id>/",
-        ReadingListViews.delete_list,
-        name="deletelist",
-    ),
-    path("readinglist/<int:reading_list_id>/", ReadingListViews.detail, name="detail"),
-    path(
-        "deletebook/<int:reading_list_id>/<int:book_id>/",
-        ReadingListViews.delete_book,
-        name="deletebook",
-    ),
-    path(
-        "editreadinglist/<int:reading_list_id>",
-        ReadingListViews.update_reading_list,
-        name="updatereadinglist",
-    ),
-    path("add-to-list/", ReadingListViews.add_to_reading_list, name="add-to-list"),
-    path(
-        "mark-as-not-recommended/",
-        BookViews.mark_as_not_recommended,
-        name="mark-as-not-recommended",
-    ),
-    path(
-        "send_email_to_readers/",
-        Newsletter.send_email_to_readers,
-        name="send_email_to_readers",
-    ),
-    path("top_books/", Analytics.top_books, name="top_books"),
-    path("top_books/<str:period>/", Analytics.top_books, name="top_books_period"),
-    path("faq/", BookViews.faq, name="faq"),
+    path("top_books/", include("analytics.urls")),
+    path("book/", include("book.urls")),
+    path("readinglists/", include("readinglists.urls")),
+    path("newsletter/", include("newsletter.urls")),
+    path("", RedirectView.as_view(pattern_name="book:home", permanent=False)),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

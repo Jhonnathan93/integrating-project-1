@@ -10,6 +10,7 @@ from .selectors import user_profile_get
 from .services import profile_update, user_register
 
 SIGNUP_TEMPLATE = "signup.html"
+BOOK_HOME_ROUTE = "book:home"
 
 
 def signup_view(request):
@@ -35,7 +36,7 @@ def signup_view(request):
             {"error": "Revisa los datos o utiliza otro nombre de usuario."},
         )
     login(request, user)
-    return redirect("home")
+    return redirect(BOOK_HOME_ROUTE)
 
 
 @login_required
@@ -89,11 +90,11 @@ def login_view(request):
             request, "login.html", {"error": "Usuario y contraseña no coinciden."}
         )
     login(request, user)
-    return redirect("home")
+    return redirect(BOOK_HOME_ROUTE)
 
 
 @login_required
 @require_GET
 def logout_view(request):
     logout(request)
-    return redirect("home")
+    return redirect(BOOK_HOME_ROUTE)

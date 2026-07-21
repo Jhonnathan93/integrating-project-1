@@ -18,7 +18,7 @@ class ReadingListFlowIntegrationTests(TestCase):
     @patch("readinglists.views.search_book")
     def test_create_list_add_book_and_remove_book(self, search_book: Mock) -> None:
         create_response = self.client.post(
-            reverse("createlist"),
+            reverse("readinglists:createlist"),
             {"title": "Favorites", "description": "Books to revisit"},
         )
         reading_list = ReadingList.objects.get(user=self.user, title="Favorites")
@@ -31,16 +31,22 @@ class ReadingListFlowIntegrationTests(TestCase):
         }
 
         add_response = self.client.post(
-            reverse("detail", args=[reading_list.pk]),
+            reverse("readinglists:detail", args=[reading_list.pk]),
             {"title": "Dune", "author": "Frank Herbert"},
         )
         book = reading_list.books.get(title="Dune")
         remove_response = self.client.post(
-            reverse("deletebook", args=[reading_list.pk, book.pk])
+            reverse("readinglists:deletebook", args=[reading_list.pk, book.pk])
         )
 
-        self.assertRedirects(create_response, reverse("detail", args=[reading_list.pk]))
-        self.assertRedirects(add_response, reverse("detail", args=[reading_list.pk]))
-        self.assertRedirects(remove_response, reverse("detail", args=[reading_list.pk]))
+        self.assertRedirects(
+            create_response, reverse("readinglists:detail", args=[reading_list.pk])
+        )
+        self.assertRedirects(
+            add_response, reverse("readinglists:detail", args=[reading_list.pk])
+        )
+        self.assertRedirects(
+            remove_response, reverse("readinglists:detail", args=[reading_list.pk])
+        )
         self.assertFalse(reading_list.books.filter(pk=book.pk).exists())
         search_book.assert_called_once_with(title="Dune", author="Frank Herbert")

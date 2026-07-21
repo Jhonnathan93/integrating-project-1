@@ -13,7 +13,7 @@ class NewsletterViewsTests(TestCase):
         self.client.force_login(self.staff_user)
 
     def test_send_email_to_readers_rejects_get_requests(self) -> None:
-        response = self.client.get(reverse("send_email_to_readers"))
+        response = self.client.get(reverse("newsletter:send_email_to_readers"))
 
         self.assertEqual(response.status_code, 405)
 
@@ -21,7 +21,7 @@ class NewsletterViewsTests(TestCase):
     def test_send_email_to_readers_uses_newsletter_service(
         self, newsletter_send: Mock
     ) -> None:
-        response = self.client.post(reverse("send_email_to_readers"))
+        response = self.client.post(reverse("newsletter:send_email_to_readers"))
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "email_sent_confirmation.html")

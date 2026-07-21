@@ -20,7 +20,7 @@
       <nav aria-label="breadcrumbs">
         <div class="container">
           <ol>
-            <li><a href="{% url 'index' %}">Inicio</a></li>
+            <li><a href="{% url 'book:index' %}">Inicio</a></li>
             <li>Recomendaciones</li>
           </ol>
         </div>
@@ -209,7 +209,7 @@
             if (title && author && description && buyLink) {
                 button.disabled = true;
                 
-                fetch('/add-to-list/', {
+                fetch("{% url 'readinglists:add-to-list' %}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -277,7 +277,7 @@
         const bookDetails = button.closest('.book-details');
         const { title, author } = bookDetails.dataset;
     
-        fetch('/mark-as-not-recommended/', {
+        fetch("{% url 'book:mark-as-not-recommended' %}", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
