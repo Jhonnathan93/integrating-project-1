@@ -300,12 +300,6 @@ The application interface includes book recommendations, reading lists, reader
 profiles, rankings, and staff reports. Add maintained screenshots under
 `docs/images/` and reference them here when visual documentation is available.
 
-## Acknowledgments
-
-- Django and its community.
-- Google Books for book metadata.
-- Groq and OpenAI for configurable recommendation providers.
-- The open-source tools used by the quality and supply-chain workflow.
 
 ## License
 
