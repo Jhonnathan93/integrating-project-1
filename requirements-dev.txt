@@ -11,3 +11,4 @@ types-requests>=2.32,<3.0
 semgrep>=1.169,<2.0
 pip-audit>=2.8,<3.0
 pip-licenses>=5.0,<6.0
+yamllint>=1.37,<2.0

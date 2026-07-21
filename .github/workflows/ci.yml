@@ -17,13 +17,13 @@ env:
 
 jobs:
   validate-line-endings:
-    name: Validate line endings
+    name: Line Endings
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Require LF line endings and a final newline in project source files
         run: |
           python - <<'PY'
@@ -51,13 +51,13 @@ jobs:
           PY
 
   validate-commits:
-    name: Validate Conventional Commit messages
+    name: Commit Messages
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
       - name: Check out complete history
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - name: Require Conventional Commits with a body
@@ -99,15 +99,83 @@ jobs:
               raise SystemExit("Each commit needs a Conventional Commit header and a non-empty body:\n" + "\n".join(failures))
           PY
 
+  configuration-validation:
+    name: Configuration
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements-dev.lock
+      - name: Install configuration validation tools
+        run: |
+          python -m pip install --only-binary=:all: --require-hashes --requirement requirements-dev.lock
+      - name: Validate YAML files
+        run: git ls-files -z -- '*.yaml' '*.yml' | xargs -0 yamllint
+      - name: Validate GitHub Actions workflows
+        uses: reviewdog/action-actionlint@e0207a28405ecad11953ba625a95d92f7889572a # v1
+        with:
+          reporter: github-check
+          fail_level: error
+      - name: Validate Docker Compose when configured
+        run: |
+          for compose_file in compose.yml compose.yaml docker-compose.yml docker-compose.yaml; do
+            if [ -f "$compose_file" ]; then
+              docker compose --file "$compose_file" config --quiet
+            fi
+          done
+      - name: Validate TOML, INI, JSON, and environment example files
+        run: |
+          python - <<'PY'
+          import configparser
+          import json
+          import re
+          import subprocess
+          import tomllib
+          from pathlib import Path
+
+          tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
+
+          for config_file in ("mypy.ini", ".coveragerc"):
+              parser = configparser.ConfigParser()
+              if not parser.read(config_file, encoding="utf-8"):
+                  raise SystemExit(f"Unable to parse {config_file}.")
+
+          for raw_path in subprocess.check_output(
+              ["git", "ls-files", "*.json"], text=True
+          ).splitlines():
+              json.loads(Path(raw_path).read_text(encoding="utf-8"))
+
+          environment_key = re.compile(r"^[A-Z][A-Z0-9_]*$")
+          for line_number, line in enumerate(
+              Path(".env.example").read_text(encoding="utf-8").splitlines(), start=1
+          ):
+              stripped_line = line.strip()
+              if not stripped_line or stripped_line.startswith("#"):
+                  continue
+              if "=" not in line:
+                  raise SystemExit(f".env.example:{line_number} must use KEY=value syntax.")
+              key, _ = line.split("=", maxsplit=1)
+              if not environment_key.fullmatch(key):
+                  raise SystemExit(f".env.example:{line_number} has an invalid key: {key!r}.")
+          PY
+
   lint:
-    name: Lint (Ruff)
+    name: Lint
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
@@ -121,14 +189,14 @@ jobs:
         run: ruff format --check .
 
   type-check:
-    name: Type check (mypy)
+    name: Type Check
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
@@ -140,14 +208,14 @@ jobs:
         run: mypy --config-file mypy.ini --ignore-missing-imports accounts analytics book newsletter readinglists reports BookNexus
 
   sast:
-    name: Static application security testing
+    name: SAST
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
@@ -159,12 +227,12 @@ jobs:
         run: semgrep scan --config p/python --config p/django --error
 
   secrets:
-    name: Scan repository secrets
+    name: Secret Scan
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - name: Run Gitleaks
@@ -173,14 +241,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   dependency-audit:
-    name: Audit dependencies and licenses
+    name: Dependency Audit
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
@@ -190,11 +258,19 @@ jobs:
           python -m pip install --only-binary=:all: --require-hashes --requirement requirements-dev.lock
       - name: Detect known dependency vulnerabilities
         run: pip-audit --requirement requirements.lock
-      - name: Enforce license policy and write report
-        run: pip-licenses --fail-on="GPL-3.0;AGPL-3.0"
+      - name: Enforce license policy and generate report
+        run: |
+          pip-licenses --fail-on="GPL-3.0;AGPL-3.0" --format=json \
+            --output-file=licenses.json
+      - name: Publish license report
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: license-report
+          path: licenses.json
+          retention-days: 30
 
   migration-check:
-    name: Validate Django migrations
+    name: Migration Check
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -202,9 +278,9 @@ jobs:
       DJANGO_SECRET_KEY: ci-only-secret-key-not-for-production
       DJANGO_DEBUG: "false"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
@@ -222,16 +298,16 @@ jobs:
         run: python manage.py migrate --check
 
   unit-and-coverage:
-    name: Unit tests and coverage
+    name: Unit Tests & Coverage
     runs-on: ubuntu-latest
     permissions:
       contents: read
     env:
       DJANGO_SETTINGS_MODULE: BookNexus.settings_testing
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
@@ -250,7 +326,7 @@ jobs:
           python -m coverage xml
       - name: Publish coverage reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: coverage-reports
           path: |
@@ -260,7 +336,7 @@ jobs:
           retention-days: 30
 
   integration-tests:
-    name: Integration tests
+    name: Integration Tests
     runs-on: ubuntu-latest
     needs: unit-and-coverage
     permissions:
@@ -268,9 +344,9 @@ jobs:
     env:
       DJANGO_SETTINGS_MODULE: BookNexus.settings_testing
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
@@ -282,7 +358,7 @@ jobs:
         run: python manage.py test --tag=integration
 
   sonarcloud:
-    name: SonarCloud analysis
+    name: SonarCloud
     runs-on: ubuntu-latest
     needs: unit-and-coverage
     permissions:
@@ -290,11 +366,11 @@ jobs:
       pull-requests: read
     steps:
       - name: Check out complete history
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - name: Download coverage report
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: coverage-reports
           path: .
@@ -307,10 +383,10 @@ jobs:
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
         run: echo "SonarCloud is skipped because repository secrets are unavailable to external pull requests."
 
-  # Future independent stages: contract-tests, api-tests, and end-to-end-tests.
+  # Future stages: contract-tests, api-tests, and end-to-end-tests.
 
   build:
-    name: Compile and package application
+    name: Python Compilation
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -326,10 +402,11 @@ jobs:
       - unit-and-coverage
       - integration-tests
       - sonarcloud
+      - configuration-validation
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
@@ -340,24 +417,66 @@ jobs:
       - name: Compile Python modules
         run: python -m compileall -q accounts analytics book newsletter readinglists reports BookNexus
   docker-build-and-scan:
-    name: Build, scan, and publish Docker image
+    name: Docker Image
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+      attestations: write
+      id-token: write
     needs: build
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Set up Docker Buildx cache
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - name: Scan filesystem and Docker configuration
+        run: |
+          docker run --rm -v "$PWD:/workspace:ro" aquasec/trivy:0.70.0 \
+            fs --exit-code 1 --severity HIGH,CRITICAL \
+            --scanners vuln,secret,misconfig /workspace
       - name: Build Docker image with layer cache
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: .
           load: true
           tags: ${{ env.IMAGE_NAME }}
+          build-args: |
+            SOURCE_URL=https://github.com/${{ github.repository }}
+            VCS_REF=${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Ensure container runs as a non-root user
+        run: |
+          container_user="$(docker inspect --format='{{.Config.User}}' "${{ env.IMAGE_NAME }}")"
+          if [ -z "$container_user" ] || [ "$container_user" = "0" ] || [ "$container_user" = "root" ]; then
+            echo "Container must run as a non-root user."
+            exit 1
+          fi
+      - name: Validate image runtime metadata
+        run: |
+          healthcheck="$(docker inspect --format='{{if .Config.Healthcheck}}configured{{end}}' "${{ env.IMAGE_NAME }}")"
+          if [ "$healthcheck" != "configured" ]; then
+            echo "Container must define a HEALTHCHECK."
+            exit 1
+          fi
+
+          for label in org.opencontainers.image.source org.opencontainers.image.revision; do
+            label_value="$(docker inspect --format="{{index .Config.Labels \"$label\"}}" "${{ env.IMAGE_NAME }}")"
+            if [ -z "$label_value" ] || [ "$label_value" = "<no value>" ]; then
+              echo "Container must define the OCI label: $label."
+              exit 1
+            fi
+          done
+      - name: Enforce Docker image size budget
+        env:
+          MAX_IMAGE_SIZE_MB: 500
+        run: |
+          image_size_bytes="$(docker image inspect --format='{{.Size}}' "${{ env.IMAGE_NAME }}")"
+          max_size_bytes="$((MAX_IMAGE_SIZE_MB * 1024 * 1024))"
+          if [ "$image_size_bytes" -gt "$max_size_bytes" ]; then
+            echo "Image size exceeds the ${MAX_IMAGE_SIZE_MB} MB budget."
+            exit 1
+          fi
       - name: Scan high and critical image vulnerabilities
         run: |
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.70.0 \
@@ -374,6 +493,7 @@ jobs:
       - name: Wait for health endpoint
         run: |
           for attempt in {1..30}; do
+            echo "Waiting for health endpoint (attempt $attempt/30)..."
             if curl --fail --silent --show-error http://127.0.0.1:8000/health/; then
               exit 0
             fi
@@ -399,6 +519,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish scanned image to GitHub Container Registry
+        id: publish-image
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GHCR_IMAGE: ghcr.io/${{ github.repository }}
@@ -406,11 +527,26 @@ jobs:
           ghcr_image="${GHCR_IMAGE,,}"
           docker tag "$IMAGE_NAME" "$ghcr_image:$GITHUB_SHA"
           docker tag "$IMAGE_NAME" "$ghcr_image:latest"
-          docker push "$ghcr_image:$GITHUB_SHA"
+          push_output="$(docker push "$ghcr_image:$GITHUB_SHA")"
+          printf '%s\n' "$push_output"
           docker push "$ghcr_image:latest"
+          image_digest="$(printf '%s\n' "$push_output" | sed -n 's/.*digest: \(sha256:[0-9a-f]*\).*/\1/p' | tail -n 1)"
+          if [ -z "$image_digest" ]; then
+            echo "Unable to determine the published image digest."
+            exit 1
+          fi
+          echo "name=$ghcr_image" >> "$GITHUB_OUTPUT"
+          echo "digest=$image_digest" >> "$GITHUB_OUTPUT"
+      - name: Attest published Docker image provenance
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/attest-build-provenance@78e6cbd37d0ac1a40113c04f2037dacf1ea3f12e # v4
+        with:
+          subject-name: ${{ steps.publish-image.outputs.name }}
+          subject-digest: ${{ steps.publish-image.outputs.digest }}
+          push-to-registry: true
 
   publish-artifacts:
-    name: Publish GitHub build artifacts
+    name: Publish Artifacts
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -418,39 +554,27 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
-      - name: Set up Python for license artifact
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
-          cache-dependency-path: requirements-dev.lock
-      - name: Generate license report
-        run: |
-          python -m pip install --only-binary=:all: --require-hashes --requirement requirements-dev.lock
-          pip-licenses --format=json --output-file=licenses.json
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Create source artifact
         run: |
           tar --exclude-vcs --exclude='.venv' --exclude='venv' --exclude='media' \
             -czf "$RUNNER_TEMP/booknexus-source.tar.gz" .
       - name: Publish source artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: booknexus-source
           path: ${{ runner.temp }}/booknexus-source.tar.gz
           retention-days: 30
-      - name: Publish license report
-        uses: actions/upload-artifact@v4
-        with:
-          name: license-report
-          path: licenses.json
-          retention-days: 30
 
   notify-failure:
-    name: Notify failures
+    name: Failure Notification
     runs-on: ubuntu-latest
-    needs: [validate-line-endings, validate-commits, lint, type-check, sast, secrets, dependency-audit, migration-check, unit-and-coverage, sonarcloud, build, docker-build-and-scan, publish-artifacts]
-    if: ${{ failure() }}
+    needs: [validate-line-endings, validate-commits, configuration-validation, lint, type-check, sast, secrets, dependency-audit, migration-check, unit-and-coverage, integration-tests, sonarcloud, build, docker-build-and-scan, publish-artifacts]
+    if: >-
+      ${{
+        always() &&
+        contains(needs.*.result, 'failure')
+      }}
     steps:
       - name: Write failure summary
         run: |
