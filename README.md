@@ -132,7 +132,7 @@ Configure the values required by your environment:
 | Variable | Purpose | Required locally |
 | --- | --- | --- |
 | `DJANGO_SECRET_KEY` | Django cryptographic key | Yes |
-| `DJANGO_DEBUG` | Enables development mode | Yes |
+| `DJANGO_DEBUG` | Enables development mode; must be `false` in deployments | Yes, locally |
 | `DJANGO_ALLOWED_HOSTS` | Hosts allowed when debug is disabled | Production only |
 | `ALLOWED_HOSTS` | Alternative name accepted for deployment hosts | Production only |
 | `CSRF_TRUSTED_ORIGINS` | HTTPS origins trusted for POST requests | Production only |
