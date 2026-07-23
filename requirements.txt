@@ -5,3 +5,5 @@ python-dotenv>=1.2,<2.0
 requests>=2.32,<3.0
 openai>=2.45,<3.0
 groq>=1.5,<2.0
+dj-database-url>=3.1,<4.0
+psycopg[binary]>=3.3,<4.0

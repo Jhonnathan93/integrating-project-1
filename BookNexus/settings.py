@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+import dj_database_url
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -105,14 +106,26 @@ WSGI_APPLICATION = "BookNexus.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+# A local SQLite database keeps development simple. Deployments provide a
+# PostgreSQL connection string through DATABASE_URL (for example, Supabase).
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if DATABASE_URL:
+    database_config = dj_database_url.parse(
+        DATABASE_URL,
+        conn_max_age=0,
+        conn_health_checks=True,
+    )
+    # Supabase's transaction pooler does not support prepared statements.
+    database_config.setdefault("OPTIONS", {})["prepare_threshold"] = None
+    DATABASES = {"default": database_config}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
 
 
 # Password validation

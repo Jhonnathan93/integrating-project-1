@@ -134,6 +134,7 @@ Configure the values required by your environment:
 | `DJANGO_SECRET_KEY` | Django cryptographic key | Yes |
 | `DJANGO_DEBUG` | Enables development mode | Yes |
 | `DJANGO_ALLOWED_HOSTS` | Hosts allowed when debug is disabled | Production only |
+| `DATABASE_URL` | PostgreSQL connection URI; uses local SQLite when omitted | Production only |
 | `LLM_PROVIDER` | `groq` or `openai` | For recommendations |
 | `GROQ_API_KEY` / `OPENAI_API_KEY` | Credentials for the selected LLM provider | For recommendations |
 | `GOOGLE_BOOKS_API_KEY` | Google Books API credential | For book metadata |
@@ -141,6 +142,23 @@ Configure the values required by your environment:
 | `NEWSLETTER_SENDER_PASSWORD` | Newsletter sender password or app password | For newsletter delivery |
 
 Never commit `.env`, local databases, uploaded media, or credentials.
+
+### Supabase PostgreSQL
+
+For a Supabase-backed deployment, open **Connect** in the Supabase dashboard and
+copy the **Transaction pooler** URI (port `6543`) into `DATABASE_URL`. This
+pooler is intended for transient serverless connections such as Vercel. Keep a
+direct connection URI only for migrations and administration tools.
+
+Apply the Django migrations once against the Supabase database:
+
+```bash
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+The dedicated test settings always use in-memory SQLite, even when your local
+`.env` contains `DATABASE_URL`.
 
 Apply migrations and start the server:
 
