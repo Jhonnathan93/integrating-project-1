@@ -51,16 +51,26 @@ SECRET_KEY = os.environ.get(
 DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() == "true"
 
 
-def get_environment_list(variable_name: str) -> list[str]:
-    """Return comma-separated environment values without surrounding whitespace."""
-    return [
-        value.strip()
-        for value in os.environ.get(variable_name, "").split(",")
-        if value.strip()
-    ]
+def get_environment_list(*variable_names: str) -> list[str]:
+    """Return comma-separated values from environment variables without whitespace."""
+    values: list[str] = []
+    for variable_name in variable_names:
+        values.extend(
+            value.strip()
+            for value in os.environ.get(variable_name, "").split(",")
+            if value.strip()
+        )
+    return values
 
 
-ALLOWED_HOSTS = get_environment_list("DJANGO_ALLOWED_HOSTS") if not DEBUG else []
+VERCEL_HOST_SUFFIX = ".vercel.app"
+
+ALLOWED_HOSTS = (
+    get_environment_list("DJANGO_ALLOWED_HOSTS", "ALLOWED_HOSTS") if not DEBUG else []
+)
+if not DEBUG and VERCEL_HOST_SUFFIX not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(VERCEL_HOST_SUFFIX)
+
 CSRF_TRUSTED_ORIGINS = get_environment_list("CSRF_TRUSTED_ORIGINS")
 
 
