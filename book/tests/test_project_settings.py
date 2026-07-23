@@ -22,7 +22,9 @@ class DatabaseSettingsTests(SimpleTestCase):
         database = project_settings.DATABASES["default"]
 
         self.assertEqual(database["ENGINE"], "django.db.backends.sqlite3")
-        self.assertEqual(database["NAME"], str(project_settings.BASE_DIR / "db.sqlite3"))
+        self.assertEqual(
+            database["NAME"], str(project_settings.BASE_DIR / "db.sqlite3")
+        )
 
     def test_uses_postgresql_configuration_when_database_url_is_defined(self):
         project_settings = self._reload_settings(
