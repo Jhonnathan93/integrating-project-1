@@ -141,7 +141,7 @@ jobs:
           import tomllib
           from pathlib import Path
 
-          tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
+          tomllib.loads(Path("ruff.toml").read_text(encoding="utf-8"))
 
           for config_file in ("mypy.ini", ".coveragerc"):
               parser = configparser.ConfigParser()
