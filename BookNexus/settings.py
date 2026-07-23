@@ -50,11 +50,18 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() == "true"
 
-ALLOWED_HOSTS = (
-    [host for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if host]
-    if not DEBUG
-    else []
-)
+
+def get_environment_list(variable_name: str) -> list[str]:
+    """Return comma-separated environment values without surrounding whitespace."""
+    return [
+        value.strip()
+        for value in os.environ.get(variable_name, "").split(",")
+        if value.strip()
+    ]
+
+
+ALLOWED_HOSTS = get_environment_list("DJANGO_ALLOWED_HOSTS") if not DEBUG else []
+CSRF_TRUSTED_ORIGINS = get_environment_list("CSRF_TRUSTED_ORIGINS")
 
 
 # Application definition
