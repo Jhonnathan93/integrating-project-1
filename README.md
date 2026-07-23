@@ -134,6 +134,7 @@ Configure the values required by your environment:
 | `DJANGO_SECRET_KEY` | Django cryptographic key | Yes |
 | `DJANGO_DEBUG` | Enables development mode | Yes |
 | `DJANGO_ALLOWED_HOSTS` | Hosts allowed when debug is disabled | Production only |
+| `ALLOWED_HOSTS` | Alternative name accepted for deployment hosts | Production only |
 | `CSRF_TRUSTED_ORIGINS` | HTTPS origins trusted for POST requests | Production only |
 | `DATABASE_URL` | PostgreSQL connection URI; uses local SQLite when omitted | Production only |
 | `LLM_PROVIDER` | `groq` or `openai` | For recommendations |
